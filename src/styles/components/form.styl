@@ -1,0 +1,31 @@
+.field
+  display: flex
+  margin-bottom: $spacing-small
+
+  &-img
+    width: 30px
+
+  &-container
+    display: flex
+    flex-direction: column
+
+.input
+  &-primary
+    border-bottom: 2px solid $regular-red
+    color: $regular-red
+    font-size: 2rem
+    padding: $spacing-small
+
+    &:focus
+      outline: none
+
+    +placeholder()
+      color: $placeholder-red
+      transition: all 0.3s ease
+
+.btn-forward
+  background: transparent
+  margin: 0
+  padding: 0
+  text-decoration: none
+  transition: all 0.3s ease

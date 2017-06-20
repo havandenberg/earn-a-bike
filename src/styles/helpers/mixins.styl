@@ -1,0 +1,38 @@
+// @stylint off
+placeholder()
+  &::-webkit-input-placeholder
+    {block}
+  &:-moz-placeholder
+    {block}
+  &::-moz-placeholder
+    {block}
+  &:-ms-input-placeholder
+    {block}
+
+breakpoint($point)
+  if $point == desktop
+    @media (min-width: $large-screen)
+      {block}
+  else if $point == tablet
+    @media (min-width: $medium-screen)
+      {block}
+  else if $point == mobile
+    @media (max-width: $small-screen)
+      {block}
+
+size($width, $height = $width)
+  height: $height
+  width: $width
+
+ellipsis($width = false)
+  overflow: hidden
+  text-overflow: ellipsis
+  white-space: nowrap
+  if $width
+    width: $width
+
+fontSize($size)
+  font-size: 16px * $size
+  @media (max-width: $small-screen)
+    font-size: 14px * $size
+// @stylint on

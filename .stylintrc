@@ -1,0 +1,67 @@
+{
+  "brackets": {
+    "expect": "never",
+    "error": true
+  },
+  "commaSpace": {
+    "expect": "always",
+    "error": true
+  },
+  "depthLimit": {
+    "expect": 4,
+    "error": true
+  },
+  "duplicates": {
+    "expect": true,
+    "error": true
+  },
+  "exclude": ["node_modules/**/*"],
+  "globalDupe": {
+    "expect": true,
+    "error": true
+  },
+  "indentPref": {
+    "expect": 2,
+    "error": true
+  },
+  "leadingZero": {
+    "expect": "always",
+    "error": true
+  },
+  "namingConvention": {
+    "expect": "lowercase-dash",
+    "error": true
+  },
+  "namingConventionStrict": true,
+  "quotePref": {
+    "expect": "single",
+    "error": true
+  },
+  "semicolon": {
+    "expect": "never",
+    "error": true
+  },
+  "sortOrder": {
+    "expect": "alphabetical",
+    "error": true
+  },
+  "colons": {
+    "expect": "always",
+    "error": true
+  },
+  "trailingWhitespace": {
+    "expect": "never",
+    "error": true
+  },
+  "valid": {
+    "expect": true,
+    "error": true
+  },
+  "zeroUnits": {
+    "expect": "never",
+    "error": true
+  },
+  "zIndexNormalize": {
+    "expect": 10
+  }
+}
