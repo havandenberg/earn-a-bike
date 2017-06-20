@@ -6,7 +6,7 @@ import searchImg from 'images/search.svg';
 class UserList extends Component {
   static propTypes = {
     messages: PropTypes.arrayOf(PropTypes.shape({})),
-    users: PropTypes.func
+    users: PropTypes.arrayOf(PropTypes.shape({}))
   }
 
   state = {
