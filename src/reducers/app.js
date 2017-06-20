@@ -2,6 +2,7 @@ import Immutable from 'immutable';
 import {messages} from 'utils/messages';
 import {
   ADD_ACTIVE_USER,
+  CLEAR_MESSAGES,
   EMAIL_NOT_FOUND,
   INVALID_PIN
 } from 'actions/app';
@@ -56,6 +57,10 @@ export default function reducer(state = initialState, action = {}) {
   case ADD_ACTIVE_USER:
     return state.merge({
       activeUsers: state.get('activeUsers').push(action.user)
+    });
+  case CLEAR_MESSAGES:
+    return state.merge({
+      messages: []
     });
   case EMAIL_NOT_FOUND:
     return state.merge({
