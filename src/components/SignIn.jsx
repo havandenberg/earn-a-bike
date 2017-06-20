@@ -3,16 +3,19 @@ import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import {connect} from 'react-redux';
-import {handleSignIn} from 'actions/app';
+import {clearMessages, handleSignIn} from 'actions/app';
 import Messages from 'components/Messages.jsx';
+import UserList from 'components/UserList.jsx';
 import {messages as messageList} from 'utils/messages';
 import bicycleForwardGif from 'images/bicycle-forward.gif';
 import bicycleForwardImg from 'images/bicycle-forward.png';
 
 class SignIn extends Component {
   static propTypes = {
+    clearMessages: PropTypes.func,
     handleSignIn: PropTypes.func,
-    messages: PropTypes.arrayOf(PropTypes.shape({}))
+    messages: PropTypes.arrayOf(PropTypes.shape({})),
+    users: PropTypes.arrayOf(PropTypes.shape({}))
   }
 
   state = {
@@ -51,46 +54,50 @@ class SignIn extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     const {email, pin} = this.state;
+    this.props.clearMessages();
     if (this.validate()) {
       this.props.handleSignIn(email, pin);
     }
   }
 
   render() {
-    const {messages} = this.props;
+    const {messages, users} = this.props;
     const {email, errors, hover, pin} = this.state;
 
     return (
-      <div className="sign-in">
-        <h1>Sign In</h1>
-        <Messages messages={messages.concat(errors)} />
-        <form onSubmit={this.handleSubmit}>
-          <div className="field-container">
-            <input
-              autoFocus={true}
-              className="input-primary"
-              placeholder="Email"
-              type="text"
-              value={email}
-              onChange={this.handleChange('email')} />
-            <input
-              autoComplete="off"
-              className="field input-primary"
-              type="password"
-              maxLength="4"
-              name="pin"
-              pattern="[0-9]{4}"
-              placeholder="PIN"
-              value={pin}
-              onChange={this.handleChange('pin')} />
-          </div>
-          <div className="sign-in-options">
-            <Link className="sign-in-new" to="/sign-up">New?</Link>
-            <button className="btn-forward" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover} type="submit">
-              <img alt="Sign In" src={hover ? bicycleForwardGif : bicycleForwardImg} />
-            </button>
-          </div>
-        </form>
+      <div className="sign-in__container">
+        <div className="sign-in">
+          <h1>Sign In</h1>
+          <Messages messages={messages.concat(errors)} />
+          <form onSubmit={this.handleSubmit}>
+            <div className="field-container">
+              <input
+                autoFocus={true}
+                className="input-primary"
+                placeholder="Email"
+                type="text"
+                value={email}
+                onChange={this.handleChange('email')} />
+              <input
+                autoComplete="off"
+                className="field input-primary"
+                type="password"
+                maxLength="4"
+                name="pin"
+                pattern="[0-9]{4}"
+                placeholder="Pin"
+                value={pin}
+                onChange={this.handleChange('pin')} />
+            </div>
+            <div className="sign-in-options">
+              <Link className="sign-in-new" to="/sign-up">New?</Link>
+              <button className="btn-forward" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover} type="submit">
+                <img alt="Sign In" src={hover ? bicycleForwardGif : bicycleForwardImg} />
+              </button>
+            </div>
+          </form>
+        </div>
+        <UserList users={users} />
       </div>
     );
   }
@@ -98,8 +105,10 @@ class SignIn extends Component {
 
 export default connect(({app}) => {
   return {
-    messages: app.get('messages').toJS()
+    messages: app.get('messages').toJS(),
+    users: app.get('users').toJS()
   };
 }, {
+  clearMessages,
   handleSignIn
 })(SignIn);
