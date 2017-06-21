@@ -13,7 +13,7 @@
   &-primary
     border-bottom: 2px solid $regular-red
     color: $regular-red
-    font-size: 2rem
+    font-size: 1.5rem
     padding: $spacing-small
 
     &:focus
@@ -26,15 +26,12 @@
   &-search
     border-bottom: 2px solid $regular-red
     display: flex
-    margin-bottom: $spacing-micro
+    margin-bottom: $spacing-small
 
     input
       color: $regular-red
       flex-grow: 1
       font-size: 1.2rem
-
-      &:focus
-        outline: none
 
       +placeholder()
         color: $placeholder-red
@@ -44,9 +41,31 @@
       margin-right: $spacing-small
       width: 20px
 
-.btn-forward
-  background: transparent
-  margin: 0
-  padding: 0
-  text-decoration: none
-  transition: all 0.3s ease
+  &-user-item
+    color: $regular-red
+
+    +placeholder()
+      color: $placeholder-red
+      transition: all 0.3s ease
+
+.btn
+  &-forward
+    background: transparent
+    margin: 0
+    padding: 0
+    text-decoration: none
+    transition: all 0.3s ease
+
+  &-action
+    background: $light-yellow
+    border: $border
+    border-radius: $border-radius
+    color: $black
+    font-size: 1.2rem
+    padding: $spacing-micro
+    text-decoration: none
+    transition: all 0.3s ease
+    width: 80px
+
+    &:hover
+      background: $action-yellow

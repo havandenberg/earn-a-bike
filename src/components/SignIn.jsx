@@ -12,6 +12,7 @@ import bicycleForwardImg from 'images/bicycle-forward.png';
 
 class SignIn extends Component {
   static propTypes = {
+    activeUsers: PropTypes.arrayOf(PropTypes.shape({})),
     clearMessages: PropTypes.func,
     handleSignIn: PropTypes.func,
     messages: PropTypes.arrayOf(PropTypes.shape({})),
@@ -57,6 +58,8 @@ class SignIn extends Component {
     this.props.clearMessages();
     if (this.validate()) {
       this.props.handleSignIn(email, pin);
+      this.setState({email: '', pin: ''});
+      this.refs.email.focus();
     }
   }
 
@@ -75,6 +78,7 @@ class SignIn extends Component {
                 autoFocus={true}
                 className="input-primary"
                 placeholder="Email"
+                ref="email"
                 type="text"
                 value={email}
                 onChange={this.handleChange('email')} />

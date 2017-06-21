@@ -1,52 +1,19 @@
 import Immutable from 'immutable';
 import {messages} from 'utils/messages';
 import {
-  ADD_ACTIVE_USER,
   CLEAR_MESSAGES,
   EMAIL_NOT_FOUND,
-  INVALID_PIN
+  INVALID_PIN,
+  UPDATE_USERS
 } from 'actions/app';
+import {testStore} from 'utils/testData';
 
 const config = require('electron-json-config');
 
-config.set('users', [
-  {
-    address: {
-      city: 'Worcester',
-      state: 'NY',
-      streetLine1: '19 Lancaster St',
-      streetLine2: 'Apt 3',
-      zip: '01609'
-    },
-    dateOfBirth: {
-      day: '',
-      month: '',
-      year: ''
-    },
-    email: 'halseyvandenberg@gmail.com',
-    firstName: 'Halsey',
-    isActive: false,
-    isManager: true,
-    lastName: 'Vandenberg',
-    parentName: '',
-    parentPhone: '',
-    pin: '1234',
-    phone: '9147032060',
-    visits: [
-      {
-        date: '10/17/2016',
-        timeIn: '01:36',
-        timeOut: '03:36',
-        hours: 2,
-        notes: 'Today I wrenched super hard on some rad bikes, made a bunch of friends, and helped some people out!'
-      }
-    ]
-  }
-]);
-console.log(config.get('users')); // eslint-disable-line no-console
+config.set('users', testStore.users);
+config.set('info', testStore.info);
 
 const initialState = Immutable.fromJS({
-  activeUsers: [],
   info: config.get('info'),
   messages: [],
   users: config.get('users')
@@ -54,9 +21,9 @@ const initialState = Immutable.fromJS({
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
-  case ADD_ACTIVE_USER:
+  case UPDATE_USERS:
     return state.merge({
-      activeUsers: state.get('activeUsers').push(action.user)
+      users: action.users
     });
   case CLEAR_MESSAGES:
     return state.merge({

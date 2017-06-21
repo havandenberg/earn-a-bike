@@ -1,3 +1,4 @@
+import {Iterable} from 'immutable';
 import thunk from 'redux-thunk';
 import {createHashHistory} from 'history';
 import {connectRouter, routerMiddleware} from 'connected-react-router';
@@ -10,11 +11,21 @@ const middleware = [
   routerMiddleware(history)
 ];
 
-// Development adds logging, must be last
 if (process.env.NODE_ENV !== 'production') {
   middleware.push(require('redux-logger')({
-    // Change this configuration to your liking
-    duration: true, collapsed: true
+    collapsed: true,
+    duration: true,
+    stateTransformer: (state) => {
+      const newState = {};
+      for (const i of Object.keys(state)) {
+        if (Iterable.isIterable(state[i])) {
+          newState[i] = state[i].toJS();
+        } else {
+          newState[i] = state[i];
+        }
+      }
+      return newState;
+    }
   }));
 }
 
