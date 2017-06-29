@@ -35,12 +35,14 @@ export function handleSignIn(email, pin) {
 
     if (user.pin === pin) {
       user.isActive = true;
-      user.visits.unshift({
-        timeIn: moment().unix(),
-        timeOut: '',
-        hours: 0,
-        notes: ''
-      });
+      if (!user.isManager) {
+        user.visits.unshift({
+          timeIn: moment().unix(),
+          timeOut: 0,
+          hours: 0,
+          notes: ''
+        });
+      }
       dispatch(updateUsers(users));
       return user;
     }
@@ -50,21 +52,40 @@ export function handleSignIn(email, pin) {
   };
 }
 
-export function handleSignOut(email) {
+export function handleSignOut(id) {
   return (dispatch, getState) => {
     const users = getState().app.get('users').toJS();
 
     const user = _.find(users, (u) => {
-      return u.email === email;
+      return u.id === id;
     });
     user.isActive = false;
 
-    const currentVisit = user.visits[0];
-    currentVisit.timeOut = moment().add(90, 'minutes').unix();
+    if (!user.isManager) {
+      const currentVisit = user.visits[0];
+      currentVisit.timeOut = moment().unix();
 
-    const startTime = moment.unix(currentVisit.timeIn);
-    const endTime = moment.unix(currentVisit.timeOut);
-    currentVisit.hours = getHoursDifference(startTime, endTime);
+      const startTime = moment.unix(currentVisit.timeIn);
+      const endTime = moment.unix(currentVisit.timeOut);
+      currentVisit.hours = parseFloat(getHoursDifference(startTime, endTime));
+    }
+
+    dispatch(updateUsers(users));
+    return true;
+  };
+}
+
+export function updateUser(newUser) {
+  return (dispatch, getState) => {
+    const users = getState().app.get('users').toJS();
+
+    const user = _.find(users, (u) => {
+      return u.id === newUser.id;
+    });
+
+    _.each(Object.keys(user), (key) => {
+      user[key] = newUser[key];
+    });
 
     dispatch(updateUsers(users));
     return true;

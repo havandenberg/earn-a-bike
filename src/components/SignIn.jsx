@@ -12,7 +12,6 @@ import bicycleForwardImg from 'images/bicycle-forward.png';
 
 class SignIn extends Component {
   static propTypes = {
-    activeUsers: PropTypes.arrayOf(PropTypes.shape({})),
     clearMessages: PropTypes.func,
     handleSignIn: PropTypes.func,
     messages: PropTypes.arrayOf(PropTypes.shape({})),
@@ -84,7 +83,7 @@ class SignIn extends Component {
                 onChange={this.handleChange('email')} />
               <input
                 autoComplete="off"
-                className="field input-primary"
+                className="field input-primary sign-in-pin"
                 type="password"
                 maxLength="4"
                 name="pin"

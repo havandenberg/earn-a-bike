@@ -5,7 +5,7 @@ const Header = () => {
   return (
     <div>
       <div className="header">
-        <img src={logoImg} alt="Worcester Earn A Bike" />
+        <img className="header-logo" src={logoImg} alt="Worcester Earn A Bike" />
         <div className="header-content">
           <div className="header-welcome">Welcome To</div>
           <div className="header-city">Worcester</div>

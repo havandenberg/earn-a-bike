@@ -64,6 +64,7 @@ module.exports = {
       components: path.resolve(__dirname, 'src/components'),
       images: path.resolve(__dirname, 'src/assets/images'),
       actions: path.resolve(__dirname, 'src/actions'),
+      proptypes: path.resolve(__dirname, 'src/proptypes'),
       reducers: path.resolve(__dirname, 'src/reducers'),
       styles: path.resolve(__dirname, 'src/styles'),
       utils: path.resolve(__dirname, 'src/utils')

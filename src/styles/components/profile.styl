@@ -1,6 +1,15 @@
 .profile
-  margin: $spacing-medium auto 0 auto
+  margin: $spacing-small auto 0 auto
   width: 95%
+
+  &-total-hours
+    color: $regular-red
+    font-size: 5rem
+
+  &-current-hours
+    color: $regular-red
+    font-size: 2rem
+    line-height: 1.2
 
   &-header
     align-items: center
@@ -11,5 +20,76 @@
     color: $regular-red
     font-size: 2.5rem
 
+  &-options
+    display: flex
+    justify-content: space-around
+    margin: 0 auto
+    width: 70%
+
+  &-option
+    color: $placeholder-red
+    font-size: 1rem
+    padding-bottom: 0
+
+    &:hover
+      border-bottom: 1px solid $placeholder-red
+
+    &__active
+      border-bottom: 1px solid $placeholder-red
+
   &-back
     width: 100px
+
+  &-content
+    display: flex
+    justify-content: space-between
+    margin: 0 auto
+
+    &__left
+      align-items: center
+      display: flex
+      flex-direction: column
+      width: 43%
+
+    &__right
+      align-items: center
+      display: flex
+      flex-direction: column
+      width: 53%
+
+      &-manager
+        width: 53%
+
+  &-today
+    color: $regular-red
+    display: flex
+    flex-direction: column
+    margin: $spacing-micro auto 0 auto
+    width: 100%
+
+    &-header
+      color: $placeholder-red
+      margin-bottom: $spacing-micro
+      text-align: center
+
+    &-time
+      display: flex
+      flex-grow: 1
+      font-size: 1.2rem
+      justify-content: space-between
+      margin-left: $spacing-base
+      width: 70%
+
+    &-notes
+      color: $placeholder-red
+      margin-top: $spacing-small
+
+      &__input
+        background: $highlight-green
+        color: $regular-red
+        font-size: 1rem
+        height: $spacing-jumbo
+        line-height: 1.3
+        margin: $spacing-micro 0 0 0
+        padding: 4px
+        width: 100%

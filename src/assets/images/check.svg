@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="99px" height="73px" viewBox="0 0 99 73" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 43.1 (39012) - http://www.bohemiancoding.com/sketch -->
+    <title>check-mark</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Manager-View-Personal-Info" transform="translate(-45.000000, -673.000000)" fill-rule="nonzero" fill="#F40000">
+            <g id="Group-6" transform="translate(41.000000, 445.000000)">
+                <g id="Group-5" transform="translate(0.000000, 7.000000)">
+                    <g id="check-mark" transform="translate(4.000000, 221.000000)">
+                        <path d="M44.6289704,69.6705212 C40.1589542,74.1098263 32.9059644,74.1098263 28.4381055,69.6705212 L3.35251221,44.7572787 C-1.11750407,40.3201162 -1.11750407,33.1169582 3.35251221,28.6797957 C7.82037114,24.2404907 15.0733609,24.2404907 19.5433772,28.6797957 L34.4894548,43.5210437 C35.6177455,44.63944 37.4493304,44.63944 38.5797785,43.5210437 L79.0493902,3.32947875 C83.5172491,-1.10982625 90.7702389,-1.10982625 95.2402551,3.32947875 C97.3868122,5.46128786 98.5927674,8.35369218 98.5927674,11.3682202 C98.5927674,14.3827483 97.3868122,17.2751526 95.2402551,19.4069617 L44.6289704,69.6705212 Z" id="Shape"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
