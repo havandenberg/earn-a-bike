@@ -351,18 +351,25 @@ class Profile extends Component {
               {!selectedUser.isManager &&
                 <button className={classNames(
                   'profile-option',
-                  {'profile-option__active': view !== 'personal'}
+                  {'profile-option__active': view === 'visits'}
                 )} onClick={this.setView('visits')}>Past Visits</button>
               }
+              {!selectedUser.isManager &&
+                <button className={classNames(
+                  'profile-option',
+                  {'profile-option__active': view === 'questions'}
+                )} onClick={this.setView('questions')}>Questions</button>
+              }
             </div>
-            {view === 'personal'
-              ? <PersonalInfo
-                errors={errors}
-                isEditing={isEditing}
-                user={this.getUpdatedUser()}
-                onChange={this.handleChange}
-                onSubmit={this.toggleEditing} />
-              : <div className="visit-container">
+            {view === 'personal' && <PersonalInfo
+              errors={errors}
+              isEditing={isEditing}
+              user={this.getUpdatedUser()}
+              onChange={this.handleChange}
+              onSubmit={this.toggleEditing} />
+            }
+            {view === 'visits' &&
+              <div className="visit-container">
                 <div className="visit-header">
                   <div className="visit-item visit-item__container">Date</div>
                   <div className="visit-item visit-item__container">Time In</div>
@@ -371,7 +378,7 @@ class Profile extends Component {
                   <div className="visit-item visit-item__notes"></div>
                 </div>
                 {visits.map((visit, index) => {
-                  return index > 0 &&
+                  return (user.isManager ? true : index > 0) &&
                     <Visit
                       key={index}
                       isEditing={isEditing}
@@ -383,6 +390,18 @@ class Profile extends Component {
                       updateVisit={this.handleUpdateVisit}
                       visitIndex={index} />;
                 })}
+              </div>
+            }
+            {view === 'questions' &&
+              <div className="profile-question__container">
+                <div className="profile-question">1. How did you find out about Earn-A-Bike?</div>
+                <div className="profile-answer">{selectedUser.questionOne}</div>
+                <div className="profile-question">2. What brings you to Earn-A-Bike?</div>
+                <div className="profile-answer">{selectedUser.questionTwo}</div>
+                <div className="profile-question">3. Would you like to be added to the volunteer email list?</div>
+                <div className="profile-answer">{selectedUser.emailList ? 'Yes' : 'No'}</div>
+                <div className="profile-question">4. Are you interested in becoming a shop manager?</div>
+                <div className="profile-answer">{selectedUser.isInterestedManager ? 'Yes' : 'No'}</div>
               </div>
             }
           </div>
