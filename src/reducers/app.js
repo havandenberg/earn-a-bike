@@ -3,6 +3,7 @@ import {messages} from 'utils/messages';
 import {
   CLEAR_MESSAGES,
   EMAIL_NOT_FOUND,
+  INCREMENT_NEXT_ID,
   INVALID_PIN,
   UPDATE_USERS
 } from 'actions/app';
@@ -11,10 +12,10 @@ import {testStore} from 'utils/testData';
 const config = require('electron-json-config');
 
 config.set('users', testStore.users);
-config.set('info', testStore.info);
+config.set('nextId', testStore.nextId);
 
 const initialState = Immutable.fromJS({
-  info: config.get('info'),
+  nextId: config.get('nextId'),
   messages: [],
   users: config.get('users')
 });
@@ -36,6 +37,10 @@ export default function reducer(state = initialState, action = {}) {
   case INVALID_PIN:
     return state.merge({
       messages: [messages.invalidPin]
+    });
+  case INCREMENT_NEXT_ID:
+    return state.merge({
+      nextId: state.get('nextId') + 1
     });
   default:
     return state;

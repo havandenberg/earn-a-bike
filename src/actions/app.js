@@ -4,6 +4,7 @@ import {getHoursDifference} from 'utils/helpers';
 
 export const CLEAR_MESSAGES = 'CLEAR_MESSAGES';
 export const EMAIL_NOT_FOUND = 'EMAIL_NOT_FOUND';
+export const INCREMENT_NEXT_ID = 'INCREMENT_NEXT_ID';
 export const INVALID_PIN = 'INVALID_PIN';
 export const UPDATE_USERS = 'UPDATE_USERS';
 
@@ -88,6 +89,22 @@ export function updateUser(newUser) {
     });
 
     dispatch(updateUsers(users));
+    return true;
+  };
+}
+
+export function registerUser(newUser) {
+  return (dispatch, getState) => {
+    const users = getState().app.get('users').toJS();
+    const nextId = getState().app.get('nextId');
+
+    const user = newUser;
+    newUser.isManager = false;
+    newUser.id = nextId;
+    users.push(user);
+
+    dispatch(updateUsers(users));
+    dispatch({type: INCREMENT_NEXT_ID});
     return true;
   };
 }

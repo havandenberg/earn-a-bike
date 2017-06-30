@@ -1,0 +1,139 @@
+.registration
+  display: flex
+  flex-direction: column
+
+  &-title
+    margin-bottom: $spacing-base
+    text-align: center
+
+  &-step
+    display: flex
+    flex-direction: column
+    height: 40vh
+    width: 50%
+
+    &__container
+      align-items: flex-start
+      display: flex
+      justify-content: space-between
+
+  &-field
+    border-bottom: $border-hover
+    color: $regular-red
+    font-size: 1.5rem
+    margin-bottom: $spacing-small
+    width: 100%
+
+    +placeholder()
+      color: $placeholder-red
+      transition: all 0.3s ease
+
+    &__error
+      border: 1px dashed $regular-red
+      border-bottom: $border-hover
+
+    &__question
+      font-size: 1.2rem
+      height: 25vh
+
+  &-forward
+    width: 120px
+
+  &-question
+    color: $placeholder-red
+    font-size: 1.2rem
+    margin-bottom: $spacing-small
+    width: 100%
+
+  &-dob
+    &-container
+      align-items: center
+      color: $regular-red
+      display: flex
+      font-size: 1.5rem
+
+    &-month
+      margin-right: $spacing-small
+      width: 20%
+
+    &-day
+      margin-right: $spacing-small
+      width: 20%
+
+    &-year
+      width: 40%
+
+    &-text
+      color: $placeholder-red
+      font-size: 1.3rem
+      margin-left: $spacing-base
+      width: 40%
+
+  &-address
+    &-container
+      align-items: center
+      color: $regular-red
+      display: flex
+      font-size: 1.5rem
+
+    &-state
+      margin-right: $spacing-small
+      width: 45%
+
+    &-zip
+      width: 45%
+
+  &-checkbox
+    align-items: center
+    display: flex
+    font-size: 1.4rem
+    margin-bottom: $spacing-base
+
+    .checkbox
+      margin-right: $spacing-base
+      min-height: 25px
+      min-width: 25px
+
+      img
+        height: 20px
+        width: 20px
+
+    &__text
+      color: $regular-red
+      text-align: left
+
+      &-error
+        border: 1px dashed $regular-red
+
+  &-complete
+    color: $regular-red
+    font-size: 1.5rem
+    margin: 0 auto
+    text-align: center
+
+    &:hover
+      border-bottom: $border-hover
+
+  &-placeholder
+    width: 120px
+
+  &-confirm
+    color: $regular-red
+    font-size: 1.5rem
+    margin: $spacing-base auto 0 auto
+    text-align: center
+
+    &__btn
+      color: $regular-red
+      font-size: 1.5rem
+      margin: 0 auto
+      text-align: center
+
+      &:hover
+        border-bottom: $border-hover
+
+      &-container
+        align-items: center
+        display: flex
+        justify-content: space-between
+        margin-top: $spacing-base

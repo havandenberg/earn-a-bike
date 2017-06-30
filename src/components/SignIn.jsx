@@ -93,7 +93,7 @@ class SignIn extends Component {
                 onChange={this.handleChange('pin')} />
             </div>
             <div className="sign-in-options">
-              <Link className="sign-in-new" to="/sign-up">New?</Link>
+              <Link className="sign-in-new" to="/registration">New?</Link>
               <button className="btn-forward" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover} type="submit">
                 <img alt="Sign In" src={hover ? bicycleForwardGif : bicycleForwardImg} />
               </button>

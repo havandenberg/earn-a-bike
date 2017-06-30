@@ -75,7 +75,7 @@ export default class Visit extends Component {
           <div className="visit-item">{moment.unix(visit.timeIn).format('MM/DD/YYYY')}</div>
           <div className="visit-item">{moment.unix(visit.timeIn).format('h:mm a')}</div>
           <div className="visit-item">{moment.unix(visit.timeOut).format('h:mm a')}</div>
-          {isEditing
+          {isEditing && isManager
             ? <input
               type="number"
               className="visit-item visit-hours"

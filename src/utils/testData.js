@@ -1,9 +1,7 @@
 import moment from 'moment';
 
 export const testStore = {
-  info: {
-    nextId: 3
-  },
+  nextId: 3,
   users: [
     {
       address: {
@@ -41,6 +39,7 @@ export const testStore = {
         year: '1992'
       },
       email: 'hv',
+      emailList: 'false',
       firstName: 'Halsey',
       id: 1,
       isActive: false,
@@ -50,6 +49,8 @@ export const testStore = {
       parentPhone: '9142611943',
       pin: '1234',
       phone: '9147032060',
+      questionOne: 'I like bikes.',
+      questionTwo: 'I really like bikes.',
       visits: [{
         timeIn: moment().subtract(3, 'days').unix(),
         timeOut: moment().subtract(3, 'days').add(60 * 9, 'minutes').unix(),
@@ -76,6 +77,7 @@ export const testStore = {
         year: '1994'
       },
       email: 'ah',
+      emailList: true,
       firstName: 'Alexander',
       id: 2,
       isActive: false,
@@ -85,6 +87,8 @@ export const testStore = {
       parentPhone: '',
       pin: '3456',
       phone: '9147032060',
+      questionOne: 'I like bikes.',
+      questionTwo: 'I really like bikes.',
       visits: [{
         timeIn: moment().subtract(2, 'days').unix(),
         timeOut: moment().subtract(2, 'days').add(60 * 1, 'minutes').unix(),
@@ -95,7 +99,8 @@ export const testStore = {
         timeOut: moment().subtract(7, 'days').add(60 * 4.5, 'minutes').unix(),
         hours: 4.5,
         notes: 'Today was my first day.'
-      }]
+      }],
+      waiver: false
     }
   ]
 };
