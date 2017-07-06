@@ -141,23 +141,25 @@ class UserList extends Component {
             value={searchText}
             onChange={this.handleChange} />
         </div>
-        {users
-          .filter(isProfile ? this.filterProfileUsers : this.filterUsers)
-          .sort(isProfile ? this.sortProfileUsers : this.sortUsers)
-          .map((user, i) => {
-            return (
-              <UserItem
-                key={i}
-                isExportSelected={_.includes(idsToExport, user.id)}
-                isProfile={isProfile}
-                selectedUser={selectedUser}
-                onSelectUser={this.handleSelectUser}
-                onExportSelectUser={this.handleExportSelectUser}
-                onSignout={this.handleSignout}
-                user={user} />
-            );
-          })
-        }
+        <div className="user-list__users scroll">
+          {users
+            .filter(isProfile ? this.filterProfileUsers : this.filterUsers)
+            .sort(isProfile ? this.sortProfileUsers : this.sortUsers)
+            .map((user, i) => {
+              return (
+                <UserItem
+                  key={i}
+                  isExportSelected={_.includes(idsToExport, user.id)}
+                  isProfile={isProfile}
+                  selectedUser={selectedUser}
+                  onSelectUser={this.handleSelectUser}
+                  onExportSelectUser={this.handleExportSelectUser}
+                  onSignout={this.handleSignout}
+                  user={user} />
+              );
+            })
+          }
+        </div>
       </div>
     );
   }

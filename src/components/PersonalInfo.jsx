@@ -18,7 +18,9 @@ class PersonalInfo extends Component {
 
   handleChange = (field) => {
     return (e) => {
-      this.props.onChange(field, e.target.value);
+      if (this.validate(field, e.target.value)) {
+        this.props.onChange(field, e.target.value);
+      }
     };
   }
 
@@ -27,11 +29,20 @@ class PersonalInfo extends Component {
     this.props.onSubmit();
   }
 
+  validate = (field, value) => {
+    if (_.includes(['oldPin', 'newPin', 'confirmNewPin', 'year'], field)) {
+      return value.match(/^[0-9]{0,4}$/);
+    }
+    if (_.includes(['day', 'month'], field)) {
+      return value.match(/^[0-9]{0,2}$/);
+    }
+  }
+
   render() {
     const {errors, isEditing, user} = this.props;
 
     return (
-      <form className="personal-info" onSubmit={this.handleSubmit}>
+      <form className="personal-info scroll" onSubmit={this.handleSubmit}>
         <div className="personal-info__container">
           <div className="personal-info__labels">
             <div className="personal-info__label">Name:</div>
@@ -235,9 +246,11 @@ class PersonalInfo extends Component {
               <div className="personal-info__spacing">
                 {isEditing &&
                   <input
-                    type="text"
+                    type="password"
                     className={classNames(
                       'personal-info__input',
+                      'personal-info__input-pin',
+                      'personal-info__input-pin-space',
                       {'personal-info__input-error': hasError(errors, ['oldPin'])}
                     )}
                     onChange={this.handleChange('oldPin')}
@@ -245,20 +258,22 @@ class PersonalInfo extends Component {
                 }
                 {isEditing &&
                   <input
-                    type="text"
+                    type="password"
                     className={classNames(
                       'personal-info__input',
-                      {'personal-info__input-error': hasError(errors, ['newPin'])}
+                      'personal-info__input-pin',
+                      {'personal-info__input-error': hasError(errors, ['newPin', 'confirmNewPin'])}
                     )}
                     onChange={this.handleChange('newPin')}
                     value={user.newPin} />
                 }
                 {isEditing &&
                   <input
-                    type="text"
+                    type="password"
                     className={classNames(
                       'personal-info__input',
-                      {'personal-info__input-error': hasError(errors, ['confirmNewPin'])}
+                      'personal-info__input-pin',
+                      {'personal-info__input-error': hasError(errors, ['newPin', 'confirmNewPin'])}
                     )}
                     onChange={this.handleChange('confirmNewPin')}
                     value={user.confirmNewPin} />

@@ -59,3 +59,22 @@ input, button, textarea
 
 .spacing-base
   margin-bottom: $spacing-base
+
+.scroll::-webkit-scrollbar
+  width: 14px;
+
+.scroll::-webkit-scrollbar-thumb
+  -webkit-border-radius: 7px;
+  -webkit-box-shadow: inset -1px -1px 0 rgba(0, 0, 0, 0.05), inset 1px 1px 0 rgba(0, 0, 0, 0.05);
+  background-clip: padding-box;
+  background-color: rgba(0, 0, 0, 0.15)
+  border: 4px solid rgba(0, 0, 0, 0)
+  height: 6px
+
+.scroll::-webkit-scrollbar-button
+  display: none
+  height: 0
+  width: 0
+
+.scroll::-webkit-scrollbar-corner
+  background-color: transparent

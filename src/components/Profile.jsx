@@ -71,8 +71,8 @@ class Profile extends Component {
   }
 
   handleNotesChange = (e) => {
-    const {selectedUser, visitIndex} = this.state;
-    const visit = selectedUser.visits[visitIndex];
+    const {selectedUser} = this.state;
+    const visit = selectedUser.visits[0];
     visit.notes = e.target.value;
     this.props.updateUser(selectedUser);
   }
@@ -118,6 +118,10 @@ class Profile extends Component {
 
     if (isSave) {
       newUser.pin = this.state.newPin;
+    } else {
+      newUser.oldPin = this.state.oldPin;
+      newUser.newPin = this.state.newPin;
+      newUser.confirmNewPin = this.state.confirmNewPin;
     }
 
     return newUser;
@@ -369,7 +373,7 @@ class Profile extends Component {
               onSubmit={this.toggleEditing} />
             }
             {view === 'visits' &&
-              <div className="visit-container">
+              <div className="visit-container scroll">
                 <div className="visit-header">
                   <div className="visit-item visit-item__container">Date</div>
                   <div className="visit-item visit-item__container">Time In</div>

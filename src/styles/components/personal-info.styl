@@ -1,7 +1,10 @@
 .personal-info
   display: flex
   flex-direction: column
+  height: 50vh
   margin-top: $spacing-small
+  overflow-y: auto
+  padding-right: $spacing-micro
   width: 100%
 
   &__container
@@ -51,6 +54,15 @@
     margin: $spacing-micro 0 0 0
     padding: 0
     width: 100%
+
+    &-pin
+      display: block
+      letter-spacing: 4px
+      text-align: center
+      width: $spacing-large
+
+      &-space
+        margin-top: $spacing-base - $spacing-micro
 
     &-container
       display: flex

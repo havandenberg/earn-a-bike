@@ -25,20 +25,26 @@ export default class PersonalInfoStep extends Component {
 
   handleMonthChange = (e) => {
     const {newUser, onChange} = this.props;
-    newUser.dateOfBirth.month = e.target.value;
-    onChange(newUser);
+    if (e.target.value.match(/^[0-9]{0,2}$/)) {
+      newUser.dateOfBirth.month = e.target.value;
+      onChange(newUser);
+    }
   }
 
   handleDayChange = (e) => {
     const {newUser, onChange} = this.props;
-    newUser.dateOfBirth.day = e.target.value;
-    onChange(newUser);
+    if (e.target.value.match(/^[0-9]{0,2}$/)) {
+      newUser.dateOfBirth.day = e.target.value;
+      onChange(newUser);
+    }
   }
 
   handleYearChange = (e) => {
     const {newUser, onChange} = this.props;
-    newUser.dateOfBirth.year = e.target.value;
-    onChange(newUser);
+    if (e.target.value.match(/^[0-9]{0,4}$/)) {
+      newUser.dateOfBirth.year = e.target.value;
+      onChange(newUser);
+    }
   }
 
   render() {

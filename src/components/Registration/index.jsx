@@ -175,9 +175,6 @@ class Registration extends Component {
       if (_.isEmpty(newUser.address.streetLine1)) {
         errors.push('streetLine1');
       }
-      if (_.isEmpty(newUser.address.streetLine2)) {
-        errors.push('streetLine2');
-      }
       if (_.isEmpty(newUser.address.city)) {
         errors.push('city');
       }

@@ -2,6 +2,11 @@
   flex-grow: 1
   margin-top: $spacing-base
 
+  &__users
+    height: 20vh
+    overflow: auto
+    padding-right: $spacing-micro
+
   &-profile
     flex-basis: 40%
     flex-grow: 0
@@ -72,8 +77,15 @@
 
     input
       border-bottom: $border-hover
+      color: $regular-red
       font-size: 1rem
-      width: 5rem
+      letter-spacing: 4px
+      width: 56px
+
+      +placeholder()
+        color: $placeholder-red
+        letter-spacing: normal
+        transition: all 0.3s ease
 
   &-time-in
     color: $placeholder-red

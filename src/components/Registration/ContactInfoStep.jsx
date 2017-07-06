@@ -25,14 +25,18 @@ export default class ContactInfoStep extends Component {
 
   handlePinChange = (e) => {
     const {newUser, onChange} = this.props;
-    newUser.pin = e.target.value;
-    onChange(newUser);
+    if (e.target.value.match(/^[0-9]{0,4}$/)) {
+      newUser.pin = e.target.value;
+      onChange(newUser);
+    }
   }
 
   handleConfirmPinChange = (e) => {
     const {newUser, onChange} = this.props;
-    newUser.confirmPin = e.target.value;
-    onChange(newUser);
+    if (e.target.value.match(/^[0-9]{0,4}$/)) {
+      newUser.confirmPin = e.target.value;
+      onChange(newUser);
+    }
   }
 
   render() {
@@ -55,7 +59,7 @@ export default class ContactInfoStep extends Component {
           onChange={this.handlePhoneChange} />
         <input
           className={classNames('registration-field', {'registration-field__error': hasError(errors, ['pin'])})}
-          type="text"
+          type="password"
           placeholder="4 digit pin"
           value={newUser.pin}
           onChange={this.handlePinChange} />
@@ -63,7 +67,7 @@ export default class ContactInfoStep extends Component {
           className={classNames(
             'registration-field',
             {'registration-field__error': hasError(errors, ['confirmPin'])})}
-          type="text"
+          type="password"
           placeholder="Confirm pin"
           value={newUser.confirmPin}
           onChange={this.handleConfirmPinChange} />

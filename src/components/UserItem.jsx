@@ -28,7 +28,9 @@ export default class UserItem extends Component {
   }
 
   handleChange = (e) => {
-    this.setState({pin: e.target.value});
+    if (e.target.value.match(/^[0-9]{0,4}$/)) {
+      this.setState({pin: e.target.value});
+    }
   }
 
   handleHidePin = () => {
@@ -132,11 +134,7 @@ export default class UserItem extends Component {
                 {!user.isManager && <div className="user-time-in"><strong>In</strong> {startTime.format('h:mm')}</div>}
                 <input
                   autoFocus={true}
-                  className="input-user-item"
                   type="password"
-                  maxLength="4"
-                  name="pin"
-                  pattern="[0-9]{4}"
                   placeholder="Pin"
                   ref="pin"
                   value={pin}

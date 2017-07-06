@@ -27,7 +27,9 @@ class SignIn extends Component {
 
   handleChange = (field) => {
     return (e) => {
-      this.setState({[field]: e.target.value});
+      if (field !== 'pin' || e.target.value.match(/^[0-9]{0,4}$/)) {
+        this.setState({[field]: e.target.value});
+      }
     };
   }
 
@@ -85,9 +87,7 @@ class SignIn extends Component {
                 autoComplete="off"
                 className="field input-primary sign-in-pin"
                 type="password"
-                maxLength="4"
                 name="pin"
-                pattern="[0-9]{4}"
                 placeholder="Pin"
                 value={pin}
                 onChange={this.handleChange('pin')} />

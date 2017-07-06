@@ -14,7 +14,13 @@
     margin-top: $spacing-small
 
   &-pin
-    width: 5rem
+    letter-spacing: 4px
+    width: $spacing-large
+
+    +placeholder()
+      color: $placeholder-red
+      letter-spacing: normal
+      transition: all 0.3s ease
 
   &-new
     color: $regular-red
