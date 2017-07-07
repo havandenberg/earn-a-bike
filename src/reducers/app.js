@@ -9,7 +9,7 @@ import {
 } from 'actions/app';
 import {testStore} from 'utils/testData';
 
-const config = require('electron-json-config');
+export const config = require('electron-json-config');
 
 config.set('users', testStore.users);
 config.set('nextId', testStore.nextId);

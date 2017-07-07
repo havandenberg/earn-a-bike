@@ -50,13 +50,13 @@ export default class AddressInfoStep extends Component {
           autoFocus={true}
           className={classNames('registration-field', {'registration-field__error': hasError(errors, ['streetLine1'])})}
           type="text"
-          placeholder="Street line 1"
+          placeholder="Address line 1"
           value={newUser.address.streetLine1}
           onChange={this.handleStreetLine1Change} />
         <input
           className={classNames('registration-field', {'registration-field__error': hasError(errors, ['streetLine2'])})}
           type="text"
-          placeholder="Street line 2"
+          placeholder="Address line 2"
           value={newUser.address.streetLine2}
           onChange={this.handleStreetLine2Change} />
         <input

@@ -36,6 +36,7 @@ class PersonalInfo extends Component {
     if (_.includes(['day', 'month'], field)) {
       return value.match(/^[0-9]{0,2}$/);
     }
+    return true;
   }
 
   render() {

@@ -6,6 +6,7 @@ import {history, store} from 'utils/store';
 import Header from 'components/Header.jsx';
 import Profile from 'components/Profile.jsx';
 import Registration from 'components/Registration/index.jsx';
+import AddManager from 'components/AddManager.jsx';
 import SignIn from 'components/SignIn.jsx';
 
 const App = () => {
@@ -18,6 +19,7 @@ const App = () => {
             <Route exact={true} path="/" component={SignIn} />
             <Route exact={true} path="/profile/:userid" component={Profile} />
             <Route exact={true} path="/registration" component={Registration} />
+            <Route exact={true} path="/registration/manager" component={AddManager} />
           </Switch>
         </div>
       </ConnectedRouter>

@@ -1,0 +1,87 @@
+.add-manager
+  margin: $spacing-small auto 0 auto
+  width: 95%
+
+  &__title
+    color: $regular-red
+    font-size: 2rem
+    margin-bottom: $spacing-small
+    text-align: center
+    width: 100%
+
+  &__fields
+    display: flex
+    flex-direction: column
+    height: 48vh
+    margin: 0 auto
+    overflow: auto
+    padding-right: $spacing-micro
+    width: 50%
+
+  &-field
+    border-bottom: $border-hover
+    color: $regular-red
+    font-size: 1.2rem
+    margin-bottom: $spacing-small
+
+    +placeholder()
+      color: $placeholder-red
+      transition: all 0.3s ease
+
+    &__error
+      border: 1px dashed $regular-red
+      border-bottom: $border-hover
+
+  &-dob
+    &-container
+      align-items: center
+      color: $regular-red
+      display: flex
+      margin: $spacing-base 0
+
+    &-month
+      margin-right: $spacing-small
+      width: 20%
+
+    &-day
+      margin-right: $spacing-small
+      width: 20%
+
+    &-year
+      width: 40%
+
+    &-text
+      color: $placeholder-red
+      font-size: 1rem
+      margin-left: $spacing-base
+      width: 40%
+
+  &-address
+    &-container
+      align-items: center
+      color: $regular-red
+      display: flex
+      margin: $spacing-base 0
+
+    &-state
+      margin-right: $spacing-small
+      width: 45%
+
+    &-zip
+      width: 45%
+
+  &__btn
+    color: $regular-red
+    font-size: 1.5rem
+    line-height: 1
+    text-decoration: none
+    width: $spacing-jumbo
+
+    &:hover
+      border-bottom: $border-hover
+
+    &-container
+      display: flex
+      justify-content: space-between
+      margin: $spacing-small auto 0 auto
+      width: 40%

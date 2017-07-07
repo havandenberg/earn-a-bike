@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import classNames from 'classnames';
 import moment from 'moment';
+import {Link} from 'react-router-dom';
 import {userProps} from 'proptypes/user';
 import {getTotalHours} from 'utils/helpers';
 import {history} from 'utils/store';
@@ -114,9 +115,16 @@ export default class UserItem extends Component {
                 {`${user.firstName} ${user.lastName}${user.isManager ? ' (M)' : ''}`}
               </button>
             </div>
-            {!user.isManager && <div className={classNames(
-              'user-list-header', {'user-list-header__over-ten': totalHours >= 10})
-            }>{`(${totalHours})`}</div>}
+            {user.isManager
+              ? <div>
+                {user.id === 0 && <Link className="user-list__add-manager" to="/registration/manager">Add Manager</Link>}
+              </div>
+              : <div className={classNames(
+                'user-list-header', {'user-list-header__over-ten': totalHours >= 10})
+              }>
+                {`(${totalHours})`}
+              </div>
+            }
           </div>
           : <div className="user">
             {showPin

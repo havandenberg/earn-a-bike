@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import moment from 'moment';
+import {config} from 'reducers/app';
 import {getHoursDifference} from 'utils/helpers';
 
 export const CLEAR_MESSAGES = 'CLEAR_MESSAGES';
@@ -9,6 +10,7 @@ export const INVALID_PIN = 'INVALID_PIN';
 export const UPDATE_USERS = 'UPDATE_USERS';
 
 const updateUsers = (users) => {
+  config.set('users', users);
   return {
     type: UPDATE_USERS,
     users
@@ -99,11 +101,11 @@ export function registerUser(newUser) {
     const nextId = getState().app.get('nextId');
 
     const user = newUser;
-    newUser.isManager = false;
     newUser.id = nextId;
     users.push(user);
 
     dispatch(updateUsers(users));
+    config.set('nextId', nextId);
     dispatch({type: INCREMENT_NEXT_ID});
     return true;
   };
