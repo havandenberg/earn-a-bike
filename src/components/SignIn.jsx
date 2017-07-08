@@ -96,6 +96,7 @@ class SignIn extends Component {
               <Link className="sign-in-new" to="/registration">New?</Link>
               <button className="btn-forward" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover} type="submit">
                 <img alt="Sign In" src={hover ? bicycleForwardGif : bicycleForwardImg} />
+                <div className="btn-help">Sign In</div>
               </button>
             </div>
           </form>

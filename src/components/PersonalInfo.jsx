@@ -11,6 +11,7 @@ class PersonalInfo extends Component {
   static propTypes = {
     errors: PropTypes.arrayOf(PropTypes.string),
     isEditing: PropTypes.bool,
+    isManager: PropTypes.bool,
     user: PropTypes.shape(userProps),
     onChange: PropTypes.func,
     onSubmit: PropTypes.func
@@ -40,7 +41,7 @@ class PersonalInfo extends Component {
   }
 
   render() {
-    const {errors, isEditing, user} = this.props;
+    const {errors, isEditing, isManager, user} = this.props;
 
     return (
       <form className="personal-info scroll" onSubmit={this.handleSubmit}>
@@ -61,7 +62,7 @@ class PersonalInfo extends Component {
             </div>
             {isEditing &&
               <div className="personal-info__spacing-pin">
-                <div className="personal-info__label">Old Pin:</div>
+                {!isManager && <div className="personal-info__label">Old Pin:</div>}
                 <div className="personal-info__label">New Pin:</div>
                 <div className="personal-info__label">Confirm New Pin:</div>
               </div>
@@ -245,7 +246,7 @@ class PersonalInfo extends Component {
                 }
               </div>
               <div className="personal-info__spacing">
-                {isEditing &&
+                {isEditing && !isManager &&
                   <input
                     type="password"
                     className={classNames(
@@ -263,6 +264,7 @@ class PersonalInfo extends Component {
                     className={classNames(
                       'personal-info__input',
                       'personal-info__input-pin',
+                      {'personal-info__input-pin-space': isManager},
                       {'personal-info__input-error': hasError(errors, ['newPin', 'confirmNewPin'])}
                     )}
                     onChange={this.handleChange('newPin')}

@@ -117,7 +117,9 @@ export default class UserItem extends Component {
             </div>
             {user.isManager
               ? <div>
-                {user.id === 0 && <Link className="user-list__add-manager" to="/registration/manager">Add Manager</Link>}
+                {user.id === 0 &&
+                  <Link className="user-list__add-manager" to="/registration/manager">Add Manager</Link>
+                }
               </div>
               : <div className={classNames(
                 'user-list-header', {'user-list-header__over-ten': totalHours >= 10})

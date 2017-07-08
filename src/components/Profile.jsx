@@ -253,7 +253,7 @@ class Profile extends Component {
       errors.push('zip');
     }
     if (!_.isEmpty(oldPin) || !_.isEmpty(newPin) || !_.isEmpty(confirmNewPin)) {
-      if (_.isEmpty(oldPin)) {
+      if (user.isManager ? false : _.isEmpty(oldPin)) {
         errors.push('oldPin');
       }
       if (_.isEmpty(newPin)) {
@@ -262,7 +262,7 @@ class Profile extends Component {
       if (_.isEmpty(confirmNewPin)) {
         errors.push('confirmNewPin');
       }
-      if (!_.isEmpty(oldPin) && oldPin !== user.pin) {
+      if (user.isManager ? false : (!_.isEmpty(oldPin) && oldPin !== user.pin)) {
         errors.push('oldPin');
       }
       if (!_.isEmpty(newPin) && !_.isEmpty(confirmNewPin) && newPin !== confirmNewPin) {
@@ -298,6 +298,7 @@ class Profile extends Component {
             onMouseEnter={this.toggleHover}
             onMouseLeave={this.toggleHover}>
             <img alt="Sign In" className="profile-back flip-x" src={hover ? bicycleForwardGif : bicycleForwardImg} />
+            <div className="btn-help btn-help__back">Back</div>
           </Link>
           <div className="profile-title">{user.isManager ? 'Volunteer Info' : 'My Info'}</div>
           <button
@@ -349,8 +350,9 @@ class Profile extends Component {
           <div className={classNames('profile-content__right', {'profile-content__right-manager': user.isManager})}>
             <div className="profile-options">
               <button className={classNames(
-                'profile-option',
-                {'profile-option__active': view === 'personal'}
+                {'profile-option': !selectedUser.isManager},
+                {'profile-option__no-hover': selectedUser.isManager},
+                {'profile-option__active': !selectedUser.isManager && view === 'personal'}
               )} onClick={this.setView('personal')}>Personal Info</button>
               {!selectedUser.isManager &&
                 <button className={classNames(
@@ -368,6 +370,7 @@ class Profile extends Component {
             {view === 'personal' && <PersonalInfo
               errors={errors}
               isEditing={isEditing}
+              isManager={user.isManager}
               user={this.getUpdatedUser()}
               onChange={this.handleChange}
               onSubmit={this.toggleEditing} />

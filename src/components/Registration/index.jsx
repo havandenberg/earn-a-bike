@@ -259,6 +259,7 @@ class Registration extends Component {
               onMouseEnter={this.toggleHoverBack}
               onMouseLeave={this.toggleHoverBack}>
               <img alt="back" className="registration-forward flip-x" src={hoverBack ? bicycleForwardGif : bicycleForwardImg} />
+              <div className="btn-help btn-help__back">Back</div>
             </button>
             : <div className="registration-placeholder"></div>
           }
@@ -270,6 +271,7 @@ class Registration extends Component {
               onMouseEnter={this.toggleHoverForward}
               onMouseLeave={this.toggleHoverForward}>
               <img alt="Forward" className="registration-forward" src={hoverForward ? bicycleForwardGif : bicycleForwardImg} />
+              <div className="btn-help">Next</div>
             </button>
             : <div className="registration-placeholder"></div>
           }

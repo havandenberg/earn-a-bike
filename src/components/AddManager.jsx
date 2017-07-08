@@ -45,7 +45,8 @@ class AddManager extends Component {
     history.goBack();
   }
 
-  handleSubmit = () => {
+  handleSubmit = (e) => {
+    e.preventDefault();
     if (this.validate()) {
       this.props.registerUser(this.formatUser());
       history.goBack();
@@ -100,6 +101,9 @@ class AddManager extends Component {
     if (_.isEmpty(newManager.firstName)) {
       errors.push('firstName');
     }
+    if (_.isEmpty(newManager.lastName)) {
+      errors.push('lastName');
+    }
     if (_.isEmpty(newManager.month)) {
       errors.push('month');
     }
@@ -144,7 +148,7 @@ class AddManager extends Component {
     const {errors, newManager} = this.state;
 
     return (
-      <div className="add-manager" onSubmit={this.handleSubmit}>
+      <form className="add-manager" onSubmit={this.handleSubmit}>
         <div className="add-manager__title">Add Manager</div>
         <div className="add-manager__fields scroll">
           <input
@@ -270,11 +274,11 @@ class AddManager extends Component {
           </button>
           <button
             className="add-manager__btn"
-            onClick={this.handleSubmit}>
+            type="submit">
             Add
           </button>
         </div>
-      </div>
+      </form>
     );
   }
 }
