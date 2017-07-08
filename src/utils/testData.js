@@ -1,5 +1,7 @@
-export const testStore = {
-  nextId: 1,
+import moment from 'moment';
+
+export const testData = {
+  nextId: 3,
   users: [
     {
       address: {
@@ -22,6 +24,76 @@ export const testStore = {
       lastName: '1',
       pin: '1234',
       phone: '111-222-3333'
+    },
+    {
+      address: {
+        city: 'Worcester',
+        state: 'NY',
+        streetLine1: '19 Lancaster St',
+        streetLine2: 'Apt 3',
+        zip: '01609'
+      },
+      dateOfBirth: {
+        day: '11',
+        month: '06',
+        year: '1991'
+      },
+      email: 'hv',
+      firstName: 'Halsey',
+      id: 1,
+      isActive: false,
+      isManager: false,
+      lastName: 'Vandenberg',
+      parentName: 'Fred Vandenberg',
+      parentPhone: '9142611943',
+      pin: '1234',
+      phone: '9147032060',
+      visits: [{
+        timeIn: moment().subtract(3, 'days').unix(),
+        timeOut: moment().subtract(3, 'days').add(60 * 9, 'minutes').unix(),
+        hours: 9,
+        notes: 'Second day.'
+      }, {
+        timeIn: moment().subtract(10, 'days').unix(),
+        timeOut: moment().subtract(10, 'days').add(60 * 2, 'minutes').unix(),
+        hours: 2,
+        notes: 'First Day!'
+      }]
+    },
+    {
+      address: {
+        city: 'Worcester',
+        state: 'NY',
+        streetLine1: '19 Lancaster St',
+        streetLine2: 'Apt 3',
+        zip: '01609'
+      },
+      dateOfBirth: {
+        day: '11',
+        month: '01',
+        year: '2001'
+      },
+      email: 'ah',
+      firstName: 'Alexander',
+      id: 2,
+      isActive: false,
+      isManager: false,
+      lastName: 'Hackathorn',
+      parentName: 'David',
+      parentPhone: '234-567-9999',
+      pin: '3456',
+      phone: '111-222-3334',
+      visits: [{
+        timeIn: moment().subtract(2, 'days').unix(),
+        timeOut: moment().subtract(2, 'days').add(60 * 1, 'minutes').unix(),
+        hours: 1,
+        notes: 'I did a lot today.'
+      }, {
+        timeIn: moment().subtract(7, 'days').unix(),
+        timeOut: moment().subtract(7, 'days').add(60 * 4.5, 'minutes').unix(),
+        hours: 4.5,
+        notes: 'Today was my first day.'
+      }]
     }
   ]
 };

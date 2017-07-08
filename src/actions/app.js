@@ -105,8 +105,8 @@ export function registerUser(newUser) {
     users.push(user);
 
     dispatch(updateUsers(users));
-    config.set('nextId', nextId);
     dispatch({type: INCREMENT_NEXT_ID});
+    config.set('nextId', nextId);
     return true;
   };
 }

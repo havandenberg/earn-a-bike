@@ -25,17 +25,25 @@ export default class PersonalInfoStep extends Component {
 
   handleMonthChange = (e) => {
     const {newUser, onChange} = this.props;
-    if (e.target.value.match(/^[0-9]{0,2}$/)) {
-      newUser.dateOfBirth.month = e.target.value;
+    const month = e.target.value;
+    if (month.match(/^[0-9]{0,2}$/)) {
+      newUser.dateOfBirth.month = month;
       onChange(newUser);
+      if (month.length === 2) {
+        this.refs.day.focus();
+      }
     }
   }
 
   handleDayChange = (e) => {
     const {newUser, onChange} = this.props;
-    if (e.target.value.match(/^[0-9]{0,2}$/)) {
-      newUser.dateOfBirth.day = e.target.value;
+    const day = e.target.value;
+    if (day.match(/^[0-9]{0,2}$/)) {
+      newUser.dateOfBirth.day = day;
       onChange(newUser);
+      if (day.length === 2) {
+        this.refs.year.focus();
+      }
     }
   }
 
@@ -85,6 +93,7 @@ export default class PersonalInfoStep extends Component {
             }
             type="text"
             placeholder="DD"
+            ref="day"
             value={newUser.dateOfBirth.day}
             onChange={this.handleDayChange} />
             &nbsp;/&nbsp;
@@ -96,6 +105,7 @@ export default class PersonalInfoStep extends Component {
             }
             type="text"
             placeholder="YYYY"
+            ref="year"
             value={newUser.dateOfBirth.year}
             onChange={this.handleYearChange} />
           <div className="registration-dob-text">Birthdate</div>

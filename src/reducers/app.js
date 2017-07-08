@@ -7,12 +7,12 @@ import {
   INVALID_PIN,
   UPDATE_USERS
 } from 'actions/app';
-import {testStore} from 'utils/testData';
+// import {testData} from 'utils/testData';
 
 export const config = require('electron-json-config');
 
-config.set('users', testStore.users);
-config.set('nextId', testStore.nextId);
+// config.set('users', testData.users);
+// config.set('nextId', testData.nextId);
 
 const initialState = Immutable.fromJS({
   nextId: config.get('nextId'),
