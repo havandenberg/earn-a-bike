@@ -118,7 +118,7 @@ export default class UserItem extends Component {
             {user.isManager
               ? <div>
                 {user.id === 0 &&
-                  <Link className="user-list__add-manager" to="/registration/manager">Add Manager</Link>
+                  <Link className="user-list__add-manager" to="/registration/manager">Add M</Link>
                 }
               </div>
               : <div className={classNames(

@@ -19,19 +19,17 @@ module.exports = {
   },
   module: {
     rules: [
-      {test: /\.css$/, use: ExtractTextPlugin.extract({
-        fallback: 'style-loader',
-        use: 'css-loader'
-      }), include: defaultInclude},
-      {test: /\.styl$/, use: ExtractTextPlugin.extract({
-        fallback: 'style-loader',
-        use: [
-          {loader: 'css-loader', options: {modules: true}},
-          {loader: 'stylus-loader'}
-        ]
-      }), include: defaultInclude},
+      {test: /\.css$/, use: [
+        {loader: 'style-loader'},
+        {loader: 'css-loader'}
+      ], include: defaultInclude},
+      {test: /\.styl$/, use: [
+        'style-loader',
+        'css-loader',
+        'stylus-loader'
+      ], include: defaultInclude},
       {test: /\.js|jsx?$/, use: [
-        {loader: 'babel-loader', options: {forceEnv: 'production'}}
+        {loader: 'babel-loader', options: {forceEnv: 'development'}}
       ], include: defaultInclude},
       {test: /\.(jpe?g|png|gif)$/, use: [
         {loader: 'file-loader?name=img/[name]__[hash:base64:5].[ext]'}
@@ -42,6 +40,18 @@ module.exports = {
     ]
   },
   target: 'electron-renderer',
+  resolve: {
+    alias: {
+      assets: path.resolve(__dirname, 'src/assets'),
+      components: path.resolve(__dirname, 'src/components'),
+      images: path.resolve(__dirname, 'src/assets/images'),
+      actions: path.resolve(__dirname, 'src/actions'),
+      proptypes: path.resolve(__dirname, 'src/proptypes'),
+      reducers: path.resolve(__dirname, 'src/reducers'),
+      styles: path.resolve(__dirname, 'src/styles'),
+      utils: path.resolve(__dirname, 'src/utils')
+    }
+  },
   plugins: [
     new ExtractTextPlugin('bundle.css'),
     new webpack.DefinePlugin({

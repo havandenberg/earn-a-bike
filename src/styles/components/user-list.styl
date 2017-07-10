@@ -2,14 +2,35 @@
   flex-grow: 1
   margin-top: $spacing-base
 
+  &__options
+    align-items: center
+    display: flex
+    margin-top: $spacing-small
+
+    button
+      margin-right: $spacing-small
+
+    &:last-child
+      margin-right: 0
+
+    &-text
+      color: $regular-red
+      font-size: 1.2rem
+      margin-right: $spacing-small
+
   &__users
-    overflow: auto
+    height: 27vh
+    overflow-y: auto
     padding-right: $spacing-micro
+
+    &-sign-in
+      height: 50vh
 
   &__add-manager
     color: $regular-red
     font-size: 1rem
     line-height: 1
+    min-width: 95px
     text-decoration: none
 
     &:hover
@@ -50,6 +71,7 @@
     height: auto
     line-height: 1
     padding: $spacing-micro
+    text-align: left
     text-decoration: none
 
     &__link
@@ -58,7 +80,10 @@
         border-bottom: $border-hover
 
     &__profile
+      flex-basis: 90%
       font-size: 1.3rem
+      overflow: hidden
+      text-overflow: ellipsis
 
       &-link
         cursor: pointer

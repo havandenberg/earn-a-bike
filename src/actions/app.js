@@ -1,19 +1,24 @@
 import _ from 'lodash';
 import moment from 'moment';
-import {config} from 'reducers/app';
 import {getHoursDifference} from 'utils/helpers';
 
 export const CLEAR_MESSAGES = 'CLEAR_MESSAGES';
 export const EMAIL_NOT_FOUND = 'EMAIL_NOT_FOUND';
-export const INCREMENT_NEXT_ID = 'INCREMENT_NEXT_ID';
+export const UPDATE_NEXT_ID = 'UPDATE_NEXT_ID';
 export const INVALID_PIN = 'INVALID_PIN';
 export const UPDATE_USERS = 'UPDATE_USERS';
 
-const updateUsers = (users) => {
-  config.set('users', users);
+export const updateUsers = (users) => {
   return {
     type: UPDATE_USERS,
     users
+  };
+};
+
+export const updateNextId = (nextId) => {
+  return {
+    type: UPDATE_NEXT_ID,
+    nextId
   };
 };
 
@@ -105,8 +110,20 @@ export function registerUser(newUser) {
     users.push(user);
 
     dispatch(updateUsers(users));
-    dispatch({type: INCREMENT_NEXT_ID});
-    config.set('nextId', nextId);
+    dispatch(updateNextId(nextId + 1));
+    return true;
+  };
+}
+
+export function deleteUsers(idsToDelete) {
+  return (dispatch, getState) => {
+    const users = getState().app.get('users').toJS();
+
+    _.each(idsToDelete, (id) => {
+      _.remove(users, (user) => (id !== 0 && user.id === id));
+    });
+
+    dispatch(updateUsers(users));
     return true;
   };
 }

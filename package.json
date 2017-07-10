@@ -1,6 +1,6 @@
 {
   "name": "Earn-A-Bike",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "",
   "author": "Halsey Vandenberg",
   "license": "MIT",
@@ -14,7 +14,7 @@
     "lint:js": "eslint -c ./.eslintrc.dev src --ext .jsx,.js",
     "lint:stylus": "find ./src/styles -type f -iname \"*.styl\" -print0 | xargs -0 -n1 ./node_modules/.bin/stylint",
     "package": "webpack --config webpack.build.config.js",
-    "postpackage": "electron-packager ./ --out=./builds"
+    "postpackage": "electron-packager ./ --all --out=./builds"
   },
   "devDependencies": {
     "babel-core": "^6.23.1",
@@ -41,6 +41,7 @@
     "file-loader": "^0.10.1",
     "html-webpack-plugin": "^2.28.0",
     "immutable": "^3.8.1",
+    "jsonfile": "^3.0.1",
     "moment": "^2.18.1",
     "prop-types": "^15.5.10",
     "react": "^15.4.2",

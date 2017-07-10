@@ -3,15 +3,17 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
-import {handleSignOut} from 'actions/app';
+import {deleteUsers, handleSignOut} from 'actions/app';
 import UserItem from 'components/UserItem.jsx';
 import {userProps} from 'proptypes/user';
+import {exportData, importData} from 'utils/fileIO';
 import {getTotalHours} from 'utils/helpers';
 import searchImg from 'images/search.svg';
 import checkImg from 'images/check.svg';
 
 class UserList extends Component {
   static propTypes = {
+    deleteUsers: PropTypes.func,
     isProfile: PropTypes.bool,
     selectedUser: PropTypes.shape(userProps),
     users: PropTypes.arrayOf(PropTypes.shape(userProps)),
@@ -20,7 +22,8 @@ class UserList extends Component {
   }
 
   state = {
-    idsToExport: [],
+    confirmDelete: false,
+    selectedUserIds: [],
     searchText: '',
     sortByHours: false
   };
@@ -34,32 +37,46 @@ class UserList extends Component {
   }
 
   handleExportSelectUser = (userId) => {
-    const {idsToExport} = this.state;
-    if (_.includes(idsToExport, userId)) {
-      _.remove(idsToExport, (id) => (id === userId));
+    const {selectedUserIds} = this.state;
+    if (_.includes(selectedUserIds, userId)) {
+      _.remove(selectedUserIds, (id) => (id === userId));
     } else {
-      idsToExport.push(userId);
+      selectedUserIds.push(userId);
     }
-    this.setState({idsToExport});
+    this.setState({selectedUserIds});
   }
 
   handleToggleExportAll = () => {
     const {users} = this.props;
-    const isExportAll = this.state.idsToExport.length === users.length;
+    const isExportAll = this.state.selectedUserIds.length === users.length;
 
     if (isExportAll) {
-      this.setState({idsToExport: []});
+      this.setState({selectedUserIds: []});
     } else {
-      const idsToExport = [];
+      const selectedUserIds = [];
       _.each(users, (user) => {
-        idsToExport.push(user.id);
+        selectedUserIds.push(user.id);
       });
-      this.setState({idsToExport});
+      this.setState({selectedUserIds});
     }
   }
 
   handleSignout = (email) => {
     this.props.onSignout(email);
+  }
+
+  confirmDelete = () => {
+    this.setState({confirmDelete: true});
+  }
+
+  resetConfirmDelete = () => {
+    this.setState({confirmDelete: false});
+  }
+
+  deleteUsers = () => {
+    const {selectedUserIds} = this.state;
+    this.props.deleteUsers(selectedUserIds);
+    this.setState({confirmDelete: false, selectedUserIds: []});
   }
 
   filterUsers = (user) => {
@@ -105,13 +122,13 @@ class UserList extends Component {
   }
 
   render() {
-    const {idsToExport, searchText, sortByHours} = this.state;
+    const {confirmDelete, selectedUserIds, searchText, sortByHours} = this.state;
     const {
       isProfile,
       selectedUser,
       users
     } = this.props;
-    const isExportAll = idsToExport.length === users.length;
+    const isExportAll = selectedUserIds.length === users.length;
 
     return (
       <div className={classNames('user-list', {'user-list-profile': isProfile})}>
@@ -141,7 +158,11 @@ class UserList extends Component {
             value={searchText}
             onChange={this.handleChange} />
         </div>
-        <div className="user-list__users scroll">
+        <div className={classNames(
+          'user-list__users',
+          {'user-list__users-sign-in': !isProfile},
+          'scroll'
+        )}>
           {users
             .filter(isProfile ? this.filterProfileUsers : this.filterUsers)
             .sort(isProfile ? this.sortProfileUsers : this.sortUsers)
@@ -149,7 +170,7 @@ class UserList extends Component {
               return (
                 <UserItem
                   key={i}
-                  isExportSelected={_.includes(idsToExport, user.id)}
+                  isExportSelected={_.includes(selectedUserIds, user.id)}
                   isProfile={isProfile}
                   selectedUser={selectedUser}
                   onSelectUser={this.handleSelectUser}
@@ -160,11 +181,46 @@ class UserList extends Component {
             })
           }
         </div>
+        {isProfile && (confirmDelete
+          ? <div className="user-list__options">
+            <div className="user-list__options-text">Are you sure?</div>
+            <button
+              className="btn-action btn-action__delete"
+              onClick={this.deleteUsers}>
+              Yes
+            </button>
+            <button
+              className="btn-action btn-action__delete"
+              onClick={this.resetConfirmDelete}>
+              No
+            </button>
+          </div>
+          : <div className="user-list__options">
+            <button
+              className="btn-action"
+              onClick={importData}>
+              Import
+            </button>
+            <button
+              className="btn-action"
+              onClick={exportData}>
+              Export
+            </button>
+            {selectedUserIds.length > 0 &&
+              <button
+                className="btn-action btn-action__delete"
+                onClick={this.confirmDelete}>
+                Delete
+              </button>
+            }
+          </div>)
+        }
       </div>
     );
   }
 }
 
 export default connect(null, {
+  deleteUsers,
   onSignout: handleSignOut
 })(UserList);

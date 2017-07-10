@@ -400,7 +400,7 @@ class Profile extends Component {
               </div>
             }
             {view === 'questions' &&
-              <div className="profile-question__container">
+              <div className="profile-question__container scroll">
                 <div className="profile-question">1. How did you find out about Earn-A-Bike?</div>
                 <div className="profile-answer">{selectedUser.questionOne}</div>
                 <div className="profile-question">2. What brings you to Earn-A-Bike?</div>
