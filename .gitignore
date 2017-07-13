@@ -3,4 +3,3 @@ node_modules/
 *.DS_Store
 builds/*
 dist/*
-!dist/index.html

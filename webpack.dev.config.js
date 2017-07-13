@@ -49,11 +49,11 @@ module.exports = {
       {test: /\.js|jsx?$/, use: [
         {loader: 'babel-loader', options: {forceEnv: 'development'}}
       ], include: defaultInclude},
-      {test: /\.(jpe?g|png|gif)$/, use: [
+      {test: /\.(jpe?g|png|gif|svg)$/, use: [
         {loader: 'file-loader?name=img/[name]__[hash:base64:5].[ext]'}
       ], include: defaultInclude},
-      {test: /\.(eot|svg|ttf|woff|woff2)$/, use: [
-        {loader: 'file-loader?name=font/[name]__[hash:base64:5].[ext]'}
+      {test: /\.(eot|ttf|woff|woff2)$/, use: [
+        {loader: 'file-loader?name=fonts/[name]__[hash:base64:5].[ext]'}
       ], include: defaultInclude}
     ]
   },
@@ -71,7 +71,7 @@ module.exports = {
     }
   },
   plugins: [
-    new HtmlWebpackPlugin(),
+    new HtmlWebpackPlugin({title: 'Earn-A-Bike Volunteer Hour Tracker'}),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('development')
     }),

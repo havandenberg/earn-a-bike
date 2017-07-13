@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const BabiliPlugin = require('babili-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 // Config directories
 const SRC_DIR = path.resolve(__dirname, 'src');
@@ -29,13 +29,13 @@ module.exports = {
         'stylus-loader'
       ], include: defaultInclude},
       {test: /\.js|jsx?$/, use: [
-        {loader: 'babel-loader', options: {forceEnv: 'development'}}
+        {loader: 'babel-loader', options: {forceEnv: 'production'}}
       ], include: defaultInclude},
-      {test: /\.(jpe?g|png|gif)$/, use: [
+      {test: /\.(jpe?g|png|gif|svg)$/, use: [
         {loader: 'file-loader?name=img/[name]__[hash:base64:5].[ext]'}
       ], include: defaultInclude},
-      {test: /\.(eot|svg|ttf|woff|woff2)$/, use: [
-        {loader: 'file-loader?name=font/[name]__[hash:base64:5].[ext]'}
+      {test: /\.(eot|ttf|woff|woff2)$/, use: [
+        {loader: 'file-loader?name=fonts/[name]__[hash:base64:5].[ext]'}
       ], include: defaultInclude}
     ]
   },
@@ -53,7 +53,7 @@ module.exports = {
     }
   },
   plugins: [
-    new ExtractTextPlugin('bundle.css'),
+    new HtmlWebpackPlugin({title: 'Earn-A-Bike Volunteer Hour Tracker'}),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('production')
     }),

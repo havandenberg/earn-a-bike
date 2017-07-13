@@ -11,9 +11,32 @@ import {
 export const config = require('electron-json-config');
 
 const initialState = Immutable.fromJS({
-  nextId: config.get('nextId'),
+  nextId: config.get('nextId') || 1,
   messages: [],
-  users: config.get('users')
+  users: config.get('users') || [
+    {
+      lastName: '1',
+      isManager: true,
+      phone: '111-222-3333',
+      isActive: true,
+      address: {
+        streetLine1: '4 King St',
+        streetLine2: '',
+        city: 'Worcester',
+        state: 'MA',
+        zip: '01609'
+      },
+      pin: '1234',
+      dateOfBirth: {
+        month: '1',
+        day: '1',
+        year: '1999'
+      },
+      id: 0,
+      firstName: 'Manager',
+      email: 'manager'
+    }
+  ]
 });
 
 export default function reducer(state = initialState, action = {}) {
