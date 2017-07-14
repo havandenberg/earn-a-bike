@@ -96,7 +96,7 @@ export default class Visit extends Component {
         {isOpen && ((isEditing && !isManager)
           ? <textarea
             autoFocus={true}
-            className="visit-notes__input"
+            className="visit-notes__input scroll"
             onBlur={this.hideNotes}
             onChange={this.handleNotesChange}
             value={visit.notes} />

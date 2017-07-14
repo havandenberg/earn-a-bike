@@ -1,5 +1,5 @@
 .add-manager
-  margin: $spacing-small auto 0 auto
+  margin: $spacing-micro auto 0 auto
   width: 95%
 
   &__title
@@ -12,11 +12,14 @@
   &__fields
     display: flex
     flex-direction: column
-    height: 48vh
+    height: 50vh
     margin: 0 auto
-    overflow: auto
     padding-right: $spacing-micro
-    width: 50%
+    width: 46%
+
+    &-container
+      display: flex
+      justify-content: space-between
 
   &-field
     border-bottom: $border-hover
@@ -37,7 +40,6 @@
       align-items: center
       color: $regular-red
       display: flex
-      margin: $spacing-base 0
 
     &-month
       margin-right: $spacing-small
@@ -61,7 +63,6 @@
       align-items: center
       color: $regular-red
       display: flex
-      margin: $spacing-base 0
 
     &-state
       margin-right: $spacing-small

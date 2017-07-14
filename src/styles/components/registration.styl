@@ -7,10 +7,12 @@
     text-align: center
 
   &-step
+    color: $regular-red
     display: flex
     flex-direction: column
-    height: 40vh
-    width: 50%
+    height: 50vh
+    overflow-y: auto
+    width: 55%
 
     &__container
       align-items: flex-start
@@ -19,12 +21,21 @@
       margin: 0 auto
       width: 95%
 
+    &__waiver
+      padding-right: $spacing-small
+      transform: translate($spacing-small, -1rem)
+      width: 65%
+
+      &-intro
+        margin-bottom: 0
+        text-align: center
+
   &-field
     border-bottom: $border-hover
     color: $regular-red
     font-size: 1.5rem
     margin-bottom: $spacing-small
-    width: 100%
+    width: 95%
 
     +placeholder()
       color: $placeholder-red
@@ -36,7 +47,7 @@
 
     &__question
       font-size: 1.2rem
-      height: 25vh
+      height: 35vh
 
   &-forward
     width: 120px
@@ -89,7 +100,7 @@
     align-items: center
     display: flex
     font-size: 1.4rem
-    margin-bottom: $spacing-base
+    margin: $spacing-base auto
 
     .checkbox
       margin-right: $spacing-base
@@ -110,7 +121,8 @@
   &-complete
     color: $regular-red
     font-size: 1.5rem
-    margin: 0 auto
+    margin: 0 auto $spacing-base auto
+    min-height: $spacing-medium
     text-align: center
 
     &:hover
