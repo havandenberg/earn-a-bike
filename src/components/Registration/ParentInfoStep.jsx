@@ -2,25 +2,20 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import {userProps} from 'proptypes/user';
-import {hasError} from 'utils/messages';
 
 export default class ParentInfoStep extends Component {
   static propTypes = {
-    errors: PropTypes.arrayOf(PropTypes.string),
+    errors: PropTypes.shape({}),
     newUser: PropTypes.shape(userProps),
     onChange: PropTypes.func
   }
 
-  handleParentNameChange = (e) => {
-    const {newUser, onChange} = this.props;
-    newUser.parentName = e.target.value;
-    onChange(newUser);
-  }
-
-  handleParentPhoneChange = (e) => {
-    const {newUser, onChange} = this.props;
-    newUser.parentPhone = e.target.value;
-    onChange(newUser);
+  handleChange = (field) => {
+    return (e) => {
+      const {newUser, onChange} = this.props;
+      newUser[field] = e.target.value;
+      onChange(newUser);
+    };
   }
 
   render() {
@@ -30,17 +25,23 @@ export default class ParentInfoStep extends Component {
       <div className="registration-step">
         <input
           autoFocus={true}
-          className={classNames('registration-field', {'registration-field__error': hasError(errors, ['parentName'])})}
+          className={classNames(
+            'registration-field',
+            {'registration-field__error': errors.parentName}
+          )}
           type="text"
           placeholder="Parent's name"
           value={newUser.parentName}
-          onChange={this.handleParentNameChange} />
+          onChange={this.handleChange('parentName')} />
         <input
-          className={classNames('registration-field', {'registration-field__error': hasError(errors, ['parentPhone'])})}
+          className={classNames(
+            'registration-field',
+            {'registration-field__error': errors.parentPhone}
+          )}
           type="text"
           placeholder="Parent's phone"
           value={newUser.parentPhone}
-          onChange={this.handleParentPhoneChange} />
+          onChange={this.handleChange('parentPhone')} />
       </div>
     );
   }

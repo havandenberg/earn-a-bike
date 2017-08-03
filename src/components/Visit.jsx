@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import moment from 'moment';
 import {visitProps} from 'proptypes/user';
-import {getTotalHours} from 'utils/helpers';
 import notesImg from 'images/notes.svg';
 import notesLightImg from 'images/notes-light.svg';
 
@@ -33,10 +32,6 @@ export default class Visit extends Component {
     const {visit, visitIndex} = this.props;
     visit.notes = e.target.value;
     this.props.updateVisit(visit, visitIndex);
-  }
-
-  getTotalHours = () => {
-    return getTotalHours(this.props.visit);
   }
 
   toggleHover = () => {

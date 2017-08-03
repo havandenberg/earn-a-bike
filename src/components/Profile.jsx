@@ -6,7 +6,11 @@ import moment from 'moment';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {updateUser} from 'actions/app';
-import {getHoursDifference, getTotalHours} from 'utils/helpers';
+import {
+  getHoursDifference,
+  getTotalHours,
+  isUsernameUnique
+} from 'utils/helpers';
 import {history} from 'utils/store';
 import PersonalInfo from 'components/PersonalInfo.jsx';
 import UserList from 'components/UserList.jsx';
@@ -28,30 +32,42 @@ class Profile extends Component {
     const {user} = props;
 
     this.state = {
-      selectedUser: user,
-      errors: [],
-      hover: false,
-      isEditing: false,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      month: user.dateOfBirth.month,
-      day: user.dateOfBirth.day,
-      year: user.dateOfBirth.year,
+      addressCity: user.addressCity,
+      addressLine1: user.addressLine1,
+      addressLine2: user.addressLine2,
+      addressState: user.addressState,
+      addressZip: user.addressZip,
+      bikesEarned: user.bikesEarned,
+      confirmNewPin: '',
+      countryOfOrigin: user.countryOfOrigin,
+      dobDay: user.dobDay,
+      dobMonth: user.dobMonth,
+      dobYear: user.dobYear,
       email: user.email,
-      phone: user.phone,
+      emailList: user.emailList,
+      errors: {},
+      firstName: user.firstName,
+      hover: false,
+      id: user.id,
+      isActive: user.isActive,
+      isEditing: false,
+      isInterestedManager: user.isInterestedManager,
+      isManager: user.isManager,
+      lastName: user.lastName,
+      newPin: '',
+      oldPin: '',
+      oldUsername: user.username,
+      openVisits: [],
       parentName: user.parentName,
       parentPhone: user.parentPhone,
-      streetLine1: user.address.streetLine1,
-      streetLine2: user.address.streetLine2,
-      city: user.address.city,
-      state: user.address.state,
-      zip: user.address.zip,
-      oldPin: '',
-      newPin: '',
-      confirmNewPin: '',
-      visits: user.visits,
+      phone: user.phone,
+      pin: user.pin,
+      questionOne: user.questionOne,
+      questionTwo: user.questionTwo,
+      username: user.username,
       view: 'personal',
-      openVisits: []
+      visits: user.visits,
+      waiver: user.waiver
     };
   }
 
@@ -71,14 +87,10 @@ class Profile extends Component {
   }
 
   handleNotesChange = (e) => {
-    const {selectedUser} = this.state;
-    const visit = selectedUser.visits[0];
+    const {visits} = this.state;
+    const visit = visits[0];
     visit.notes = e.target.value;
-    this.props.updateUser(selectedUser);
-  }
-
-  handleSelectVisit = (visitIndex) => {
-    this.setState({visitIndex});
+    this.props.updateUser(this.getUpdatedUser(true));
   }
 
   handleToggleOpenVisit = (visit) => {
@@ -92,72 +104,75 @@ class Profile extends Component {
   }
 
   getTotalHours = () => {
-    return getTotalHours(this.state.selectedUser);
+    return getTotalHours(this.state.visits);
   }
 
   getUpdatedUser = (isSave) => {
-    const newUser = {};
-
-    _.each(['firstName', 'lastName', 'email', 'phone', 'parentName', 'parentPhone', 'visits'], (key) => {
-      newUser[key] = this.state[key];
-    });
-
-    newUser.dateOfBirth = {
-      month: this.state.month,
-      day: this.state.day,
-      year: this.state.year
-    };
-
-    newUser.address = {
-      streetLine1: this.state.streetLine1,
-      streetLine2: this.state.streetLine2,
-      city: this.state.city,
-      state: this.state.state,
-      zip: this.state.zip
-    };
+    const {confirmNewPin, newPin, oldPin} = this.state;
+    const updatedUser = _.omit(this.state, ['confirmNewPin', 'errors', 'hover', 'newPin', 'oldPin', 'openVisits', 'view']);
 
     if (isSave) {
-      newUser.pin = this.state.newPin;
+      if (!_.isEmpty(newPin)) {
+        updatedUser.pin = newPin;
+      }
     } else {
-      newUser.oldPin = this.state.oldPin;
-      newUser.newPin = this.state.newPin;
-      newUser.confirmNewPin = this.state.confirmNewPin;
+      updatedUser.oldPin = oldPin;
+      updatedUser.newPin = newPin;
+      updatedUser.confirmNewPin = confirmNewPin;
     }
 
-    return newUser;
+    return updatedUser;
   }
 
-  setSelectedUser = (selectedUser) => {
+  setSelectedUser = (user) => {
     this.setState({
-      selectedUser,
-      isEditing: false,
-      firstName: selectedUser.firstName,
-      lastName: selectedUser.lastName,
-      month: selectedUser.dateOfBirth.month,
-      day: selectedUser.dateOfBirth.day,
-      year: selectedUser.dateOfBirth.year,
-      email: selectedUser.email,
-      phone: selectedUser.phone,
-      parentName: selectedUser.parentName,
-      parentPhone: selectedUser.parentPhone,
-      streetLine1: selectedUser.address.streetLine1,
-      streetLine2: selectedUser.address.streetLine2,
-      city: selectedUser.address.city,
-      state: selectedUser.address.state,
-      zip: selectedUser.address.zip,
-      oldPin: '',
-      newPin: '',
+      addressCity: user.addressCity,
+      addressLine1: user.addressLine1,
+      addressLine2: user.addressLine2,
+      addressState: user.addressState,
+      addressZip: user.addressZip,
+      bikesEarned: user.bikesEarned,
       confirmNewPin: '',
-      visits: selectedUser.visits,
-      view: 'personal'
+      countryOfOrigin: user.countryOfOrigin,
+      dobDay: user.dobDay,
+      dobMonth: user.dobMonth,
+      dobYear: user.dobYear,
+      email: user.email,
+      emailList: user.emailList,
+      errors: {},
+      firstName: user.firstName,
+      hover: false,
+      id: user.id,
+      isActive: user.isActive,
+      isEditing: false,
+      isInterestedManager: user.isInterestedManager,
+      isManager: user.isManager,
+      lastName: user.lastName,
+      newPin: '',
+      oldPin: '',
+      oldUsername: user.username,
+      openVisits: [],
+      parentName: user.parentName,
+      parentPhone: user.parentPhone,
+      phone: user.phone,
+      pin: user.pin,
+      questionOne: user.questionOne,
+      questionTwo: user.questionTwo,
+      username: user.username,
+      view: 'personal',
+      visits: user.visits,
+      waiver: user.waiver
     });
   }
 
   setView = (view) => {
-    return (e) => {
-      e.preventDefault();
+    return () => {
       this.setState({view});
     };
+  }
+
+  setUsernameChanged = () => {
+    this.setState({usernameChanged: true});
   }
 
   stopEditing = () => {
@@ -168,17 +183,12 @@ class Profile extends Component {
   }
 
   toggleEditing = () => {
-    const {isEditing, selectedUser, newPin} = this.state;
+    const {isEditing} = this.state;
 
     if (isEditing) {
       if (this.validate()) {
-        const newUser = {
-          ...selectedUser,
-          ...this.getUpdatedUser(true),
-          pin: _.isEmpty(newPin) ? selectedUser.pin : newPin
-        };
-        this.props.updateUser(newUser);
-        this.setState({isEditing: false, oldPin: '', newPin: '', confirmNewPin: '', selectedUser: newUser});
+        this.props.updateUser(this.getUpdatedUser(true));
+        this.setState({isEditing: false, oldPin: '', newPin: '', confirmNewPin: ''});
       }
     } else {
       this.setState({isEditing: true});
@@ -190,99 +200,69 @@ class Profile extends Component {
   }
 
   validate = () => {
-    const {user} = this.props;
-    const errors = [];
+    const {user, users} = this.props;
+    const errors = {};
     const {
+      addressCity,
+      addressLine1,
+      addressState,
+      addressZip,
+      confirmNewPin,
+      countryOfOrigin,
+      dobDay,
+      dobMonth,
+      dobYear,
+      email,
       firstName,
       lastName,
-      month,
-      day,
-      year,
-      email,
-      phone,
+      newPin,
+      oldPin,
+      oldUsername,
       parentName,
       parentPhone,
-      streetLine1,
-      city,
-      state,
-      zip,
-      oldPin,
-      newPin,
-      confirmNewPin
+      phone,
+      username
     } = this.state;
+    const hasPinError = _.isEmpty(newPin)
+      ? false
+      : ((user.isManager ? false : user.pin !== oldPin) || newPin !== confirmNewPin);
 
-    if (_.isEmpty(firstName)) {
-      errors.push('firstName');
-    }
-    if (_.isEmpty(lastName)) {
-      errors.push('lastName');
-    }
-    if (_.isEmpty(month)) {
-      errors.push('month');
-    }
-    if (_.isEmpty(day)) {
-      errors.push('day');
-    }
-    if (_.isEmpty(year)) {
-      errors.push('year');
-    }
-    if (_.isEmpty(email)) {
-      errors.push('email');
-    }
-    if (_.isEmpty(phone)) {
-      errors.push('phone');
-    }
-    if (!_.isEmpty(user.parentName)) {
-      if (_.isEmpty(parentName)) {
-        errors.push('parentName');
-      }
-      if (_.isEmpty(parentPhone)) {
-        errors.push('parentPhone');
-      }
-    }
-    if (_.isEmpty(streetLine1)) {
-      errors.push('streetLine1');
-    }
-    if (_.isEmpty(city)) {
-      errors.push('city');
-    }
-    if (_.isEmpty(state)) {
-      errors.push('state');
-    }
-    if (_.isEmpty(zip)) {
-      errors.push('zip');
-    }
-    if (!_.isEmpty(oldPin) || !_.isEmpty(newPin) || !_.isEmpty(confirmNewPin)) {
-      if (user.isManager ? false : _.isEmpty(oldPin)) {
-        errors.push('oldPin');
-      }
-      if (_.isEmpty(newPin)) {
-        errors.push('newPin');
-      }
-      if (_.isEmpty(confirmNewPin)) {
-        errors.push('confirmNewPin');
-      }
-      if (user.isManager ? false : (!_.isEmpty(oldPin) && oldPin !== user.pin)) {
-        errors.push('oldPin');
-      }
-      if (!_.isEmpty(newPin) && !_.isEmpty(confirmNewPin) && newPin !== confirmNewPin) {
-        errors.push('newPin');
-        errors.push('confirmNewPin');
-      }
-    }
+    errors.addressLine1 = _.isEmpty(addressLine1);
+    errors.addressCity = _.isEmpty(addressCity);
+    errors.addressState = _.isEmpty(addressState);
+    errors.addressZip = _.isEmpty(addressZip);
+    errors.countryOfOrigin = _.isEmpty(countryOfOrigin);
+    errors.firstName = _.isEmpty(firstName);
+    errors.lastName = _.isEmpty(lastName);
+    errors.dobMonth = _.isEmpty(dobMonth);
+    errors.dobDay = _.isEmpty(dobDay);
+    errors.dobYear = _.isEmpty(dobYear);
+    errors.email = _.isEmpty(email);
+    errors.parentName = _.isEmpty(user.parentName) ? false : _.isEmpty(parentName);
+    errors.parentPhone = _.isEmpty(user.parentName) ? false : _.isEmpty(parentPhone);
+    errors.phone = _.isEmpty(phone);
+    errors.username = _.isEmpty(username);
+    errors.usernameNotUnique = username !== oldUsername && !isUsernameUnique(users, username);
+    errors.oldPin = hasPinError;
+    errors.newPin = hasPinError;
+    errors.confirmNewPin = hasPinError;
 
     this.setState({errors});
-    return !errors.length;
+    return !_.some(errors, (error) => error);
   }
 
   render() {
     const {user, users} = this.props;
     const {
       errors,
+      emailList,
       hover,
       isEditing,
+      isManager,
       openVisits,
-      selectedUser,
+      questionOne,
+      questionTwo,
+      isInterestedManager,
       idsToExport,
       view,
       visits
@@ -312,7 +292,7 @@ class Profile extends Component {
             ? <UserList
               users={users}
               idsToExport={idsToExport}
-              selectedUser={selectedUser}
+              selectedUser={this.getUpdatedUser()}
               isProfile={true}
               onSelectUser={this.setSelectedUser}
               onMultiSelectUser={this.setMultiSelectUser} />
@@ -348,25 +328,27 @@ class Profile extends Component {
             </div>
           }
           <div className={classNames('profile-content__right', {'profile-content__right-manager': user.isManager})}>
-            <div className="profile-options">
-              <button className={classNames(
-                {'profile-option': !selectedUser.isManager},
-                {'profile-option__no-hover': selectedUser.isManager},
-                {'profile-option__active': !selectedUser.isManager && view === 'personal'}
-              )} onClick={this.setView('personal')}>Personal Info</button>
-              {!selectedUser.isManager &&
+            {!isManager &&
+              <div className="profile-options">
                 <button className={classNames(
-                  'profile-option',
-                  {'profile-option__active': view === 'visits'}
-                )} onClick={this.setView('visits')}>Past Visits</button>
-              }
-              {!selectedUser.isManager &&
-                <button className={classNames(
-                  'profile-option',
-                  {'profile-option__active': view === 'questions'}
-                )} onClick={this.setView('questions')}>Questions</button>
-              }
-            </div>
+                  {'profile-option': !isManager},
+                  {'profile-option__no-hover': isManager},
+                  {'profile-option__active': !isManager && view === 'personal'}
+                )} onClick={this.setView('personal')}>Personal Info</button>
+                {!isManager &&
+                  <button className={classNames(
+                    'profile-option',
+                    {'profile-option__active': view === 'visits'}
+                  )} onClick={this.setView('visits')}>Past Visits</button>
+                }
+                {!isManager && user.isManager &&
+                  <button className={classNames(
+                    'profile-option',
+                    {'profile-option__active': view === 'questions'}
+                  )} onClick={this.setView('questions')}>Questions</button>
+                }
+              </div>
+            }
             {view === 'personal' && <PersonalInfo
               errors={errors}
               isEditing={isEditing}
@@ -402,13 +384,13 @@ class Profile extends Component {
             {view === 'questions' &&
               <div className="profile-question__container scroll">
                 <div className="profile-question">1. How did you find out about Earn-A-Bike?</div>
-                <div className="profile-answer">{selectedUser.questionOne}</div>
+                <div className="profile-answer">{questionOne}</div>
                 <div className="profile-question">2. What brings you to Earn-A-Bike?</div>
-                <div className="profile-answer">{selectedUser.questionTwo}</div>
+                <div className="profile-answer">{questionTwo}</div>
                 <div className="profile-question">3. Would you like to be added to the volunteer email list?</div>
-                <div className="profile-answer">{selectedUser.emailList ? 'Yes' : 'No'}</div>
+                <div className="profile-answer">{emailList ? 'Yes' : 'No'}</div>
                 <div className="profile-question">4. Are you interested in becoming a shop manager?</div>
-                <div className="profile-answer">{selectedUser.isInterestedManager ? 'Yes' : 'No'}</div>
+                <div className="profile-answer">{isInterestedManager ? 'Yes' : 'No'}</div>
               </div>
             }
           </div>

@@ -61,8 +61,8 @@ class UserList extends Component {
     }
   }
 
-  handleSignout = (email) => {
-    this.props.onSignout(email);
+  handleSignout = (username) => {
+    this.props.onSignout(username);
   }
 
   confirmDelete = () => {
@@ -108,8 +108,8 @@ class UserList extends Component {
   sortProfileUsers = (a, b) => {
     const {sortByHours} = this.state;
     if (!a.isManager && !b.isManager) {
-      const x = sortByHours ? getTotalHours(b) : a.firstName;
-      const y = sortByHours ? getTotalHours(a) : b.lastName;
+      const x = sortByHours ? getTotalHours(b.visits) : a.firstName;
+      const y = sortByHours ? getTotalHours(a.visits) : b.lastName;
       return ((x < y) ? -1 : ((x > y) ? 1 : 0));
     }
     if (!a.isManager && b.isManager) {return 1;}
@@ -220,7 +220,9 @@ class UserList extends Component {
   }
 }
 
-export default connect(null, {
+const mapDispatchToProps = {
   deleteUsers,
   onSignout: handleSignOut
-})(UserList);
+};
+
+export default connect(null, mapDispatchToProps)(UserList);

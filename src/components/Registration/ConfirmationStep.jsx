@@ -12,11 +12,10 @@ class ConfirmationStep extends Component {
   }
 
   handleSubmit = (isSignIn) => {
-    return (e) => {
-      e.preventDefault();
+    return () => {
       const {onSignIn, newUser} = this.props;
       if (isSignIn) {
-        onSignIn(newUser.email, newUser.pin);
+        onSignIn(newUser.username, newUser.pin);
       }
       history.push('/');
     };
@@ -52,6 +51,8 @@ class ConfirmationStep extends Component {
   }
 }
 
-export default connect(null, {
+const mapDispatchToProps = {
   onSignIn: handleSignIn
-})(ConfirmationStep);
+};
+
+export default connect(null, mapDispatchToProps)(ConfirmationStep);

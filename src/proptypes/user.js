@@ -8,27 +8,29 @@ export const visitProps = {
 };
 
 export const userProps = {
-  address: PropTypes.shape({
-    city: PropTypes.string,
-    state: PropTypes.string,
-    streetLine1: PropTypes.string,
-    streetLine2: PropTypes.string,
-    zip: PropTypes.string
-  }),
-  dateOfBirth: PropTypes.shape({
-    day: PropTypes.string,
-    month: PropTypes.string,
-    year: PropTypes.string
-  }),
+  addressCity: PropTypes.string,
+  addressLine1: PropTypes.string,
+  addressLine2: PropTypes.string,
+  addressState: PropTypes.string,
+  addressZip: PropTypes.string,
+  bikesEarned: PropTypes.arrayOf(PropTypes.string),
+  countryOfOrigin: PropTypes.string,
+  dobDay: PropTypes.string,
+  dobMonth: PropTypes.string,
+  dobYear: PropTypes.string,
   email: PropTypes.string,
+  emailList: PropTypes.bool,
   firstName: PropTypes.string,
   id: PropTypes.number,
   isActive: PropTypes.bool,
+  isInterestedManager: PropTypes.bool,
   isManager: PropTypes.bool,
   lastName: PropTypes.string,
   parentName: PropTypes.string,
   parentPhone: PropTypes.string,
-  pin: PropTypes.string,
   phone: PropTypes.string,
-  visits: PropTypes.arrayOf(PropTypes.shape(visitProps))
+  pin: PropTypes.string,
+  username: PropTypes.string,
+  visits: PropTypes.arrayOf(PropTypes.shape(visitProps)),
+  waiver: PropTypes.bool
 };

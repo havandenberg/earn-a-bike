@@ -3,7 +3,7 @@ import moment from 'moment';
 import {getHoursDifference} from 'utils/helpers';
 
 export const CLEAR_MESSAGES = 'CLEAR_MESSAGES';
-export const EMAIL_NOT_FOUND = 'EMAIL_NOT_FOUND';
+export const USERNAME_NOT_FOUND = 'USERNAME_NOT_FOUND';
 export const UPDATE_NEXT_ID = 'UPDATE_NEXT_ID';
 export const INVALID_PIN = 'INVALID_PIN';
 export const UPDATE_USERS = 'UPDATE_USERS';
@@ -28,20 +28,20 @@ export const clearMessages = () => {
   };
 };
 
-export function handleSignIn(email, pin) {
+export function handleSignIn(username, pin) {
   return (dispatch, getState) => {
     const users = getState().app.get('users').toJS();
 
     const user = _.find(users, (u) => {
-      return u.email === email;
+      return u.username === username;
     });
 
     if (!user) {
-      dispatch({type: EMAIL_NOT_FOUND});
+      dispatch({type: USERNAME_NOT_FOUND});
       return false;
     }
 
-    if (user.pin === pin) {
+    if (!user.isActive && user.pin === pin) {
       user.isActive = true;
       if (!user.isManager) {
         user.visits.unshift({
@@ -55,7 +55,7 @@ export function handleSignIn(email, pin) {
       return user;
     }
 
-    dispatch({type: INVALID_PIN});
+    if (!user.isActive) {dispatch({type: INVALID_PIN});}
     return false;
   };
 }
@@ -83,16 +83,16 @@ export function handleSignOut(id) {
   };
 }
 
-export function updateUser(newUser) {
+export function updateUser(updatedUser) {
   return (dispatch, getState) => {
     const users = getState().app.get('users').toJS();
 
     const user = _.find(users, (u) => {
-      return u.id === newUser.id;
+      return u.id === updatedUser.id;
     });
 
     _.each(Object.keys(user), (key) => {
-      user[key] = newUser[key];
+      user[key] = updatedUser[key];
     });
 
     dispatch(updateUsers(users));

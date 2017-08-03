@@ -4,32 +4,37 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 import {registerUser} from 'actions/app';
-import {hasError} from 'utils/messages';
+import {userProps} from 'proptypes/user';
 import {history} from 'utils/store';
+import {isUsernameUnique} from 'utils/helpers';
+import {messages} from 'utils/messages';
+import Messages from 'components/Messages.jsx';
 
 class AddManager extends Component {
   static propTypes = {
-    registerUser: PropTypes.func
+    registerUser: PropTypes.func,
+    users: PropTypes.arrayOf(PropTypes.shape(userProps))
   }
 
   state = {
-    errors: [],
+    errors: {},
     newManager: {
-      firstName: '',
-      lastName: '',
-      month: '',
-      day: '',
-      year: '',
-      email: '',
-      phone: '',
-      streetLine1: '',
-      streetLine2: '',
-      city: '',
-      state: '',
-      zip: '',
-      pin: '',
+      addressCity: '',
+      addressLine1: '',
+      addressLine2: '',
+      addressState: '',
+      addressZip: '',
       confirmPin: '',
-      isManager: true
+      dobDay: '',
+      dobMonth: '',
+      dobYear: '',
+      email: '',
+      firstName: '',
+      isManager: true,
+      lastName: '',
+      phone: '',
+      pin: '',
+      username: ''
     }
   };
 
@@ -47,36 +52,9 @@ class AddManager extends Component {
 
   handleSubmit = () => {
     if (this.validate()) {
-      this.props.registerUser(this.formatUser());
+      this.props.registerUser(this.state.newManager);
       history.goBack();
     }
-  }
-
-  formatUser = () => {
-    const {newManager} = this.state;
-    const formattedManager = {};
-
-    _.each(['firstName', 'lastName', 'email', 'phone', 'isManager'], (key) => {
-      formattedManager[key] = newManager[key];
-    });
-
-    formattedManager.dateOfBirth = {
-      month: newManager.month,
-      day: newManager.day,
-      year: newManager.year
-    };
-
-    formattedManager.address = {
-      streetLine1: newManager.streetLine1,
-      streetLine2: newManager.streetLine2,
-      city: newManager.city,
-      state: newManager.state,
-      zip: newManager.zip
-    };
-
-    formattedManager.pin = newManager.pin;
-
-    return formattedManager;
   }
 
   toggleHover = () => {
@@ -84,69 +62,62 @@ class AddManager extends Component {
   }
 
   validateChange = (field, value) => {
-    if (field === 'month' && value.length === 2) {
-      this.refs.day.focus();
-    }
-    if (field === 'day' && value.length === 2) {
-      this.refs.year.focus();
-    }
-    if (_.includes(['pin', 'confirmPin', 'year'], field)) {
+    if (_.includes(['pin', 'confirmPin', 'dobYear'], field)) {
       return value.match(/^[0-9]{0,4}$/);
     }
-    if (_.includes(['day', 'month'], field)) {
+    if (_.includes(['dobDay', 'dobMonth'], field)) {
       return value.match(/^[0-9]{0,2}$/);
+    }
+    if (field === 'dobMonth' && value.length === 2) {
+      this.refs.day.focus();
+    }
+    if (field === 'dobDay' && value.length === 2) {
+      this.refs.year.focus();
     }
     return true;
   }
 
   validate = () => {
-    const {newManager} = this.state;
-    const errors = [];
+    const {users} = this.props;
+    const {
+      addressCity,
+      addressLine1,
+      addressState,
+      addressZip,
+      confirmPin,
+      countryOfOrigin,
+      dobDay,
+      dobMonth,
+      dobYear,
+      email,
+      firstName,
+      lastName,
+      pin,
+      phone,
+      username
+    } = this.state.newManager;
+    const errors = {};
+    const hasPinError = pin !== confirmPin;
 
-    if (_.isEmpty(newManager.firstName)) {
-      errors.push('firstName');
-    }
-    if (_.isEmpty(newManager.lastName)) {
-      errors.push('lastName');
-    }
-    if (_.isEmpty(newManager.month)) {
-      errors.push('month');
-    }
-    if (_.isEmpty(newManager.day)) {
-      errors.push('day');
-    }
-    if (_.isEmpty(newManager.year)) {
-      errors.push('year');
-    }
-    if (_.isEmpty(newManager.email)) {
-      errors.push('email');
-    }
-    if (_.isEmpty(newManager.phone)) {
-      errors.push('phone');
-    }
-    if (_.isEmpty(newManager.pin) || _.isEmpty(newManager.confirmPin)) {
-      errors.push('pin');
-      errors.push('confirmPin');
-    }
-    if (!_.isEmpty(newManager.pin) && newManager.pin !== newManager.confirmPin) {
-      errors.push('pin');
-      errors.push('confirmPin');
-    }
-    if (_.isEmpty(newManager.streetLine1)) {
-      errors.push('streetLine1');
-    }
-    if (_.isEmpty(newManager.city)) {
-      errors.push('city');
-    }
-    if (_.isEmpty(newManager.state)) {
-      errors.push('state');
-    }
-    if (_.isEmpty(newManager.zip)) {
-      errors.push('zip');
-    }
+    errors.addressLine1 = _.isEmpty(addressLine1);
+    errors.addressCity = _.isEmpty(addressCity);
+    errors.addressState = _.isEmpty(addressState);
+    errors.addressZip = _.isEmpty(addressZip);
+    errors.countryOfOrigin = _.isEmpty(countryOfOrigin);
+    errors.firstName = _.isEmpty(firstName);
+    errors.lastName = _.isEmpty(lastName);
+    errors.dobMonth = _.isEmpty(dobMonth);
+    errors.dobDay = _.isEmpty(dobDay);
+    errors.dobYear = _.isEmpty(dobYear);
+    errors.email = _.isEmpty(email);
+    errors.phone = _.isEmpty(phone);
+    errors.username = _.isEmpty(username);
+    errors.usernameNotUnique = !isUsernameUnique(users, username);
+    errors.pin = _.isEmpty(pin) || hasPinError;
+    errors.confirmPin = _.isEmpty(confirmPin) || hasPinError;
 
     this.setState({errors});
-    return !errors.length;
+    return !_.some(errors, (error) => error);
   }
 
   render() {
@@ -157,15 +128,22 @@ class AddManager extends Component {
         <div className="add-manager__title">Add Manager</div>
         <div className="add-manager__fields-container">
           <div className="add-manager__fields">
+            <Messages messages={errors.usernameNotUnique ? [messages.usernameAlreadyExists] : []} />
             <input
               autoFocus={true}
-              className={classNames('add-manager-field', {'add-manager-field__error': hasError(errors, ['firstName'])})}
+              className={classNames(
+                'add-manager-field',
+                {'add-manager-field__error': errors.firstName}
+              )}
               type="text"
               placeholder="First name"
               value={newManager.firstName}
               onChange={this.handleChange('firstName')} />
             <input
-              className={classNames('add-manager-field', {'add-manager-field__error': hasError(errors, ['lastName'])})}
+              className={classNames(
+                'add-manager-field',
+                {'add-manager-field__error': errors.lastName}
+              )}
               type="text"
               placeholder="Last name"
               value={newManager.lastName}
@@ -175,40 +153,52 @@ class AddManager extends Component {
                 className={classNames(
                   'add-manager-field',
                   'add-manager-dob-month',
-                  {'add-manager-field__error': hasError(errors, ['month'])})
-                }
+                  {'add-manager-field__error': errors.dobMonth}
+                )}
                 type="text"
                 placeholder="MM"
-                value={newManager.month}
-                onChange={this.handleChange('month')} />
+                value={newManager.dobMonth}
+                onChange={this.handleChange('dobMonth')} />
               &nbsp;/&nbsp;
               <input
                 className={classNames(
                   'add-manager-field',
                   'add-manager-dob-day',
-                  {'add-manager-field__error': hasError(errors, ['day'])})
-                }
+                  {'add-manager-field__error': errors.dobDay}
+                )}
                 type="text"
                 placeholder="DD"
-                value={newManager.day}
+                value={newManager.dobDay}
                 ref="day"
-                onChange={this.handleChange('day')} />
+                onChange={this.handleChange('dobDay')} />
                 &nbsp;/&nbsp;
               <input
                 className={classNames(
                   'add-manager-field',
                   'add-manager-dob-year',
-                  {'add-manager-field__error': hasError(errors, ['year'])})
-                }
+                  {'add-manager-field__error': errors.dobYear}
+                )}
                 type="text"
                 placeholder="YYYY"
-                value={newManager.year}
+                value={newManager.dobYear}
                 ref="year"
-                onChange={this.handleChange('year')} />
+                onChange={this.handleChange('dobYear')} />
               <div className="add-manager-dob-text">Birthdate</div>
             </div>
             <input
-              className={classNames('add-manager-field', {'add-manager-field__error': hasError(errors, ['pin'])})}
+              className={classNames(
+                'add-manager-field',
+                {'add-manager-field__error': errors.username}
+              )}
+              type="text"
+              placeholder="Username"
+              value={newManager.username}
+              onChange={this.handleChange('username')} />
+            <input
+              className={classNames(
+                'add-manager-field',
+                {'add-manager-field__error': errors.pin}
+              )}
               type="password"
               placeholder="4 digit pin"
               value={newManager.pin}
@@ -216,65 +206,91 @@ class AddManager extends Component {
             <input
               className={classNames(
                 'add-manager-field',
-                {'add-manager-field__error': hasError(errors, ['confirmPin'])})}
+                {'add-manager-field__error': errors.confirmPin}
+              )}
               type="password"
               placeholder="Confirm pin"
               value={newManager.confirmPin}
               onChange={this.handleChange('confirmPin')} />
           </div>
-          <div className="add-manager__fields">
+          <div className="add-manager__fields scroll">
             <input
-              className={classNames('add-manager-field', {'add-manager-field__error': hasError(errors, ['email'])})}
+              className={classNames(
+                'add-manager-field',
+                {'add-manager-field__error': errors.email}
+              )}
               type="text"
               placeholder="Email"
               value={newManager.email}
               onChange={this.handleChange('email')} />
             <input
-              className={classNames('add-manager-field', {'add-manager-field__error': hasError(errors, ['phone'])})}
+              className={classNames(
+                'add-manager-field',
+                {'add-manager-field__error': errors.phone}
+              )}
               type="text"
               placeholder="Phone"
               value={newManager.phone}
               onChange={this.handleChange('phone')} />
             <input
-              className={classNames('add-manager-field', {'add-manager-field__error': hasError(errors, ['streetLine1'])})}
+              className={classNames(
+                'add-manager-field',
+                {'add-manager-field__error': errors.addressLine1}
+              )}
               type="text"
               placeholder="Address line 1"
-              value={newManager.streetLine1}
-              onChange={this.handleChange('streetLine1')} />
+              value={newManager.addressLine1}
+              onChange={this.handleChange('addressLine1')} />
             <input
-              className={classNames('add-manager-field', {'add-manager-field__error': hasError(errors, ['streetLine2'])})}
+              className={classNames(
+                'add-manager-field',
+                {'add-manager-field__error': errors.addressLine2}
+              )}
               type="text"
               placeholder="Address line 2"
-              value={newManager.streetLine2}
-              onChange={this.handleChange('streetLine2')} />
-            <input
-              className={classNames('add-manager-field', {'add-manager-field__error': hasError(errors, ['city'])})}
-              type="text"
-              placeholder="City"
-              value={newManager.city}
-              onChange={this.handleChange('city')} />
+              value={newManager.addressLine2}
+              onChange={this.handleChange('addressLine2')} />
             <div className="add-manager-address-container">
               <input
                 className={classNames(
                   'add-manager-field',
+                  'add-manager-address-city',
+                  {'add-manager-field__error': errors.addressCity}
+                )}
+                type="text"
+                placeholder="City"
+                value={newManager.addressCity}
+                onChange={this.handleChange('addressCity')} />
+              <input
+                className={classNames(
+                  'add-manager-field',
                   'add-manager-address-state',
-                  {'add-manager-field__error': hasError(errors, ['state'])})
-                }
+                  {'add-manager-field__error': errors.addressState}
+                )}
                 type="text"
                 placeholder="State"
-                value={newManager.state}
-                onChange={this.handleChange('state')} />
+                value={newManager.addressState}
+                onChange={this.handleChange('addressState')} />
               <input
                 className={classNames(
                   'add-manager-field',
                   'add-manager-address-zip',
-                  {'add-manager-field__error': hasError(errors, ['zip'])})
-                }
+                  {'add-manager-field__error': errors.addressZip}
+                )}
                 type="text"
                 placeholder="Zip code"
-                value={newManager.zip}
-                onChange={this.handleChange('zip')} />
+                value={newManager.addressZip}
+                onChange={this.handleChange('addressZip')} />
             </div>
+            <input
+              className={classNames(
+                'add-manager-field',
+                {'add-manager-field__error': errors.countryOfOrigin}
+              )}
+              type="text"
+              placeholder="Country of origin"
+              value={newManager.countryOfOrigin}
+              onChange={this.handleChange('countryOfOrigin')} />
           </div>
         </div>
         <div className="add-manager__btn-container">
@@ -294,6 +310,12 @@ class AddManager extends Component {
   }
 }
 
-export default connect(null, {
+const mapStateToProps = ({app}) => ({
+  users: app.get('users').toJS()
+});
+
+const mapDispatchToProps = {
   registerUser
-})(AddManager);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddManager);

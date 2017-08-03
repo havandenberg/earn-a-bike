@@ -5,11 +5,12 @@ import {connect} from 'react-redux';
 import classNames from 'classnames';
 import {updateUser} from 'actions/app';
 import {userProps} from 'proptypes/user';
-import {hasError} from 'utils/messages';
+import {messages} from 'utils/messages';
+import Messages from 'components/Messages.jsx';
 
 class PersonalInfo extends Component {
   static propTypes = {
-    errors: PropTypes.arrayOf(PropTypes.string),
+    errors: PropTypes.objectOf(PropTypes.bool),
     isEditing: PropTypes.bool,
     isManager: PropTypes.bool,
     user: PropTypes.shape(userProps),
@@ -17,11 +18,13 @@ class PersonalInfo extends Component {
     onSubmit: PropTypes.func
   }
 
-  handleChange = (field) => {
+  handleChange = (field, validation) => {
     return (e) => {
-      if (this.validate(field, e.target.value)) {
-        this.props.onChange(field, e.target.value);
+      const {value} = e.target;
+      if (validation ? value.match(validation) : true) {
+        this.props.onChange(field, value);
       }
+      return value;
     };
   }
 
@@ -30,25 +33,19 @@ class PersonalInfo extends Component {
     this.props.onSubmit();
   }
 
-  validate = (field, value) => {
-    if (_.includes(['oldPin', 'newPin', 'confirmNewPin', 'year'], field)) {
-      return value.match(/^[0-9]{0,4}$/);
-    }
-    if (_.includes(['day', 'month'], field)) {
-      return value.match(/^[0-9]{0,2}$/);
-    }
-    return true;
-  }
-
   render() {
     const {errors, isEditing, isManager, user} = this.props;
 
     return (
       <form className="personal-info scroll" onSubmit={this.handleSubmit}>
+        <div className="personal-info__messages">
+          <Messages messages={errors.usernameNotUnique ? [messages.usernameAlreadyExists] : []} />
+        </div>
         <div className="personal-info__container">
           <div className="personal-info__labels">
             <div className="personal-info__label">Name:</div>
             <div className="personal-info__label">Date Of Birth:</div>
+            <div className="personal-info__label">Username:</div>
             <div className="personal-info__label">Email:</div>
             <div className="personal-info__label">Phone:</div>
             {!_.isEmpty(user.parentName) &&
@@ -77,7 +74,7 @@ class PersonalInfo extends Component {
                     className={classNames(
                       'personal-info__input',
                       'personal-info__input-first',
-                      {'personal-info__input-error': hasError(errors, ['firstName'])}
+                      {'personal-info__input-error': errors.firstName}
                     )}
                     onChange={this.handleChange('firstName')}
                     value={user.firstName} />
@@ -86,7 +83,7 @@ class PersonalInfo extends Component {
                     className={classNames(
                       'personal-info__input',
                       'personal-info__input-last',
-                      {'personal-info__input-error': hasError(errors, ['lastName'])}
+                      {'personal-info__input-error': errors.lastName}
                     )}
                     onChange={this.handleChange('lastName')}
                     value={user.lastName} />
@@ -102,33 +99,33 @@ class PersonalInfo extends Component {
                     className={classNames(
                       'personal-info__input',
                       'personal-info__input-month',
-                      {'personal-info__input-error': hasError(errors, ['month'])}
+                      {'personal-info__input-error': errors.dobMonth}
                     )}
-                    onChange={this.handleChange('month')}
-                    value={user.dateOfBirth.month} />
+                    onChange={this.handleChange('dobMonth', /^[0-9]{0,2}$/)}
+                    value={user.dobMonth} />
                   &nbsp;/&nbsp;
                   <input
                     type="text"
                     className={classNames(
                       'personal-info__input',
                       'personal-info__input-day',
-                      {'personal-info__input-error': hasError(errors, ['day'])}
+                      {'personal-info__input-error': errors.dobDay}
                     )}
-                    onChange={this.handleChange('day')}
-                    value={user.dateOfBirth.day} />
+                    onChange={this.handleChange('dobDay', /^[0-9]{0,2}$/)}
+                    value={user.dobDay} />
                   &nbsp;/&nbsp;
                   <input
                     type="text"
                     className={classNames(
                       'personal-info__input',
                       'personal-info__input-year',
-                      {'personal-info__input-error': hasError(errors, ['year'])}
+                      {'personal-info__input-error': errors.dobYear}
                     )}
-                    onChange={this.handleChange('year')}
-                    value={user.dateOfBirth.year} />
+                    onChange={this.handleChange('dobYear', /^[0-9]{0,4}$/)}
+                    value={user.dobYear} />
                 </div>
                 : <div>
-                  {`${user.dateOfBirth.month}/${user.dateOfBirth.day}/${user.dateOfBirth.year}`}
+                  {`${user.dobMonth}/${user.dobDay}/${user.dobYear}`}
                 </div>
               }
             </div>
@@ -137,7 +134,18 @@ class PersonalInfo extends Component {
                 type="text"
                 className={classNames(
                   'personal-info__input',
-                  {'personal-info__input-error': hasError(errors, ['email'])}
+                  {'personal-info__input-error': errors.username || errors.usernameNotUnique}
+                )}
+                onChange={this.handleChange('username')}
+                value={user.username} />
+              : <div className="personal-info__value">{user.username}</div>
+            }
+            {isEditing
+              ? <input
+                type="text"
+                className={classNames(
+                  'personal-info__input',
+                  {'personal-info__input-error': errors.email}
                 )}
                 onChange={this.handleChange('email')}
                 value={user.email} />
@@ -148,7 +156,7 @@ class PersonalInfo extends Component {
                 type="text"
                 className={classNames(
                   'personal-info__input',
-                  {'personal-info__input-error': hasError(errors, ['phone'])}
+                  {'personal-info__input-error': errors.phone}
                 )}
                 onChange={this.handleChange('phone')}
                 value={user.phone} />
@@ -161,7 +169,7 @@ class PersonalInfo extends Component {
                     type="text"
                     className={classNames(
                       'personal-info__input',
-                      {'personal-info__input-error': hasError(errors, ['parentName'])}
+                      {'personal-info__input-error': errors.parentName}
                     )}
                     onChange={this.handleChange('parentName')}
                     value={user.parentName} />
@@ -172,7 +180,7 @@ class PersonalInfo extends Component {
                     type="text"
                     className={classNames(
                       'personal-info__input',
-                      {'personal-info__input-error': hasError(errors, ['parentPhone'])}
+                      {'personal-info__input-error': errors.parentPhone}
                     )}
                     onChange={this.handleChange('parentPhone')}
                     value={user.parentPhone} />
@@ -186,24 +194,24 @@ class PersonalInfo extends Component {
                   type="text"
                   className={classNames(
                     'personal-info__input',
-                    {'personal-info__input-error': hasError(errors, ['streetLine1'])}
+                    {'personal-info__input-error': errors.addressLine1}
                   )}
-                  onChange={this.handleChange('streetLine1')}
-                  value={user.address.streetLine1} />
-                : <div className="personal-info__value">{user.address.streetLine1}</div>
+                  onChange={this.handleChange('addressLine1')}
+                  value={user.addressLine1} />
+                : <div className="personal-info__value">{user.addressLine1}</div>
               }
               {isEditing
                 ? <input
                   type="text"
                   className={classNames(
                     'personal-info__input',
-                    {'personal-info__input-error': hasError(errors, ['streetLine2'])}
+                    {'personal-info__input-error': errors.addressLine2}
                   )}
-                  onChange={this.handleChange('streetLine2')}
-                  value={user.address.streetLine2} />
+                  onChange={this.handleChange('addressLine2')}
+                  value={user.addressLine2} />
                 : <div>
-                  {!_.isEmpty(user.address.streetLine2) &&
-                    <div className="personal-info__value">{user.address.streetLine2}</div>
+                  {!_.isEmpty(user.addressLine2) &&
+                    <div className="personal-info__value">{user.addressLine2}</div>
                   }
                 </div>
               }
@@ -215,36 +223,51 @@ class PersonalInfo extends Component {
                       className={classNames(
                         'personal-info__input',
                         'personal-info__input-city',
-                        {'personal-info__input-error': hasError(errors, ['city'])}
+                        {'personal-info__input-error': errors.addressCity}
                       )}
-                      onChange={this.handleChange('city')}
-                      value={user.address.city} />
-                    &nbsp;/&nbsp;
+                      onChange={this.handleChange('addressCity')}
+                      value={user.addressCity} />
+                    ,&nbsp;
                     <input
                       type="text"
                       className={classNames(
                         'personal-info__input',
                         'personal-info__input-state',
-                        {'personal-info__input-error': hasError(errors, ['state'])}
+                        {'personal-info__input-error': errors.addressState}
                       )}
-                      onChange={this.handleChange('state')}
-                      value={user.address.state} />
-                    &nbsp;/&nbsp;
+                      onChange={this.handleChange('addressState')}
+                      value={user.addressState} />
+                    &nbsp;
                     <input
                       type="text"
                       className={classNames(
                         'personal-info__input',
                         'personal-info__input-zip',
-                        {'personal-info__input-error': hasError(errors, ['zip'])}
+                        {'personal-info__input-error': errors.addressZip}
                       )}
-                      onChange={this.handleChange('zip')}
-                      value={user.address.zip} />
+                      onChange={this.handleChange('addressZip')}
+                      value={user.addressZip} />
                   </div>
                   : <div>
-                    {`${user.address.city}, ${user.address.state} ${user.address.zip}`}
+                    {`${user.addressCity}, ${user.addressState} ${user.addressZip}`}
                   </div>
                 }
               </div>
+              {isEditing
+                ? <input
+                  type="text"
+                  className={classNames(
+                    'personal-info__input',
+                    {'personal-info__input-error': errors.countryOfOrigin}
+                  )}
+                  onChange={this.handleChange('countryOfOrigin')}
+                  value={user.countryOfOrigin} />
+                : <div>
+                  {!_.isEmpty(user.countryOfOrigin) &&
+                    <div className="personal-info__value">{user.countryOfOrigin}</div>
+                  }
+                </div>
+              }
               <div className="personal-info__spacing">
                 {isEditing && !isManager &&
                   <input
@@ -253,9 +276,9 @@ class PersonalInfo extends Component {
                       'personal-info__input',
                       'personal-info__input-pin',
                       'personal-info__input-pin-space',
-                      {'personal-info__input-error': hasError(errors, ['oldPin'])}
+                      {'personal-info__input-error': errors.oldPin}
                     )}
-                    onChange={this.handleChange('oldPin')}
+                    onChange={this.handleChange('oldPin', /^[0-9]{0,4}$/)}
                     value={user.oldPin} />
                 }
                 {isEditing &&
@@ -265,9 +288,9 @@ class PersonalInfo extends Component {
                       'personal-info__input',
                       'personal-info__input-pin',
                       {'personal-info__input-pin-space': isManager},
-                      {'personal-info__input-error': hasError(errors, ['newPin', 'confirmNewPin'])}
+                      {'personal-info__input-error': errors.newPin || errors.confirmNewPin}
                     )}
-                    onChange={this.handleChange('newPin')}
+                    onChange={this.handleChange('newPin', /^[0-9]{0,4}$/)}
                     value={user.newPin} />
                 }
                 {isEditing &&
@@ -276,9 +299,9 @@ class PersonalInfo extends Component {
                     className={classNames(
                       'personal-info__input',
                       'personal-info__input-pin',
-                      {'personal-info__input-error': hasError(errors, ['newPin', 'confirmNewPin'])}
+                      {'personal-info__input-error': errors.newPin || errors.confirmNewPin}
                     )}
-                    onChange={this.handleChange('confirmNewPin')}
+                    onChange={this.handleChange('confirmNewPin', /^[0-9]{0,4}$/)}
                     value={user.confirmNewPin} />
                 }
               </div>
@@ -291,6 +314,8 @@ class PersonalInfo extends Component {
   }
 }
 
-export default connect(null, {
+const mapDispatchToProps = {
   updateUser
-})(PersonalInfo);
+};
+
+export default connect(null, mapDispatchToProps)(PersonalInfo);

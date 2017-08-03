@@ -2,16 +2,15 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import {userProps} from 'proptypes/user';
-import {hasError} from 'utils/messages';
 
 export default class QuestionOneStep extends Component {
   static propTypes = {
-    errors: PropTypes.arrayOf(PropTypes.string),
+    errors: PropTypes.shape({}),
     newUser: PropTypes.shape(userProps),
     onChange: PropTypes.func
   }
 
-  handleQuestionOneChange = (e) => {
+  handleChange = (e) => {
     const {newUser, onChange} = this.props;
     newUser.questionOne = e.target.value;
     onChange(newUser);
@@ -22,17 +21,19 @@ export default class QuestionOneStep extends Component {
 
     return (
       <div className="registration-step">
-        <div className="registration-question">How did you find out about Earn a Bike?</div>
+        <div className="registration-question">
+          How did you find out about Earn a Bike?
+        </div>
         <textarea
           autoFocus={true}
           className={classNames(
             'registration-field',
             'registration-field__question',
-            {'registration-field__error': hasError(errors, ['questionOne'])})
-          }
+            {'registration-field__error': errors.questionOne}
+          )}
           type="text"
           value={newUser.questionOne}
-          onChange={this.handleQuestionOneChange} />
+          onChange={this.handleChange} />
       </div>
     );
   }

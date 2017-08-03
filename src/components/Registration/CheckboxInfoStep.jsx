@@ -9,16 +9,12 @@ export default class CheckboxInfoStep extends Component {
     onChange: PropTypes.func
   }
 
-  handleEmailListChange = () => {
-    const {newUser, onChange} = this.props;
-    newUser.emailList = !newUser.emailList;
-    onChange(newUser);
-  }
-
-  handleIsInterestedManagerChange = () => {
-    const {newUser, onChange} = this.props;
-    newUser.isInterestedManager = !newUser.isInterestedManager;
-    onChange(newUser);
+  handleChange = (field) => {
+    return () => {
+      const {newUser, onChange} = this.props;
+      newUser[field] = !newUser[field];
+      onChange(newUser);
+    };
   }
 
   render() {
@@ -27,18 +23,26 @@ export default class CheckboxInfoStep extends Component {
     return (
       <div className="registration-step">
         <div className="registration-checkbox">
-          <button className="checkbox" onClick={this.handleEmailListChange}>
+          <button
+            className="checkbox"
+            onClick={this.handleChange('emailList')}>
             {newUser.emailList && <img alt="Check" src={checkImg} />}
           </button>
-          <button className="registration-checkbox__text" onClick={this.handleEmailListChange}>
+          <button
+            className="registration-checkbox__text"
+            onClick={this.handleChange('emailList')}>
             Would you like to be added to the volunteer email list?
           </button>
         </div>
         <div className="registration-checkbox">
-          <button className="checkbox" onClick={this.handleIsInterestedManagerChange}>
+          <button
+            className="checkbox"
+            onClick={this.handleChange('isInterestedManager')}>
             {newUser.isInterestedManager && <img alt="Check" src={checkImg} />}
           </button>
-          <button className="registration-checkbox__text" onClick={this.handleIsInterestedManagerChange}>
+          <button
+            className="registration-checkbox__text"
+            onClick={this.handleChange('isInterestedManager')}>
             Are you interested in becoming a shop manager?
           </button>
         </div>

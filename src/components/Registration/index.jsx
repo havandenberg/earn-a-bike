@@ -5,12 +5,14 @@ import moment from 'moment';
 import {connect} from 'react-redux';
 import {registerUser, updateUser} from 'actions/app';
 import {history} from 'utils/store';
+import {isUsernameUnique} from 'utils/helpers';
+import {userProps} from 'proptypes/user';
 import ProgressBar from 'components/ProgressBar.jsx';
 import bicycleForwardGif from 'images/bicycle-forward.gif';
 import bicycleForwardImg from 'images/bicycle-forward.png';
 import {
   PERSONAL_INFO_STEP,
-  CONTACT_INFO_STEP,
+  LOGIN_INFO_STEP,
   PARENT_INFO_STEP,
   ADDRESS_INFO_STEP,
   QUESTION_ONE_STEP,
@@ -20,7 +22,7 @@ import {
   CONFIRMATION_STEP
 } from './constants';
 import PersonalInfoStep from './PersonalInfoStep.jsx';
-import ContactInfoStep from './ContactInfoStep.jsx';
+import LoginInfoStep from './LoginInfoStep.jsx';
 import ParentInfoStep from './ParentInfoStep.jsx';
 import AddressInfoStep from './AddressInfoStep.jsx';
 import QuestionOneStep from './QuestionOneStep.jsx';
@@ -31,7 +33,7 @@ import ConfirmationStep from './ConfirmationStep.jsx';
 
 const steps = [
   PERSONAL_INFO_STEP,
-  CONTACT_INFO_STEP,
+  LOGIN_INFO_STEP,
   ADDRESS_INFO_STEP,
   QUESTION_ONE_STEP,
   QUESTION_TWO_STEP,
@@ -43,38 +45,39 @@ const steps = [
 class Registration extends Component {
   static propTypes = {
     registerUser: PropTypes.func,
-    updateUser: PropTypes.func
+    updateUser: PropTypes.func,
+    users: PropTypes.arrayOf(PropTypes.shape(userProps))
   }
 
   state = {
     activeStep: PERSONAL_INFO_STEP,
-    errors: [],
+    addressCity: '',
+    addressState: '',
+    addressLine1: '',
+    addressLine2: '',
+    addressZip: '',
+    bikesEarned: [],
+    confirmPin: '',
+    countryOfOrigin: '',
+    dobMonth: '',
+    dobDay: '',
+    dobYear: '',
+    email: '',
+    emailList: false,
+    errors: {},
+    firstName: '',
     hoverBack: false,
     hoverForward: false,
-    firstName: '',
+    isInterestedManager: false,
+    isManager: false,
     lastName: '',
-    dateOfBirth: {
-      month: '',
-      day: '',
-      year: ''
-    },
-    email: '',
-    phone: '',
     parentName: '',
     parentPhone: '',
-    address: {
-      streetLine1: '',
-      streetLine2: '',
-      city: '',
-      state: '',
-      zip: ''
-    },
+    phone: '',
     pin: '',
-    confirmPin: '',
     questionOne: '',
     questionTwo: '',
-    emailList: false,
-    isInterestedManager: false,
+    username: '',
     visits: [],
     waiver: false
   };
@@ -90,11 +93,11 @@ class Registration extends Component {
   }
 
   handleForward = () => {
-    const {activeStep, dateOfBirth} = this.state;
+    const {activeStep, dobMonth, dobDay, dobYear} = this.state;
     const activeStepIndex = steps.indexOf(activeStep);
     if (this.validate()) {
       if (activeStep === PERSONAL_INFO_STEP) {
-        const age = moment().diff(`${dateOfBirth.month}-${dateOfBirth.day}-${dateOfBirth.year}`, 'years');
+        const age = moment().diff(`${dobMonth}-${dobDay}-${dobYear}`, 'years');
         if (age < 18) {
           steps.splice(2, 0, PARENT_INFO_STEP);
         } else if (_.includes(steps, PARENT_INFO_STEP)) {
@@ -125,80 +128,49 @@ class Registration extends Component {
   }
 
   validate = () => {
+    const {users} = this.props;
     const {activeStep} = this.state;
     const newUser = _.omit(this.state, ['activeStep', 'errors', 'hoverBack', 'hoverForward']);
-    const errors = [];
+    const errors = {};
+    const hasPinError = _.isEmpty(newUser.pin)
+      || _.isEmpty(newUser.confirmPin)
+      || (!_.isEmpty(newUser.pin) && newUser.pin !== newUser.confirmPin);
 
     switch (activeStep) {
     case PERSONAL_INFO_STEP:
-      if (_.isEmpty(newUser.firstName)) {
-        errors.push('firstName');
-      }
-      if (_.isEmpty(newUser.lastName)) {
-        errors.push('lastName');
-      }
-      if (_.isEmpty(newUser.dateOfBirth.month)) {
-        errors.push('month');
-      }
-      if (_.isEmpty(newUser.dateOfBirth.day)) {
-        errors.push('day');
-      }
-      if (_.isEmpty(newUser.dateOfBirth.year)) {
-        errors.push('year');
-      }
+      errors.firstName = _.isEmpty(newUser.firstName);
+      errors.lastName = _.isEmpty(newUser.lastName);
+      errors.dobMonth = _.isEmpty(newUser.dobMonth);
+      errors.dobDay = _.isEmpty(newUser.dobDay);
+      errors.dobYear = _.isEmpty(newUser.dobYear);
+      errors.email = _.isEmpty(newUser.email);
+      errors.phone = _.isEmpty(newUser.phone);
       break;
-    case CONTACT_INFO_STEP:
-      if (_.isEmpty(newUser.email)) {
-        errors.push('email');
-      }
-      if (_.isEmpty(newUser.phone)) {
-        errors.push('phone');
-      }
-      if (_.isEmpty(newUser.pin) || _.isEmpty(newUser.confirmPin)) {
-        errors.push('pin');
-        errors.push('confirmPin');
-      }
-      if (!_.isEmpty(newUser.pin) && newUser.pin !== newUser.confirmPin) {
-        errors.push('pin');
-        errors.push('confirmPin');
-      }
+    case LOGIN_INFO_STEP:
+      errors.username = _.isEmpty(newUser.username);
+      errors.usernameNotUnique = !isUsernameUnique(users, newUser.username);
+      errors.pin = hasPinError;
+      errors.confirmPin = hasPinError;
       break;
     case PARENT_INFO_STEP:
-      if (_.isEmpty(newUser.parentName)) {
-        errors.push('parentName');
-      }
-      if (_.isEmpty(newUser.parentPhone)) {
-        errors.push('parentPhone');
-      }
+      errors.parentName = _.isEmpty(newUser.parentName);
+      errors.parentPhone = _.isEmpty(newUser.parentPhone);
       break;
     case ADDRESS_INFO_STEP:
-      if (_.isEmpty(newUser.address.streetLine1)) {
-        errors.push('streetLine1');
-      }
-      if (_.isEmpty(newUser.address.city)) {
-        errors.push('city');
-      }
-      if (_.isEmpty(newUser.address.state)) {
-        errors.push('state');
-      }
-      if (_.isEmpty(newUser.address.zip)) {
-        errors.push('zip');
-      }
+      errors.addressLine1 = _.isEmpty(newUser.addressLine1);
+      errors.addressCity = _.isEmpty(newUser.addressCity);
+      errors.addressState = _.isEmpty(newUser.addressState);
+      errors.addressZip = _.isEmpty(newUser.addressZip);
+      errors.countryOfOrigin = _.isEmpty(newUser.countryOfOrigin);
       break;
     case QUESTION_ONE_STEP:
-      if (_.isEmpty(newUser.questionOne)) {
-        errors.push('questionOne');
-      }
+      errors.questionOne = _.isEmpty(newUser.questionOne);
       break;
     case QUESTION_TWO_STEP:
-      if (_.isEmpty(newUser.questionTwo)) {
-        errors.push('questionTwo');
-      }
+      errors.questionTwo = _.isEmpty(newUser.questionTwo);
       break;
     case WAIVER_STEP:
-      if (!newUser.waiver) {
-        errors.push('waiver');
-      }
+      errors.waiver = !newUser.waiver;
       break;
     case CHECKBOX_INFO_STEP:
     case CONFIRMATION_STEP:
@@ -208,7 +180,7 @@ class Registration extends Component {
     }
 
     this.setState({errors});
-    return !errors.length;
+    return !_.some(errors, (error) => error);
   }
 
   setStep = (activeStep) => () => this.setState({activeStep});
@@ -223,8 +195,8 @@ class Registration extends Component {
     switch (activeStep) {
     case PERSONAL_INFO_STEP:
       return <PersonalInfoStep errors={errors} newUser={newUser} onChange={this.handleChange} />;
-    case CONTACT_INFO_STEP:
-      return <ContactInfoStep errors={errors} newUser={newUser} onChange={this.handleChange} />;
+    case LOGIN_INFO_STEP:
+      return <LoginInfoStep errors={errors} newUser={newUser} onChange={this.handleChange} />;
     case PARENT_INFO_STEP:
       return <ParentInfoStep errors={errors} newUser={newUser} onChange={this.handleChange} />;
     case ADDRESS_INFO_STEP:
@@ -240,7 +212,7 @@ class Registration extends Component {
     case CONFIRMATION_STEP:
       return <ConfirmationStep errors={errors} newUser={newUser} onChange={this.handleChange} />;
     default:
-      return <div></div>;
+      return <div>No step found</div>;
     }
 
   }
@@ -284,7 +256,15 @@ class Registration extends Component {
   }
 }
 
-export default connect(null, {
+const mapStateToProps = ({app}) => {
+  return {
+    users: app.get('users').toJS()
+  };
+};
+
+const mapDispatchToProps = {
   registerUser,
   updateUser
-})(Registration);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Registration);

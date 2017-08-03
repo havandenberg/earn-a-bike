@@ -7,6 +7,7 @@ import {clearMessages, handleSignIn} from 'actions/app';
 import Messages from 'components/Messages.jsx';
 import UserList from 'components/UserList.jsx';
 import {messages as messageList} from 'utils/messages';
+import {userProps} from 'proptypes/user';
 import bicycleForwardGif from 'images/bicycle-forward.gif';
 import bicycleForwardImg from 'images/bicycle-forward.png';
 
@@ -14,21 +15,25 @@ class SignIn extends Component {
   static propTypes = {
     clearMessages: PropTypes.func,
     handleSignIn: PropTypes.func,
-    messages: PropTypes.arrayOf(PropTypes.shape({})),
-    users: PropTypes.arrayOf(PropTypes.shape({}))
+    messages: PropTypes.arrayOf(PropTypes.shape({
+      text: PropTypes.string,
+      type: PropTypes.string
+    })),
+    users: PropTypes.arrayOf(PropTypes.shape(userProps))
   }
 
   state = {
     errors: [],
     hover: false,
     pin: '',
-    email: ''
+    username: ''
   };
 
   handleChange = (field) => {
     return (e) => {
-      if (field !== 'pin' || e.target.value.match(/^[0-9]{0,4}$/)) {
-        this.setState({[field]: e.target.value});
+      const {value} = e.target;
+      if (field !== 'pin' || value.match(/^[0-9]{0,4}$/)) {
+        this.setState({[field]: value});
       }
     };
   }
@@ -38,11 +43,11 @@ class SignIn extends Component {
   }
 
   validate = () => {
-    const {email, pin} = this.state;
+    const {username, pin} = this.state;
     const errors = [];
 
-    if (_.isEmpty(email)) {
-      errors.push(messageList.enterEmail);
+    if (_.isEmpty(username)) {
+      errors.push(messageList.enterUsername);
     }
 
     if (_.isEmpty(pin)) {
@@ -55,18 +60,18 @@ class SignIn extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
-    const {email, pin} = this.state;
+    const {username, pin} = this.state;
     this.props.clearMessages();
     if (this.validate()) {
-      this.props.handleSignIn(email, pin);
-      this.setState({email: '', pin: ''});
-      this.refs.email.focus();
+      this.props.handleSignIn(username, pin);
+      this.setState({username: '', pin: ''});
     }
+    this.refs.username.focus();
   }
 
   render() {
     const {messages, users} = this.props;
-    const {email, errors, hover, pin} = this.state;
+    const {errors, hover, pin, username} = this.state;
 
     return (
       <div className="sign-in__container">
@@ -78,11 +83,11 @@ class SignIn extends Component {
               <input
                 autoFocus={true}
                 className="input-primary"
-                placeholder="Email"
-                ref="email"
+                placeholder="Username"
+                ref="username"
                 type="text"
-                value={email}
-                onChange={this.handleChange('email')} />
+                value={username}
+                onChange={this.handleChange('username')} />
               <input
                 autoComplete="off"
                 className="field input-primary sign-in-pin"
@@ -94,7 +99,11 @@ class SignIn extends Component {
             </div>
             <div className="sign-in-options">
               <Link className="sign-in-new" to="/registration">New?</Link>
-              <button className="btn-forward" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover} type="submit">
+              <button
+                className="btn-forward"
+                onMouseEnter={this.toggleHover}
+                onMouseLeave={this.toggleHover}
+                type="submit">
                 <img alt="Sign In" src={hover ? bicycleForwardGif : bicycleForwardImg} />
                 <div className="btn-help">Sign In</div>
               </button>
@@ -107,12 +116,16 @@ class SignIn extends Component {
   }
 }
 
-export default connect(({app}) => {
+const mapStateToProps = ({app}) => {
   return {
     messages: app.get('messages').toJS(),
     users: app.get('users').toJS()
   };
-}, {
+};
+
+const mapDispatchToProps = {
   clearMessages,
   handleSignIn
-})(SignIn);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);

@@ -2,7 +2,7 @@ import Immutable from 'immutable';
 import {messages} from 'utils/messages';
 import {
   CLEAR_MESSAGES,
-  EMAIL_NOT_FOUND,
+  USERNAME_NOT_FOUND,
   UPDATE_NEXT_ID,
   INVALID_PIN,
   UPDATE_USERS
@@ -28,13 +28,14 @@ const initialState = Immutable.fromJS({
       },
       pin: '1234',
       dateOfBirth: {
-        month: '1',
-        day: '1',
+        month: '01',
+        day: '01',
         year: '1999'
       },
       id: 0,
       firstName: 'Manager',
-      email: 'manager'
+      email: 'manager',
+      username: 'manager'
     }
   ]
 });
@@ -50,9 +51,9 @@ export default function reducer(state = initialState, action = {}) {
     return state.merge({
       messages: []
     });
-  case EMAIL_NOT_FOUND:
+  case USERNAME_NOT_FOUND:
     return state.merge({
-      messages: [messages.emailNotFound]
+      messages: [messages.usernameNotFound]
     });
   case INVALID_PIN:
     return state.merge({

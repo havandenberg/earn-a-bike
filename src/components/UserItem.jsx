@@ -43,18 +43,18 @@ export default class UserItem extends Component {
   }
 
   handleExportSelectUser = (userId) => {
-    return (e) => {
-      e.preventDefault();
+    return () => {
       this.props.onExportSelectUser(userId);
     };
   }
 
   handleSelectUser = () => {
-    this.props.onSelectUser(this.props.user);
+    const {onSelectUser, user} = this.props;
+    onSelectUser(user);
   }
 
   getTotalHours = () => {
-    return getTotalHours(this.props.user);
+    return getTotalHours(this.props.user.visits);
   }
 
   showPin = () => {

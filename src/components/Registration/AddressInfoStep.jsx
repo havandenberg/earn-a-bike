@@ -2,43 +2,20 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import {userProps} from 'proptypes/user';
-import {hasError} from 'utils/messages';
 
 export default class AddressInfoStep extends Component {
   static propTypes = {
-    errors: PropTypes.arrayOf(PropTypes.string),
+    errors: PropTypes.shape({}),
     newUser: PropTypes.shape(userProps),
     onChange: PropTypes.func
   }
 
-  handleStreetLine1Change = (e) => {
-    const {newUser, onChange} = this.props;
-    newUser.address.streetLine1 = e.target.value;
-    onChange(newUser);
-  }
-
-  handleStreetLine2Change = (e) => {
-    const {newUser, onChange} = this.props;
-    newUser.address.streetLine2 = e.target.value;
-    onChange(newUser);
-  }
-
-  handleCityChange = (e) => {
-    const {newUser, onChange} = this.props;
-    newUser.address.city = e.target.value;
-    onChange(newUser);
-  }
-
-  handleStateChange = (e) => {
-    const {newUser, onChange} = this.props;
-    newUser.address.state = e.target.value;
-    onChange(newUser);
-  }
-
-  handleZipChange = (e) => {
-    const {newUser, onChange} = this.props;
-    newUser.address.zip = e.target.value;
-    onChange(newUser);
+  handleChange = (field) => {
+    return (e) => {
+      const {newUser, onChange} = this.props;
+      newUser[field] = e.target.value;
+      onChange(newUser);
+    };
   }
 
   render() {
@@ -48,45 +25,64 @@ export default class AddressInfoStep extends Component {
       <div className="registration-step">
         <input
           autoFocus={true}
-          className={classNames('registration-field', {'registration-field__error': hasError(errors, ['streetLine1'])})}
+          className={classNames(
+            'registration-field',
+            {'registration-field__error': errors.addressLine1}
+          )}
           type="text"
           placeholder="Address line 1"
-          value={newUser.address.streetLine1}
-          onChange={this.handleStreetLine1Change} />
+          value={newUser.addressLine1}
+          onChange={this.handleChange('addressLine1')} />
         <input
-          className={classNames('registration-field', {'registration-field__error': hasError(errors, ['streetLine2'])})}
+          className={classNames(
+            'registration-field',
+            {'registration-field__error': errors.addressLine2}
+          )}
           type="text"
           placeholder="Address line 2"
-          value={newUser.address.streetLine2}
-          onChange={this.handleStreetLine2Change} />
-        <input
-          className={classNames('registration-field', {'registration-field__error': hasError(errors, ['city'])})}
-          type="text"
-          placeholder="City"
-          value={newUser.address.city}
-          onChange={this.handleCityChange} />
+          value={newUser.addressLine2}
+          onChange={this.handleChange('addressLine2')} />
         <div className="registration-address-container">
           <input
             className={classNames(
               'registration-field',
+              'registration-address-city',
+              {'registration-field__error': errors.addressCity}
+            )}
+            type="text"
+            placeholder="City"
+            value={newUser.addressCity}
+            onChange={this.handleChange('addressCity')} />
+          <input
+            className={classNames(
+              'registration-field',
               'registration-address-state',
-              {'registration-field__error': hasError(errors, ['state'])})
+              {'registration-field__error': errors.addressState})
             }
             type="text"
             placeholder="State"
-            value={newUser.address.state}
-            onChange={this.handleStateChange} />
+            value={newUser.addressState}
+            onChange={this.handleChange('addressState')} />
           <input
             className={classNames(
               'registration-field',
               'registration-address-zip',
-              {'registration-field__error': hasError(errors, ['zip'])})
+              {'registration-field__error': errors.addressZip})
             }
             type="text"
             placeholder="Zip code"
-            value={newUser.address.zip}
-            onChange={this.handleZipChange} />
+            value={newUser.addressZip}
+            onChange={this.handleChange('addressZip')} />
         </div>
+        <input
+          className={classNames(
+            'registration-field',
+            {'registration-field__error': errors.countryOfOrigin}
+          )}
+          type="text"
+          placeholder="Country of origin"
+          value={newUser.countryOfOrigin}
+          onChange={this.handleChange('countryOfOrigin')} />
       </div>
     );
   }
