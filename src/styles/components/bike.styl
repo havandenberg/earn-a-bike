@@ -1,0 +1,61 @@
+.bike
+  align-items: center
+  display: flex
+  margin-bottom: $spacing-small
+  width: 100%
+
+  &__container
+    display: flex
+    flex-direction: column
+    height: 47vh
+    margin-top: $spacing-small + $spacing-micro
+    overflow-y: auto
+    width: 90%
+
+  &-date
+    color: $regular-red
+
+  &-description
+    color: $regular-red
+    flex-grow: 1
+    margin: 0 $spacing-micro
+
+    &__editing
+      background: $input-background
+      font-size: 1rem
+      line-height: 1
+      padding: 0
+
+  &-none
+    color: $regular-red
+    margin-bottom: $spacing-small
+    text-align: center
+
+  &-add
+    align-self: flex-end
+    height: 1.5rem
+    padding: 0
+    width: 1.5rem
+
+    img
+      height: 1.5rem
+      width: 1.5rem
+
+  &-edit
+    height: 1.5rem
+    margin-right: $spacing-micro
+    padding: 0
+    width: 1.5rem
+
+    img
+      height: 1.5rem
+      width: 1.5rem
+
+  &-remove
+    height: 1.5rem
+    padding: 0
+    width: 1.5rem
+
+    img
+      height: 1.5rem
+      width: 1.5rem

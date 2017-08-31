@@ -3,9 +3,9 @@ import {history} from 'utils/store';
 import logoImg from 'assets/images/logo.png';
 
 export default class Header extends Component {
-  goHome= () => {
+  goHome = () => {
     history.push('/');
-  }
+  };
 
   render() {
     return (

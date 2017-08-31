@@ -84,18 +84,18 @@ export default class Visit extends Component {
               onClick={this.showNotes}
               onMouseEnter={this.toggleHover}
               onMouseLeave={this.toggleHover}>
-              <img alt="Sign In" className="visit-notes__img" src={(hover || isOpen) ? notesImg : notesLightImg} />
+              <img alt="notes" className="visit-notes__img" src={(hover || isOpen) ? notesImg : notesLightImg} />
             </button>
           </div>
         </div>
-        {isOpen && ((isEditing && !isManager)
+        {isOpen && (isEditing
           ? <textarea
             autoFocus={true}
             className="visit-notes__input scroll"
             onBlur={this.hideNotes}
             onChange={this.handleNotesChange}
-            value={visit.notes} />
-          : <div className="visit-notes__text">{visit.notes}</div>)
+            value={_.isEmpty(visit.notes) ? '-' : visit.notes} />
+          : <div className="visit-notes__text">{_.isEmpty(visit.notes) ? '-' : visit.notes}</div>)
         }
       </div>
     );

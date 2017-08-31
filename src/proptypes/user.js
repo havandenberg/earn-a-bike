@@ -13,7 +13,12 @@ export const userProps = {
   addressLine2: PropTypes.string,
   addressState: PropTypes.string,
   addressZip: PropTypes.string,
-  bikesEarned: PropTypes.arrayOf(PropTypes.string),
+  bikesEarned: PropTypes.arrayOf(
+    PropTypes.shape({
+      date: PropTypes.string,
+      description: PropTypes.string
+    })
+  ),
   countryOfOrigin: PropTypes.string,
   dobDay: PropTypes.string,
   dobMonth: PropTypes.string,

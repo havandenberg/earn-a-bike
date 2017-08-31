@@ -55,7 +55,9 @@ export function handleSignIn(username, pin) {
       return user;
     }
 
-    if (!user.isActive) {dispatch({type: INVALID_PIN});}
+    if (!user.isActive) {
+      dispatch({type: INVALID_PIN});
+    }
     return false;
   };
 }
@@ -91,7 +93,7 @@ export function updateUser(updatedUser) {
       return u.id === updatedUser.id;
     });
 
-    _.each(Object.keys(user), (key) => {
+    _.each(Object.keys(updatedUser), (key) => {
       user[key] = updatedUser[key];
     });
 
@@ -120,10 +122,24 @@ export function deleteUsers(idsToDelete) {
     const users = getState().app.get('users').toJS();
 
     _.each(idsToDelete, (id) => {
-      _.remove(users, (user) => (id !== 0 && user.id === id));
+      _.remove(users, (user) => id !== 0 && user.id === id);
     });
 
     dispatch(updateUsers(users));
+    return true;
+  };
+}
+
+export function signoutAllUsers() {
+  return (dispatch, getState) => {
+    const users = getState().app.get('users').toJS();
+
+    _.each(users, (user) => {
+      if (user.isActive) {
+        dispatch(handleSignOut(user.id));
+      }
+    });
+
     return true;
   };
 }
