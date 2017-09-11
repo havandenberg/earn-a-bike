@@ -1,9 +1,8 @@
 .header
   color: $regular-red
-  display: flex
   font-family: $good-dog
-  justify-content: space-around
   margin: 0 auto
+  text-align: center
   width: 90%
 
   &-city
@@ -12,23 +11,22 @@
     padding: 0
 
   &-logo
-    height: 150px
-    width: 150px
+    float: left
 
-  &-content
-    align-items: center
-    display: flex
-    flex-basis: 70%
-    flex-direction: column
+    img
+      height: 100px
+      width: 100px
 
   &-subtitle
     color: $dark-green
     font-family: $chalkboard
     font-size: 1.5rem
+    text-align: center
 
   &-title
     font-size: 4rem
     line-height: 1
+    text-align: center
 
   &-welcome
     font-size: 1.5rem

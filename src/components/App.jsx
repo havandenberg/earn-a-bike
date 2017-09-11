@@ -8,6 +8,7 @@ import Profile from 'components/Profile.jsx';
 import Registration from 'components/Registration/index.jsx';
 import AddManager from 'components/AddManager.jsx';
 import SignIn from 'components/SignIn.jsx';
+import Signout from 'components/Signout.jsx';
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
           <Switch>
             <Route exact={true} path="/" component={SignIn} />
             <Route exact={true} path="/profile/:userid" component={Profile} />
+            <Route exact={true} path="/signout/:userid" component={Signout} />
             <Route exact={true} path="/registration" component={Registration} />
             <Route exact={true} path="/registration/manager" component={AddManager} />
           </Switch>

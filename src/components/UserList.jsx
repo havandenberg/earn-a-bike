@@ -19,7 +19,7 @@ class UserList extends Component {
     users: PropTypes.arrayOf(PropTypes.shape(userProps)),
     onSelectUser: PropTypes.func,
     onSignout: PropTypes.func
-  }
+  };
 
   state = {
     confirmDelete: false,
@@ -30,21 +30,25 @@ class UserList extends Component {
 
   handleChange = (e) => {
     this.setState({searchText: e.target.value});
-  }
+  };
+
+  handleSignout = (id) => {
+    this.props.onSignout(id);
+  };
 
   handleSelectUser = (user) => {
     this.props.onSelectUser(user);
-  }
+  };
 
   handleExportSelectUser = (userId) => {
     const {selectedUserIds} = this.state;
     if (_.includes(selectedUserIds, userId)) {
-      _.remove(selectedUserIds, (id) => (id === userId));
+      _.remove(selectedUserIds, (id) => id === userId);
     } else {
       selectedUserIds.push(userId);
     }
     this.setState({selectedUserIds});
-  }
+  };
 
   handleToggleExportAll = () => {
     const {users} = this.props;
@@ -59,81 +63,84 @@ class UserList extends Component {
       });
       this.setState({selectedUserIds});
     }
-  }
-
-  handleSignout = (username) => {
-    this.props.onSignout(username);
-  }
+  };
 
   confirmDelete = () => {
     this.setState({confirmDelete: true});
-  }
+  };
 
   resetConfirmDelete = () => {
     this.setState({confirmDelete: false});
-  }
+  };
 
   deleteUsers = () => {
     const {selectedUserIds} = this.state;
     this.props.deleteUsers(selectedUserIds);
     this.setState({confirmDelete: false, selectedUserIds: []});
-  }
+  };
 
   filterUsers = (user) => {
     return user.isActive && this.searchUsers(user);
-  }
+  };
 
   filterProfileUsers = (user) => {
     return this.searchUsers(user);
-  }
+  };
 
   searchUsers = (user) => {
     const {isProfile} = this.props;
     const {searchText} = this.state;
     const text = `${user.firstName}${isProfile ? user.lastName : user.lastName[0]}`;
     return text.toLowerCase().includes(searchText.toLowerCase());
-  }
+  };
 
   sortUsers = (a, b) => {
     if (!a.isManager && !b.isManager) {
       const x = a.visits[0].timeIn;
       const y = b.visits[0].timeIn;
-      return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+      return x < y ? -1 : x > y ? 1 : 0;
     }
-    if (!a.isManager && b.isManager) {return 1;}
-    if (a.isManager && !b.isManager) {return -1;}
+    if (!a.isManager && b.isManager) {
+      return 1;
+    }
+    if (a.isManager && !b.isManager) {
+      return -1;
+    }
     return 0;
-  }
+  };
 
   sortProfileUsers = (a, b) => {
     const {sortByHours} = this.state;
     if (!a.isManager && !b.isManager) {
       const x = sortByHours ? getTotalHours(b.visits) : a.firstName;
       const y = sortByHours ? getTotalHours(a.visits) : b.lastName;
-      return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+      return x < y ? -1 : x > y ? 1 : 0;
     }
-    if (!a.isManager && b.isManager) {return 1;}
-    if (a.isManager && !b.isManager) {return -1;}
+    if (!a.isManager && b.isManager) {
+      return 1;
+    }
+    if (a.isManager && !b.isManager) {
+      return -1;
+    }
+    if (a.isManager && b.isManager) {
+      return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
+    }
     return 0;
-  }
+  };
 
   toggleSortByHours = () => {
     this.setState({sortByHours: !this.state.sortByHours});
-  }
+  };
 
   render() {
     const {confirmDelete, selectedUserIds, searchText, sortByHours} = this.state;
-    const {
-      isProfile,
-      selectedUser,
-      users
-    } = this.props;
+    const {isProfile, selectedUser, users} = this.props;
     const isExportAll = selectedUserIds.length === users.length;
 
     return (
       <div className={classNames('user-list', {'user-list-profile': isProfile})}>
-        {isProfile
-          ? <div className="user">
+        {isProfile ? (
+          <div className="user">
             <div className="user-left">
               <button className="checkbox" onClick={this.handleToggleExportAll}>
                 {isExportAll && <img alt="Check" src={checkImg} />}
@@ -141,14 +148,16 @@ class UserList extends Component {
               <div className="user-list-header">All Users</div>
             </div>
             <button
-              className={classNames(
-                'user-list-header',
-                'user-list-header__sort-hours',
-                {'user-list-header__sort-hours-active': sortByHours}
-              )} onClick={this.toggleSortByHours}>(hrs)</button>
+              className={classNames('user-list-header', 'user-list-header__sort-hours', {
+                'user-list-header__sort-hours-active': sortByHours
+              })}
+              onClick={this.toggleSortByHours}>
+              (hrs)
+            </button>
           </div>
-          : <div className="user-list-header">Currently signed in</div>
-        }
+        ) : (
+          <div className="user-list-header">Currently signed in</div>
+        )}
         <div className="input-search">
           <img alt="Search" src={searchImg} />
           <input
@@ -158,11 +167,7 @@ class UserList extends Component {
             value={searchText}
             onChange={this.handleChange} />
         </div>
-        <div className={classNames(
-          'user-list__users',
-          {'user-list__users-sign-in': !isProfile},
-          'scroll'
-        )}>
+        <div className={classNames('user-list__users', {'user-list__users-sign-in': !isProfile}, 'scroll')}>
           {users
             .filter(isProfile ? this.filterProfileUsers : this.filterUsers)
             .sort(isProfile ? this.sortProfileUsers : this.sortUsers)
@@ -176,45 +181,36 @@ class UserList extends Component {
                   onSelectUser={this.handleSelectUser}
                   onExportSelectUser={this.handleExportSelectUser}
                   onSignout={this.handleSignout}
-                  user={user} />
+                  user={user}/>
               );
-            })
-          }
+            })}
         </div>
-        {isProfile && (confirmDelete
-          ? <div className="user-list__options">
-            <div className="user-list__options-text">Are you sure?</div>
-            <button
-              className="btn-action btn-action__delete"
-              onClick={this.deleteUsers}>
-              Yes
-            </button>
-            <button
-              className="btn-action btn-action__delete"
-              onClick={this.resetConfirmDelete}>
-              No
-            </button>
-          </div>
-          : <div className="user-list__options">
-            <button
-              className="btn-action"
-              onClick={importData}>
-              Import
-            </button>
-            <button
-              className="btn-action"
-              onClick={exportData}>
-              Export
-            </button>
-            {selectedUserIds.length > 0 &&
-              <button
-                className="btn-action btn-action__delete"
-                onClick={this.confirmDelete}>
-                Delete
+        {isProfile &&
+          (confirmDelete ? (
+            <div className="user-list__options">
+              <div className="user-list__options-text">Are you sure?</div>
+              <button className="btn-action btn-action__delete" onClick={this.deleteUsers}>
+                Yes
               </button>
-            }
-          </div>)
-        }
+              <button className="btn-action btn-action__delete" onClick={this.resetConfirmDelete}>
+                No
+              </button>
+            </div>
+          ) : (
+            <div className="user-list__options">
+              <button className="btn-action" onClick={importData}>
+                Import
+              </button>
+              <button className="btn-action" onClick={exportData}>
+                Export
+              </button>
+              {selectedUserIds.length > 0 && (
+                <button className="btn-action btn-action__delete" onClick={this.confirmDelete}>
+                  Delete
+                </button>
+              )}
+            </div>
+          ))}
       </div>
     );
   }
