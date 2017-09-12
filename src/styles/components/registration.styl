@@ -7,6 +7,7 @@
     text-align: center
 
   &-step
+    align-items: flex-start
     color: $regular-red
     display: flex
     flex-direction: column
@@ -48,6 +49,13 @@
     &__question
       font-size: 1.2rem
       height: 35vh
+
+    &__school
+      width: 60%
+
+      &-placeholder
+        height: 172px
+        width: 100%
 
   &-forward
     width: 120px
@@ -105,6 +113,7 @@
     display: flex
     font-size: 1.4rem
     margin: $spacing-base auto
+    width: 100%
 
     .checkbox
       margin-right: $spacing-base
@@ -121,6 +130,9 @@
 
       &-error
         border: 1px dashed $regular-red
+
+    &__school
+      margin-bottom: 0
 
   &-complete
     color: $regular-red
@@ -154,4 +166,5 @@
         align-items: center
         display: flex
         justify-content: space-between
-        margin-top: $spacing-base
+        margin: $spacing-base auto 0 auto
+        width: 30%

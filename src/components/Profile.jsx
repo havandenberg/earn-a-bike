@@ -51,6 +51,7 @@ class Profile extends Component {
       isEditing: false,
       isInterestedManager: user.isInterestedManager,
       isManager: user.isManager,
+      isStudent: user.isStudent,
       lastName: user.lastName,
       newPin: '',
       oldPin: '',
@@ -62,6 +63,7 @@ class Profile extends Component {
       pin: user.pin,
       questionOne: user.questionOne,
       questionTwo: user.questionTwo,
+      schoolName: user.schoolName,
       username: user.username,
       view: 'personal',
       visits: user.visits,
@@ -171,6 +173,7 @@ class Profile extends Component {
       isEditing: false,
       isInterestedManager: user.isInterestedManager,
       isManager: user.isManager,
+      isStudent: user.isStudent,
       lastName: user.lastName,
       newPin: '',
       oldPin: '',
@@ -182,6 +185,7 @@ class Profile extends Component {
       pin: user.pin,
       questionOne: user.questionOne,
       questionTwo: user.questionTwo,
+      schoolName: user.schoolName,
       username: user.username,
       view: 'personal',
       visits: user.visits,
@@ -287,7 +291,9 @@ class Profile extends Component {
       questionOne,
       questionTwo,
       isInterestedManager,
+      isStudent,
       idsToExport,
+      schoolName,
       view,
       visits
     } = this.state;
@@ -454,6 +460,8 @@ class Profile extends Component {
                 <div className="profile-answer">{emailList ? 'Yes' : 'No'}</div>
                 <div className="profile-question">4. Are you interested in becoming a shop manager?</div>
                 <div className="profile-answer">{isInterestedManager ? 'Yes' : 'No'}</div>
+                <div className="profile-question">5. Are you a student?</div>
+                <div className="profile-answer">{isStudent ? `Yes, at ${schoolName}` : 'No'}</div>
               </div>
             )}
           </div>

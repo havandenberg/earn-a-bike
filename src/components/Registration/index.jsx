@@ -163,6 +163,9 @@ class Registration extends Component {
       errors.addressZip = _.isEmpty(newUser.addressZip);
       errors.countryOfOrigin = _.isEmpty(newUser.countryOfOrigin);
       break;
+    case CHECKBOX_INFO_STEP:
+      errors.schoolName = newUser.isStudent ? _.isEmpty(newUser.schoolName) : false;
+      break;
     case QUESTION_ONE_STEP:
       errors.questionOne = _.isEmpty(newUser.questionOne);
       break;
@@ -172,7 +175,6 @@ class Registration extends Component {
     case WAIVER_STEP:
       errors.waiver = !newUser.waiver;
       break;
-    case CHECKBOX_INFO_STEP:
     case CONFIRMATION_STEP:
       break;
     default:
@@ -206,7 +208,7 @@ class Registration extends Component {
     case QUESTION_TWO_STEP:
       return <QuestionTwoStep errors={errors} newUser={newUser} onChange={this.handleChange} />;
     case CHECKBOX_INFO_STEP:
-      return <CheckboxInfoStep newUser={newUser} onChange={this.handleChange} />;
+      return <CheckboxInfoStep errors={errors} newUser={newUser} onChange={this.handleChange} />;
     case WAIVER_STEP:
       return <WaiverStep errors={errors} newUser={newUser} onChange={this.handleChange} onForward={this.handleForward} />;
     case CONFIRMATION_STEP:

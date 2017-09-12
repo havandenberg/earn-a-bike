@@ -17,7 +17,6 @@ export const updateUserData = () => {
       user.addressCity = user.address.city;
       user.addressState = user.address.state;
       user.addressZip = user.address.zip;
-      user.bikesEarned = [];
       user.dobMonth = user.dateOfBirth.month;
       user.dobDay = user.dateOfBirth.day;
       user.dobYear = user.dateOfBirth.year;
@@ -25,6 +24,11 @@ export const updateUserData = () => {
       user.countryOfOrigin = 'Country of Origin';
       delete user.address;
       delete user.dateOfBirth;
+      if (!user.isManager) {
+        user.bikesEarned = [];
+        user.isStudent = false;
+        user.schoolName = '';
+      }
     });
 
     // store.dispatch(updateUsers(users));
