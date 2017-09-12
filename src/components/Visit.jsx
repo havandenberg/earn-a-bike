@@ -39,9 +39,9 @@ export default class Visit extends Component {
   }
 
   showNotes = () => {
-    const {isEditing, toggleOpenVisit, openVisits, visit} = this.props;
+    const {isEditing, isManager, toggleOpenVisit, openVisits, visit} = this.props;
     if (isEditing) {
-      if (!_.includes(openVisits, visit)) {
+      if (!_.includes(openVisits, visit) || isManager) {
         toggleOpenVisit(visit);
       }
     } else {
@@ -88,11 +88,10 @@ export default class Visit extends Component {
             </button>
           </div>
         </div>
-        {isOpen && (isEditing
+        {isOpen && (((isEditing && isManager) || !isManager)
           ? <textarea
             autoFocus={true}
             className="visit-notes__input scroll"
-            onBlur={this.hideNotes}
             onChange={this.handleNotesChange}
             value={_.isEmpty(visit.notes) ? '-' : visit.notes} />
           : <div className="visit-notes__text">{_.isEmpty(visit.notes) ? '-' : visit.notes}</div>)

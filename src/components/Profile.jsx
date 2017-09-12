@@ -84,6 +84,7 @@ class Profile extends Component {
     const {visits} = this.state;
     visits[visitIndex] = visit;
     this.setState({visits});
+    this.props.updateUser(this.getUpdatedUser(true));
   };
 
   handleNotesChange = (e) => {
@@ -300,7 +301,7 @@ class Profile extends Component {
             <div className="btn-help btn-help__back">Back</div>
           </Link>
           <div className="profile-title">{user.isManager ? 'Volunteer Info' : 'My Info'}</div>
-          {_.includes(['personal', 'visits'], view) ? (
+          {(view === 'personal' || (view === 'visits' && user.isManager)) ? (
             <button className="btn-action" onClick={this.toggleEditing}>
               {isEditing ? 'Save' : 'Edit'}
             </button>
