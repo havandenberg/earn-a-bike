@@ -1,19 +1,31 @@
 .signout
-  margin: $spacing-micro auto 0 auto
-  width: 95%
-
-  &-header
+  &__background
     align-items: center
+    background-color: rgba(0, 0, 0, 0.5)
+    bottom: 0
     display: flex
-    justify-content: space-between
+    height: 100%
+    left: 0
+    position: absolute
+    right: 0
+    top: 0
+    width: 100%
 
-  &-content
+  &__container
     align-items: center
-    color: $regular-red
+    background-color: $background-yellow
+    border: $border
+    border-radius: $border-radius
     display: flex
     flex-direction: column
-    margin: 0 auto $spacing-base auto
-    width: 60%
+    height: 70vh
+    margin: 0 auto
+    padding: $spacing-small $spacing-base
+    width: 35%
+
+    .profile-title
+      text-align: center
+      margin-bottom: $spacing-small
 
     .profile-total-hours
       font-size: 2rem
@@ -55,6 +67,12 @@
       width: 100%
 
   &-confirm
+    align-items: center
+    display: flex
+    justify-content: space-between
+    margin: 0 auto
+    width: 100%
+
     button
       color: $regular-red
       font-size: 1.5rem
@@ -63,9 +81,8 @@
       text-align: center
       text-decoration: none
 
-    &:hover
-      border-bottom: $border-hover
+      &:hover
+        border-bottom: $border-hover
 
   &-error
     border: 1px dashed $regular-red
-    border-bottom: $border-hover

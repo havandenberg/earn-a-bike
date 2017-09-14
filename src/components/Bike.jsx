@@ -1,17 +1,18 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import removeImg from 'images/remove.svg';
+import classNames from 'classnames';
+import BikeEdit from 'components/BikeEdit.jsx';
+import bikeProps from 'proptypes/bike';
+import userProps from 'proptypes/user';
 import editImg from 'images/edit.svg';
+import removeImg from 'images/remove.svg';
 
 export default class Bike extends Component {
   static propTypes = {
-    bike: PropTypes.shape({
-      date: PropTypes.string,
-      description: PropTypes.string
-    }),
+    bike: PropTypes.shape(bikeProps),
     index: PropTypes.number,
-    isManager: PropTypes.bool,
+    user: PropTypes.shape(userProps),
     onRemoveBike: PropTypes.func,
     onUpdateBike: PropTypes.func
   };
@@ -20,6 +21,7 @@ export default class Bike extends Component {
     super(props);
 
     this.state = {
+      isConfirm: false,
       isEditing: _.isEmpty(props.bike.description)
     };
   }
@@ -31,47 +33,60 @@ export default class Bike extends Component {
   };
 
   handleToggleEditing = () => {
-    if (!this.state.isEditing) {
-      this.setState({isEditing: true});
-    }
+    this.setState({isEditing: !this.state.isEditing});
   };
 
-  handleStopEditing = () => {
-    setTimeout(() => {
-      this.setState({isEditing: false});
-    }, 200);
+  handleConfirm = () => {
+    this.setState({isConfirm: true});
+  };
+
+  handleCancelConfirm = () => {
+    this.setState({isConfirm: false});
   };
 
   handleRemove = () => {
     this.props.onRemoveBike(this.props.index);
+    this.setState({isConfirm: false});
   };
 
   render() {
-    const {bike, isManager} = this.props;
-    const {isEditing} = this.state;
+    const {
+      bike,
+      index,
+      user,
+      onRemoveBike,
+      onUpdateBike
+    } = this.props;
+    const {isConfirm, isEditing} = this.state;
 
     return (
       <div className="bike">
-        <div className="bike-date">{`${bike.date} -`}</div>
-        {isEditing
-          ? <input
-            autoFocus={true}
-            type="text"
-            className="bike-description bike-description__editing"
-            onChange={this.handleChange}
-            onBlur={this.handleStopEditing}
-            value={bike.description}/>
-          : <div className="bike-description">
+        <div className="bike-header">
+          <div className={classNames('bike-status__indicator', {'bike-status__success': bike.isSignedOff})} />
+          <div className="bike-date">{`${bike.date} -`}</div>
+          <div className="bike-description">
             {bike.description}
-          </div>}
-        {isManager &&
-          <button className="bike-edit" onClick={this.handleToggleEditing}>
+          </div>
+          <button className="bike-btn-edit" onClick={this.handleToggleEditing}>
             <img alt="editing" className="bike-edit__img" src={editImg} />
-          </button>}
-        {isManager &&
-          <button className="bike-remove" onClick={this.handleRemove}>
-            <img alt="remove" className="bike-remove__img" src={removeImg} />
-          </button>}
+          </button>
+          {isConfirm && <div className="bike-confirm">Confirm?</div>}
+          {isConfirm && <button className="bike-confirm__btn" onClick={this.handleRemove}>Yes</button>}
+          {isConfirm && <button className="bike-confirm__btn" onClick={this.handleCancelConfirm}>No</button>}
+          {user.isManager && !isConfirm &&
+            <button className="bike-remove" onClick={this.handleConfirm}>
+              <img alt="removing" className="bike-remove__img" src={removeImg} />
+            </button>}
+        </div>
+        {isEditing &&
+          <BikeEdit
+            bike={bike}
+            index={index}
+            user={user}
+            toggleEditing={this.handleToggleEditing}
+            onRemoveBike={onRemoveBike}
+            onUpdateBike={onUpdateBike}/>
+        }
       </div>
     );
   }

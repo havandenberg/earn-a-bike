@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {history} from 'utils/store';
 import logoImg from 'assets/images/logo.png';
+import titleImg from 'assets/images/title.png';
 
 export default class Header extends Component {
   goHome = () => {
@@ -14,7 +15,7 @@ export default class Header extends Component {
           <img src={logoImg} alt="Worcester Earn A Bike" />
         </button>
         <div className="header-city">Welcome To</div>
-        <div className="header-title">Worcester Earn-A-Bike</div>
+        <img className="header-title" src={titleImg} alt="Worcester Earn A Bike" />
         <div className="header-subtitle">Your Part Time Bicycle Shop, With Full Time Bicycle Love</div>
       </div>
     );

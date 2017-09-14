@@ -1,0 +1,108 @@
+.bike-edit
+  &__background
+    align-items: center
+    background-color: rgba(0, 0, 0, 0.5)
+    bottom: 0
+    display: flex
+    height: 100%
+    left: 0
+    position: absolute
+    right: 0
+    top: 0
+    width: 100%
+
+  &__container
+    background-color: $background-yellow
+    border: $border
+    border-radius: $border-radius
+    height: 87vh
+    margin: 0 auto
+    overflow-y: auto
+    padding: $spacing-small $spacing-base
+    width: 60%
+
+  &__header
+    align-items: center
+    display: flex
+    margin 0 auto $spacing-small
+    width: 90%
+
+    .bike-status__indicator
+      margin-right: $spacing-small
+
+  &__date
+    color: $regular-red
+    font-size: 1.5rem
+
+  &__description
+    background: $input-background
+    color: $regular-red
+    flex-grow: 1
+    font-size: 1.5rem
+    line-height: 1
+    padding: 0
+
+  &__details
+    background: $input-background
+    color: $regular-red
+    font-size: 1rem
+    margin-bottom: $spacing-micro
+    padding: 0
+    width: 100%
+
+  &__prompt
+    color: $placeholder-red
+    font-size: 1.2rem
+    margin-bottom: $spacing-small
+    text-align: center
+
+  &__checklist
+    border: 1px solid $placeholder-red
+    margin-bottom: $spacing-small
+    padding: $spacing-micro
+
+  &__checkbox
+    align-items: center
+    display: flex
+
+    .checkbox
+      min-height: 20px
+      min-width: 20px
+
+    &-text
+      text-align: left
+
+  &__footer
+    align-items: center
+    display: flex
+    justify-content: space-between
+
+    button
+      color: $regular-red
+      font-size: 1.5rem
+      line-height: 1
+      text-decoration: none
+
+      &:hover
+        border-bottom: $border-hover
+
+  &__signoff
+    align-items: center
+    display: flex
+    justify-content: space-around
+
+    button
+      color: $black
+      font-size: 1rem
+      margin-left: $spacing-small
+      transition: none
+      width: auto
+
+      &:hover
+        border-bottom: $border
+
+    &-success
+      color: $dark-green
+
+  &__error
+    border: 1px dashed $regular-red

@@ -6,7 +6,7 @@ body
   -moz-osx-font-smoothing: grayscale
   -webkit-font-smoothing: antialiased
   background-color: $background-yellow
-  color: $black
+  color: $regular-red
   font-family: $chalkboard
   line-height: 1.5
   padding: 2rem 2rem 0 2rem
@@ -24,6 +24,7 @@ img
 
 button, input[type='submit']
   border: 0
+  color: $regular-red
   cursor: pointer
   font-family: inherit
   font-size: inherit
@@ -48,6 +49,11 @@ input, button, textarea
 
   &:focus
     outline: none
+
+input, textarea
+  +placeholder()
+    color: $placeholder-red
+    transition: all 0.3s ease
 
 .hide
   display: none

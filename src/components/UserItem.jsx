@@ -8,6 +8,7 @@ import {userProps} from 'proptypes/user';
 import {getTotalHours} from 'utils/helpers';
 import {history} from 'utils/store';
 import {getHoursDifference} from 'utils/helpers';
+import Signout from 'components/Signout.jsx';
 import checkImg from 'images/check.svg';
 import checkGreenImg from 'images/check-green.svg';
 
@@ -26,6 +27,7 @@ export default class UserItem extends Component {
     hover: false,
     pin: '',
     showPin: false,
+    showSignout: false,
     isSignout: false
   };
 
@@ -76,13 +78,21 @@ export default class UserItem extends Component {
     onSignout(user.id);
   };
 
+  handleSignoutBack = () => {
+    this.setState({isSignout: false, showSignout: false});
+  };
+
   handleProfile = (e) => {
     e.preventDefault();
     const {user} = this.props;
     const {isSignout, pin} = this.state;
 
     if (pin === user.pin) {
-      history.push(`${isSignout ? `/signout/${user.id}` : `/profile/${user.id}`}`);
+      if (isSignout) {
+        this.setState({showSignout: true});
+      } else {
+        history.push(`/profile/${user.id}`);
+      }
     } else {
       this.setState({pin: ''});
       this.refs.pin.focus();
@@ -90,7 +100,7 @@ export default class UserItem extends Component {
   };
 
   render() {
-    const {hover, pin, showPin} = this.state;
+    const {hover, showSignout, pin, showPin} = this.state;
     const {isExportSelected, isProfile, selectedUser, user} = this.props;
     const startTime = _.isEmpty(user.visits) ? moment() : moment.unix(user.isManager ? 0 : user.visits[0].timeIn);
     const endTime = moment();
@@ -189,6 +199,7 @@ export default class UserItem extends Component {
             )}
           </div>
         )}
+        {showSignout && <Signout onBack={this.handleSignoutBack} user={user} />}
       </div>
     );
   }

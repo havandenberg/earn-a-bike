@@ -1,8 +1,7 @@
 {
   "parser": "babel-eslint",
   "plugins": [
-    "react",
-    "jsx-a11y"
+    "react"
   ],
   "env": {
     "browser": true,
@@ -15,8 +14,7 @@
     "Bootstrapper": true
   },
   "extends": [
-    "eslint:recommended",
-    "plugin:jsx-a11y/recommended"
+    "eslint:recommended"
   ],
   parserOptions: {
     ecmaFeatures: {
@@ -44,8 +42,6 @@
     "eqeqeq": 2,
     "indent": [2, 2],
     "jsx-quotes": [2, "prefer-double"],
-    "jsx-a11y/no-autofocus": 0,
-    "jsx-a11y/no-onchange": 0,
     "key-spacing": [2, {"beforeColon": false, "afterColon": true}],
     "keyword-spacing": [2, {"before": true, "after": true}],
     "max-len": [1, 140],

@@ -1,16 +1,28 @@
 .bike
-  align-items: center
-  display: flex
   margin-bottom: $spacing-small
   width: 100%
+
+  &-header
+    align-items: center
+    display: flex
 
   &__container
     display: flex
     flex-direction: column
-    height: 47vh
+    height: 53vh
     margin-top: $spacing-small + $spacing-micro
     overflow-y: auto
     width: 90%
+
+  &-confirm
+    margin-right: $spacing-micro
+
+    &__btn
+      margin-right: $spacing-micro
+      padding: 0
+
+      &:hover
+        border-bottom: $border-hover
 
   &-date
     color: $regular-red
@@ -19,12 +31,6 @@
     color: $regular-red
     flex-grow: 1
     margin: 0 $spacing-micro
-
-    &__editing
-      background: $input-background
-      font-size: 1rem
-      line-height: 1
-      padding: 0
 
   &-none
     color: $regular-red
@@ -41,7 +47,7 @@
       height: 1.5rem
       width: 1.5rem
 
-  &-edit
+  &-btn-edit
     height: 1.5rem
     margin-right: $spacing-micro
     padding: 0
@@ -59,3 +65,14 @@
     img
       height: 1.5rem
       width: 1.5rem
+
+  &-status
+    &__indicator
+      background-color: $regular-red
+      border-radius: 50%
+      height: 0.9rem
+      margin-right: $spacing-micro
+      width: 0.9rem
+
+    &__success
+      background-color: $success-green

@@ -7,6 +7,7 @@ import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {updateUser} from 'actions/app';
 import {getHoursDifference, getTotalHours, isUsernameUnique} from 'utils/helpers';
+import {bikeChecklistItems} from 'utils/constants';
 import {history} from 'utils/store';
 import Bike from 'components/Bike.jsx';
 import PersonalInfo from 'components/PersonalInfo.jsx';
@@ -108,10 +109,21 @@ class Profile extends Component {
 
   handleAddBike = () => {
     const {bikesEarned} = this.state;
-    bikesEarned.push({
+    const newBike = {
       date: moment().format('MM/DD/YYYY'),
-      description: ''
+      description: '',
+      details: '',
+      checklist: [],
+      isSignedOff: false,
+      signedOffBy: ''
+    };
+    _.each(bikeChecklistItems, (item) => {
+      newBike.checklist.push({
+        text: item,
+        value: false
+      });
     });
+    bikesEarned.push(newBike);
     this.setState({bikesEarned});
   };
 
@@ -135,7 +147,7 @@ class Profile extends Component {
 
   getUpdatedUser = (isSave) => {
     const {confirmNewPin, newPin, oldPin} = this.state;
-    const updatedUser = _.omit(this.state, ['confirmNewPin', 'errors', 'hover', 'newPin', 'oldPin', 'openVisits', 'view']);
+    const updatedUser = _.omit(this.state, ['confirmNewPin', 'errors', 'isEditing', 'hover', 'newPin', 'oldPin', 'openVisits', 'view']);
 
     if (isSave) {
       if (!_.isEmpty(newPin)) {
@@ -283,7 +295,6 @@ class Profile extends Component {
       bikesEarned,
       errors,
       emailList,
-      hasNotesError,
       hover,
       isEditing,
       isManager,
@@ -345,7 +356,7 @@ class Profile extends Component {
                   Notes:
                   <textarea
                     autoFocus={true}
-                    className={classNames('profile-today-notes__input', {'input-error': hasNotesError})}
+                    className="profile-today-notes__input"
                     onChange={this.handleNotesChange}
                     value={user.visits[0].notes}/>
                 </div>
@@ -436,7 +447,7 @@ class Profile extends Component {
                           key={index}
                           bike={bike}
                           index={index}
-                          isManager={user.isManager}
+                          user={user}
                           onRemoveBike={this.handleRemoveBike}
                           onUpdateBike={this.handleUpdateBike}/>
                       );

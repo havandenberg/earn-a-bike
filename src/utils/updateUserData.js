@@ -1,7 +1,7 @@
 import _ from 'lodash';
-// import {updateUsers} from 'actions/app';
+import {updateUsers} from 'actions/app';
 import {config} from 'reducers/app';
-// import {store} from 'utils/store';
+import {store} from 'utils/store';
 
 // Change to true if updating data
 const shouldUpdateUserData = false;
@@ -24,6 +24,7 @@ export const updateUserData = () => {
       user.countryOfOrigin = 'Country of Origin';
       delete user.address;
       delete user.dateOfBirth;
+      delete user.isEditing;
       if (!user.isManager) {
         user.bikesEarned = [];
         user.isStudent = false;
@@ -31,7 +32,7 @@ export const updateUserData = () => {
       }
     });
 
-    // store.dispatch(updateUsers(users));
+    store.dispatch(updateUsers(users));
     // config.set('users', users);
   }
 };
