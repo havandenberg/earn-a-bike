@@ -43,14 +43,12 @@ export function handleSignIn(username, pin) {
 
     if (!user.isActive && user.pin === pin) {
       user.isActive = true;
-      if (!user.isManager) {
-        user.visits.unshift({
-          timeIn: moment().unix(),
-          timeOut: 0,
-          hours: 0,
-          notes: ''
-        });
-      }
+      user.visits.unshift({
+        timeIn: moment().unix(),
+        timeOut: 0,
+        hours: 0,
+        notes: ''
+      });
       dispatch(updateUsers(users));
       return user;
     }
@@ -71,14 +69,12 @@ export function handleSignOut(id) {
     });
     user.isActive = false;
 
-    if (!user.isManager) {
-      const currentVisit = user.visits[0];
-      currentVisit.timeOut = moment().unix();
+    const currentVisit = user.visits[0];
+    currentVisit.timeOut = moment().unix();
 
-      const startTime = moment.unix(currentVisit.timeIn);
-      const endTime = moment.unix(currentVisit.timeOut);
-      currentVisit.hours = parseFloat(getHoursDifference(startTime, endTime));
-    }
+    const startTime = moment.unix(currentVisit.timeIn);
+    const endTime = moment.unix(currentVisit.timeOut);
+    currentVisit.hours = parseFloat(getHoursDifference(startTime, endTime));
 
     dispatch(updateUsers(users));
     return true;

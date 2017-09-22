@@ -40,7 +40,7 @@ export default class UserItem extends Component {
   handleHidePin = () => {
     setTimeout(() => {
       if (this) {
-        this.setState({showPin: false, pin: ''});
+        this.setState({hover: false, isSignout: false, showPin: false, pin: ''});
       }
     }, 200);
   };
@@ -69,17 +69,22 @@ export default class UserItem extends Component {
     };
   };
 
-  toggleHover = () => {
-    this.setState({hover: !this.state.hover});
+  startHover = () => {
+    this.setState({hover: true});
+  };
+
+  endHover = () => {
+    this.setState({hover: false});
   };
 
   handleSignout = () => {
     const {onSignout, user} = this.props;
     onSignout(user.id);
+    this.setState({isSignout: false, showSignout: false});
   };
 
   handleSignoutBack = () => {
-    this.setState({isSignout: false, showSignout: false});
+    this.setState({isSignout: false, showSignout: false, hover: false});
   };
 
   handleProfile = (e) => {
@@ -100,9 +105,9 @@ export default class UserItem extends Component {
   };
 
   render() {
-    const {hover, showSignout, pin, showPin} = this.state;
+    const {hover, isSignout, showSignout, pin, showPin} = this.state;
     const {isExportSelected, isProfile, selectedUser, user} = this.props;
-    const startTime = _.isEmpty(user.visits) ? moment() : moment.unix(user.isManager ? 0 : user.visits[0].timeIn);
+    const startTime = _.isEmpty(user.visits) ? moment() : moment.unix(user.visits[0].timeIn);
     const endTime = moment();
     const isSelected = selectedUser ? selectedUser.id === user.id : false;
     const totalHours = this.getTotalHours();
@@ -150,13 +155,21 @@ export default class UserItem extends Component {
                 {`${user.firstName} ${user.lastName[0]}.${user.isManager ? ' (M)' : ''}`}
               </button>
             )}
-            {showPin ? (
-              <form className="user-pin" onSubmit={this.handleProfile}>
-                {!user.isManager && (
-                  <div className="user-time-in">
-                    <strong>In</strong> {startTime.format('h:mm')}
-                  </div>
-                )}
+            <form className="user-pin" onSubmit={this.handleProfile}>
+              <div className="user-time-in">
+                <strong>In</strong> {startTime.format('h:mm')}
+              </div>
+              {(hover || isSignout) && (
+                <div className="user-time-in">
+                  <strong>Out</strong> {endTime.format('h:mm')}
+                </div>
+              )}
+              {(hover || isSignout) && (
+                <div className="user-time-in">
+                  <strong>+{getHoursDifference(startTime, endTime)} hrs</strong>
+                </div>
+              )}
+              {showPin &&
                 <input
                   autoFocus={true}
                   type="password"
@@ -165,41 +178,25 @@ export default class UserItem extends Component {
                   value={pin}
                   onBlur={this.handleHidePin}
                   onChange={this.handleChange}/>
+              }
+              {showPin &&
                 <button className="user-name" type="submit">
                   ->
                 </button>
-              </form>
-            ) : (
-              <div className="user-pin">
-                {!user.isManager && (
-                  <div className="user-time-in">
-                    <strong>In</strong> {startTime.format('h:mm')}
-                  </div>
-                )}
-                {!user.isManager &&
-                hover && (
-                    <div className="user-time-in">
-                      <strong>Out</strong> {endTime.format('h:mm')}
-                    </div>
-                  )}
-                {!user.isManager &&
-                hover && (
-                    <div className="user-time-in">
-                      <strong>+{getHoursDifference(startTime, endTime)} hrs</strong>
-                    </div>
-                  )}
+              }
+              {!showPin &&
                 <button
                   className="user-name user-name__link"
-                  onClick={user.isManager ? this.handleSignout : this.showPin(true)}
-                  onMouseEnter={this.toggleHover}
-                  onMouseLeave={this.toggleHover}>
+                  onClick={this.showPin(true)}
+                  onMouseEnter={this.startHover}
+                  onMouseLeave={this.endHover}>
                   Sign Out
                 </button>
-              </div>
-            )}
+              }
+            </form>
           </div>
         )}
-        {showSignout && <Signout onBack={this.handleSignoutBack} user={user} />}
+        {showSignout && <Signout onBack={this.handleSignoutBack} onSignout={this.handleSignout} user={user} />}
       </div>
     );
   }

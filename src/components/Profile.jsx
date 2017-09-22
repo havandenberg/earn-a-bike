@@ -364,41 +364,35 @@ class Profile extends Component {
             </div>
           )}
           <div className={classNames('profile-content__right', {'profile-content__right-manager': user.isManager})}>
-            {!isManager && (
-              <div className="profile-options">
+            <div className="profile-options">
+              <button
+                className={classNames('profile-option',
+                  {'profile-option__active': view === 'personal'}
+                )}
+                onClick={this.setView('personal')}>
+                Personal Info
+              </button>
+              <button
+                className={classNames('profile-option', {'profile-option__active': view === 'visits'})}
+                onClick={this.setView('visits')}>
+                Past Visits
+              </button>
+              {!isManager && (
                 <button
-                  className={classNames(
-                    {'profile-option': !isManager},
-                    {'profile-option__no-hover': isManager},
-                    {'profile-option__active': !isManager && view === 'personal'}
-                  )}
-                  onClick={this.setView('personal')}>
-                  Personal Info
+                  className={classNames('profile-option', {'profile-option__active': view === 'bikes'})}
+                  onClick={this.setView('bikes')}>
+                  Bikes Earned
                 </button>
-                {!isManager && (
+              )}
+              {!isManager &&
+              user.isManager && (
                   <button
-                    className={classNames('profile-option', {'profile-option__active': view === 'visits'})}
-                    onClick={this.setView('visits')}>
-                    Past Visits
+                    className={classNames('profile-option', {'profile-option__active': view === 'questions'})}
+                    onClick={this.setView('questions')}>
+                  Questions
                   </button>
                 )}
-                {!isManager && (
-                  <button
-                    className={classNames('profile-option', {'profile-option__active': view === 'bikes'})}
-                    onClick={this.setView('bikes')}>
-                    Bikes Earned
-                  </button>
-                )}
-                {!isManager &&
-                user.isManager && (
-                    <button
-                      className={classNames('profile-option', {'profile-option__active': view === 'questions'})}
-                      onClick={this.setView('questions')}>
-                    Questions
-                    </button>
-                  )}
-              </div>
-            )}
+            </div>
             {view === 'personal' && (
               <PersonalInfo
                 errors={errors}

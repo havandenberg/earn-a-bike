@@ -12,23 +12,8 @@ export const updateUserData = () => {
 
     // update user data block
     _.each(users, (user) => {
-      user.addressLine1 = user.address.streetLine1;
-      user.addressLine2 = user.address.streetLine2;
-      user.addressCity = user.address.city;
-      user.addressState = user.address.state;
-      user.addressZip = user.address.zip;
-      user.dobMonth = user.dateOfBirth.month;
-      user.dobDay = user.dateOfBirth.day;
-      user.dobYear = user.dateOfBirth.year;
-      user.username = user.email;
-      user.countryOfOrigin = 'Country of Origin';
-      delete user.address;
-      delete user.dateOfBirth;
-      delete user.isEditing;
-      if (!user.isManager) {
-        user.bikesEarned = [];
-        user.isStudent = false;
-        user.schoolName = '';
+      if (user.isManager) {
+        user.visits = [];
       }
     });
 

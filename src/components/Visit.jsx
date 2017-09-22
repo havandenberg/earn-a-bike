@@ -93,7 +93,7 @@ export default class Visit extends Component {
             autoFocus={true}
             className="visit-notes__input scroll"
             onChange={this.handleNotesChange}
-            value={_.isEmpty(visit.notes) ? '-' : visit.notes} />
+            value={visit.notes} />
           : <div className="visit-notes__text">{_.isEmpty(visit.notes) ? '-' : visit.notes}</div>)
         }
       </div>

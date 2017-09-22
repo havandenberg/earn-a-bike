@@ -34,7 +34,8 @@ class AddManager extends Component {
       lastName: '',
       phone: '',
       pin: '',
-      username: ''
+      username: '',
+      visits: []
     }
   };
 

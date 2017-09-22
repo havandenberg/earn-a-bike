@@ -4,7 +4,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import moment from 'moment';
 import {connect} from 'react-redux';
-import {updateUser, handleSignOut} from 'actions/app';
+import {updateUser} from 'actions/app';
 import {getHoursDifference, getTotalHours} from 'utils/helpers';
 import {history} from 'utils/store';
 import {userProps} from 'proptypes/user';
@@ -38,9 +38,8 @@ class Signout extends Component {
 
   handleSignout = () => {
     const {onSignout, user} = this.props;
-    if (!_.isEmpty(user.visits[0].notes)) {
+    if (user.isManager || !_.isEmpty(user.visits[0].notes)) {
       onSignout(user.id);
-      history.push('/');
     } else {
       this.setState({hasNotesError: true});
     }
@@ -57,24 +56,32 @@ class Signout extends Component {
 
     return (
       <div className="signout__background">
-        <div className="signout__container">
+        <div className={classNames('signout__container', {'signout__container-manager': user.isManager})}>
           <div className="profile-title">Bye, {user.firstName}!</div>
-          <div className="signout-time">
-            <div className={classNames({'user-name__profile-over-ten': totalHours >= 10})}>Current hours:&nbsp;&nbsp;&nbsp;&nbsp;</div>
-            <div><span className={classNames('profile-total-hours', {'user-name__profile-over-ten': totalHours >= 10})}>
-              {totalHours}
-            </span>&nbsp;/ 10</div>
-          </div>
+          {!user.isManager && (
+            <div className="signout-time">
+              <div className={classNames({'user-name__profile-over-ten': totalHours >= 10})}>Current hours:&nbsp;&nbsp;&nbsp;&nbsp;</div>
+              <div>
+                <span className={classNames('profile-total-hours', {'user-name__profile-over-ten': totalHours >= 10})}>
+                  {totalHours}
+                </span>&nbsp;/ 10
+              </div>
+            </div>
+          )}
           <div className="signout-today-header">Today</div>
           <div className="signout-time">
             <div>Time in:</div>
             <div>{moment.unix(user.visits[0].timeIn).format('h:mm a')}</div>
           </div>
           <div className="signout-time">
+            <div>Time out:</div>
+            <div>{moment().format('h:mm a')}</div>
+          </div>
+          <div className="signout-time">
             <div>Hours added:</div>
             <div>+{getHoursDifference(moment.unix(user.visits[0].timeIn), moment())}</div>
           </div>
-          <div className="signout-today-header">Add your notes for the day before you go...</div>
+          {!user.isManager && <div className="signout-today-header">Add your notes for the day before you go...</div>}
           <div className="signout-notes">
             Notes:
             <textarea
@@ -84,14 +91,10 @@ class Signout extends Component {
               value={user.visits[0].notes}/>
           </div>
           <div className="signout-confirm">
-            <button
-              className="signout-confirm__btn"
-              onClick={onBack}>
+            <button className="signout-confirm__btn" onClick={onBack}>
               Back
             </button>
-            <button
-              className="signout-confirm__btn"
-              onClick={this.handleSignout}>
+            <button className="signout-confirm__btn" onClick={this.handleSignout}>
               Signout
             </button>
           </div>
@@ -101,9 +104,6 @@ class Signout extends Component {
   }
 }
 
-export default connect(null,
-  {
-    updateUser,
-    onSignout: handleSignOut
-  }
-)(Signout);
+export default connect(null, {
+  updateUser
+})(Signout);
