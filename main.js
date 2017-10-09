@@ -18,6 +18,7 @@ if (process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath) |
 function createWindow() {
   // Create the browser window.
   mainWindow = new BrowserWindow({
+    frame: false,
     width: 1024,
     height: 768,
     show: false
@@ -51,19 +52,6 @@ function createWindow() {
     if (dev) {
       mainWindow.webContents.openDevTools();
     }
-  });
-
-  mainWindow.on('close', (e) => {
-    const choice = dialog.showMessageBox({
-      type: 'question',
-      buttons: ['Yes', 'No'],
-      title: 'Confirm',
-      message: 'Are you sure you want to quit? This will sign out all active users.'
-    });
-    if (choice === 1) {
-      e.preventDefault();
-    }
-    mainWindow.webContents.send('signout-all-users');
   });
 
   // Emitted when the window is closed.

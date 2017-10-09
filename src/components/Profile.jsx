@@ -403,30 +403,32 @@ class Profile extends Component {
                 onSubmit={this.toggleEditing}/>
             )}
             {view === 'visits' && (
-              <div className="visit-container scroll">
-                <div className="visit-header">
+              <div className="visit-container">
+                <div className="visit-header visit-header__labels">
                   <div className="visit-item visit-item__container">Date</div>
                   <div className="visit-item visit-item__container">Time In</div>
                   <div className="visit-item visit-item__container">Time Out</div>
                   <div className="visit-item visit-item__container">Hours</div>
                   <div className="visit-item visit-item__notes" />
                 </div>
-                {visits.map((visit, index) => {
-                  return (
-                    (user.isManager ? true : index > 0) && (
-                      <Visit
-                        key={index}
-                        isEditing={isEditing}
-                        isManager={user.isManager}
-                        openVisits={openVisits}
-                        stopEditing={this.stopEditing}
-                        toggleOpenVisit={this.handleToggleOpenVisit}
-                        visit={visit}
-                        updateVisit={this.handleUpdateVisit}
-                        visitIndex={index}/>
-                    )
-                  );
-                })}
+                <div className="visit-container__inner scroll">
+                  {visits.map((visit, index) => {
+                    return (
+                      (user.isManager ? true : index > 0) && (
+                        <Visit
+                          key={index}
+                          isEditing={isEditing}
+                          isManager={user.isManager}
+                          openVisits={openVisits}
+                          stopEditing={this.stopEditing}
+                          toggleOpenVisit={this.handleToggleOpenVisit}
+                          visit={visit}
+                          updateVisit={this.handleUpdateVisit}
+                          visitIndex={index}/>
+                      )
+                    );
+                  })}
+                </div>
               </div>
             )}
             {view === 'bikes' && (

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import moment from 'moment';
 import {connect} from 'react-redux';
 import classNames from 'classnames';
 import {updateUser} from 'actions/app';
@@ -35,6 +36,7 @@ class PersonalInfo extends Component {
 
   render() {
     const {errors, isEditing, isManager, user} = this.props;
+    const isUnder18 = moment().diff(`${user.dobMonth}-${user.dobDay}-${user.dobYear}`, 'years') < 18;
 
     return (
       <form className="personal-info scroll" onSubmit={this.handleSubmit}>
@@ -48,7 +50,7 @@ class PersonalInfo extends Component {
             <div className="personal-info__label">Username:</div>
             <div className="personal-info__label">Email:</div>
             <div className="personal-info__label">Phone:</div>
-            {!_.isEmpty(user.parentName) &&
+            {isUnder18 &&
               <div className="personal-info__spacing">
                 <div className="personal-info__label">Parent's Name:</div>
                 <div className="personal-info__label">Parent's Phone:</div>
@@ -162,7 +164,7 @@ class PersonalInfo extends Component {
                 value={user.phone} />
               : <div className="personal-info__value">{user.phone}</div>
             }
-            {!_.isEmpty(user.parentName) &&
+            {isUnder18 &&
               <div className="personal-info__spacing">
                 {isEditing
                   ? <input

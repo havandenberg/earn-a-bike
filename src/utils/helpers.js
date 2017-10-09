@@ -8,7 +8,7 @@ export function getHoursDifference(startTime, endTime) {
 export function getTotalHours(visits) {
   return _.reduce(visits, (totalHours, visit) => {
     return totalHours + visit.hours;
-  }, 0);
+  }, 0).toFixed(1);
 }
 
 export function isUsernameUnique(users, username) {

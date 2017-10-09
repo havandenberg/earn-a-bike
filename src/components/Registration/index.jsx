@@ -31,17 +31,6 @@ import CheckboxInfoStep from './CheckboxInfoStep.jsx';
 import WaiverStep from './WaiverStep.jsx';
 import ConfirmationStep from './ConfirmationStep.jsx';
 
-const steps = [
-  PERSONAL_INFO_STEP,
-  LOGIN_INFO_STEP,
-  ADDRESS_INFO_STEP,
-  QUESTION_ONE_STEP,
-  QUESTION_TWO_STEP,
-  CHECKBOX_INFO_STEP,
-  WAIVER_STEP,
-  CONFIRMATION_STEP
-];
-
 class Registration extends Component {
   static propTypes = {
     registerUser: PropTypes.func,
@@ -77,13 +66,23 @@ class Registration extends Component {
     pin: '',
     questionOne: '',
     questionTwo: '',
+    steps: [
+      PERSONAL_INFO_STEP,
+      LOGIN_INFO_STEP,
+      ADDRESS_INFO_STEP,
+      QUESTION_ONE_STEP,
+      QUESTION_TWO_STEP,
+      CHECKBOX_INFO_STEP,
+      WAIVER_STEP,
+      CONFIRMATION_STEP
+    ],
     username: '',
     visits: [],
     waiver: false
   };
 
   handleBack = () => {
-    const {activeStep} = this.state;
+    const {activeStep, steps} = this.state;
     const activeStepIndex = steps.indexOf(activeStep);
     if (activeStepIndex > 0) {
       this.setState({activeStep: steps[activeStepIndex - 1]});
@@ -93,7 +92,7 @@ class Registration extends Component {
   }
 
   handleForward = () => {
-    const {activeStep, dobMonth, dobDay, dobYear} = this.state;
+    const {activeStep, dobMonth, dobDay, dobYear, steps} = this.state;
     const activeStepIndex = steps.indexOf(activeStep);
     if (this.validate()) {
       if (activeStep === PERSONAL_INFO_STEP) {
@@ -106,11 +105,11 @@ class Registration extends Component {
       }
       if (activeStep === WAIVER_STEP) {
         this.props.registerUser(
-          _.omit(this.state, ['activeStep', 'confirmPin', 'errors', 'hoverBack', 'hoverForward'])
+          _.omit(this.state, ['activeStep', 'confirmPin', 'errors', 'hoverBack', 'hoverForward', 'steps'])
         );
       }
       if (activeStepIndex < steps.length) {
-        this.setState({activeStep: steps[activeStepIndex + 1]});
+        this.setState({activeStep: steps[activeStepIndex + 1], steps});
       }
     }
   }
@@ -130,7 +129,7 @@ class Registration extends Component {
   validate = () => {
     const {users} = this.props;
     const {activeStep} = this.state;
-    const newUser = _.omit(this.state, ['activeStep', 'errors', 'hoverBack', 'hoverForward']);
+    const newUser = _.omit(this.state, ['activeStep', 'errors', 'hoverBack', 'hoverForward', 'steps']);
     const errors = {};
     const hasPinError = _.isEmpty(newUser.pin)
       || _.isEmpty(newUser.confirmPin)
@@ -192,7 +191,7 @@ class Registration extends Component {
       activeStep,
       errors
     } = this.state;
-    const newUser = _.omit(this.state, ['activeStep', 'errors', 'hoverBack', 'hoverForward']);
+    const newUser = _.omit(this.state, ['activeStep', 'errors', 'hoverBack', 'hoverForward', 'steps']);
 
     switch (activeStep) {
     case PERSONAL_INFO_STEP:
@@ -220,7 +219,7 @@ class Registration extends Component {
   }
 
   render() {
-    const {activeStep, dateOfBirth, hoverBack, hoverForward} = this.state;
+    const {activeStep, dateOfBirth, hoverBack, hoverForward, steps} = this.state;
 
     return (
       <div className="registration">

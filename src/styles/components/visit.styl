@@ -9,10 +9,14 @@
     display: flex
     flex-direction: column
     height: 100%
-    margin-top: $spacing-small
-    overflow-y: auto
+    margin-top: $spacing-micro
     padding-right: $spacing-micro
     width: 100%
+
+    &__inner
+      height: 50vh
+      overflow-y: auto
+      width: 100%
 
   &-header
     align-items: center
@@ -21,6 +25,9 @@
     justify-content: space-between
     margin-top: $spacing-micro
     width: 100%
+
+    &__labels
+      margin-bottom: $spacing-micro
 
   &-item
     color: $regular-red
