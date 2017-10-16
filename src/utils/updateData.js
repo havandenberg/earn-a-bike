@@ -4,17 +4,14 @@ import {config} from 'reducers/app';
 import {store} from 'utils/store';
 
 // Change to true if updating data
-const shouldUpdateUserData = false;
+const shouldUpdateData = false;
 
-export const updateUserData = () => {
-  if (shouldUpdateUserData) {
+export const updateData = () => {
+  if (shouldUpdateData) {
     const users = config.get('users');
 
-    // update user data block
-    _.each(users, (user) => {
-      if (user.isManager) {
-        user.visits = [];
-      }
+    // update data block
+    _.each(users, () => {
     });
 
     store.dispatch(updateUsers(users));

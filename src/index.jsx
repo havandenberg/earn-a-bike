@@ -1,13 +1,15 @@
 import React from 'react';
 import {render} from 'react-dom';
 import App from 'components/App.jsx';
-import {updateUserData} from 'utils/updateUserData';
+import {backup} from 'utils/backup';
+import {updateData} from 'utils/updateData';
 import 'styles/main.styl';
 
 const root = document.createElement('div');
 root.id = 'root';
 document.body.appendChild(root);
 
-updateUserData();
+updateData();
+backup();
 
 render(<App />, document.getElementById('root'));

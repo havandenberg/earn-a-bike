@@ -1,7 +1,7 @@
 'use strict';
 
 // Import parts of electron to use
-const {app, dialog, BrowserWindow, Menu} = require('electron');
+const {app, BrowserWindow, Menu} = require('electron');
 const path = require('path');
 const url = require('url');
 
@@ -21,7 +21,8 @@ function createWindow() {
     frame: false,
     width: 1024,
     height: 768,
-    show: false
+    show: false,
+    titleBarStyle: 'customButtonsOnHover'
   });
 
   // Setup menu, you should change this
