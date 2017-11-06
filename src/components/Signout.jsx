@@ -46,7 +46,7 @@ class Signout extends Component {
   };
 
   getTotalHours = () => {
-    return getTotalHours(this.state.visits);
+    return getTotalHours(this.props.user.visits);
   };
 
   render() {

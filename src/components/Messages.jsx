@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {messageProps} from 'proptypes/message';
 import alertImg from 'images/alert-msg.svg';
 
 const Messages = ({messages}) => (
@@ -18,7 +19,7 @@ const Messages = ({messages}) => (
 );
 
 Messages.propTypes = {
-  messages: PropTypes.arrayOf(PropTypes.shape({}))
+  messages: PropTypes.arrayOf(messageProps)
 };
 
 export default Messages;

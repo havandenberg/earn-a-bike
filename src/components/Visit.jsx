@@ -16,27 +16,19 @@ export default class Visit extends Component {
     updateVisit: PropTypes.func,
     visit: PropTypes.shape(visitProps),
     visitIndex: PropTypes.number
-  }
-
-  state = {
-    hover: false
-  }
+  };
 
   handleHoursChange = (e) => {
     const {visit, visitIndex} = this.props;
     visit.hours = parseFloat(e.target.value);
     this.props.updateVisit(visit, visitIndex);
-  }
+  };
 
   handleNotesChange = (e) => {
     const {visit, visitIndex} = this.props;
     visit.notes = e.target.value;
     this.props.updateVisit(visit, visitIndex);
-  }
-
-  toggleHover = () => {
-    this.setState({hover: !this.state.hover});
-  }
+  };
 
   showNotes = () => {
     const {isEditing, isManager, toggleOpenVisit, openVisits, visit} = this.props;
@@ -47,7 +39,7 @@ export default class Visit extends Component {
     } else {
       toggleOpenVisit(visit);
     }
-  }
+  };
 
   hideNotes = () => {
     const {stopEditing, toggleOpenVisit, visit} = this.props;
@@ -57,11 +49,10 @@ export default class Visit extends Component {
         toggleOpenVisit(visit);
       }
     }, 200);
-  }
+  };
 
   render() {
     const {isEditing, isManager, openVisits, visit} = this.props;
-    const {hover} = this.state;
     const isOpen = _.includes(openVisits, visit);
 
     return (
@@ -70,32 +61,23 @@ export default class Visit extends Component {
           <div className="visit-item">{moment.unix(visit.timeIn).format('MM/DD/YYYY')}</div>
           <div className="visit-item">{moment.unix(visit.timeIn).format('h:mm a')}</div>
           <div className="visit-item">{visit.timeOut === 0 ? '-' : moment.unix(visit.timeOut).format('h:mm a')}</div>
-          {isEditing && isManager
-            ? <input
-              type="number"
-              className="visit-item visit-hours"
-              onChange={this.handleHoursChange}
-              value={visit.hours} />
-            : <div className="visit-item">{visit.hours}</div>
-          }
+          {isEditing && isManager ? (
+            <input type="number" className="visit-item visit-hours" onChange={this.handleHoursChange} value={visit.hours} />
+          ) : (
+            <div className="visit-item">{visit.hours}</div>
+          )}
           <div className="visit-item__notes">
-            <button
-              className="visit-notes__btn"
-              onClick={this.showNotes}
-              onMouseEnter={this.toggleHover}
-              onMouseLeave={this.toggleHover}>
-              <img alt="notes" className="visit-notes__img" src={(hover || isOpen) ? notesImg : notesLightImg} />
+            <button className="visit-notes__btn" onClick={this.showNotes} onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover}>
+              <img alt="notes" className="visit-notes__img" src={_.isEmpty(visit.notes) ? notesLightImg : notesImg} />
             </button>
           </div>
         </div>
-        {isOpen && (((isEditing && isManager) || !isManager)
-          ? <textarea
-            autoFocus={true}
-            className="visit-notes__input scroll"
-            onChange={this.handleNotesChange}
-            value={visit.notes} />
-          : <div className="visit-notes__text">{_.isEmpty(visit.notes) ? '-' : visit.notes}</div>)
-        }
+        {isOpen &&
+          ((isEditing && isManager) || !isManager ? (
+            <textarea autoFocus={true} className="visit-notes__input scroll" onChange={this.handleNotesChange} value={visit.notes} />
+          ) : (
+            <div className="visit-notes__text">{_.isEmpty(visit.notes) ? '-' : visit.notes}</div>
+          ))}
       </div>
     );
   }

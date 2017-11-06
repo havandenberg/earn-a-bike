@@ -1,33 +1,27 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {clearMessages, handleSignIn} from 'actions/app';
+import BicycleForwardBtn from 'components/BicycleForwardBtn.jsx';
 import Messages from 'components/Messages.jsx';
 import UserList from 'components/UserList.jsx';
 import {messages as messageList} from 'utils/messages';
+import {messageProps} from 'proptypes/message';
 import {userProps} from 'proptypes/user';
-import bicycleForwardGif from 'images/bicycle-forward.gif';
-import bicycleForwardImg from 'images/bicycle-forward.png';
 import exclamationImg from 'images/exclamation-mark.svg';
 
 class SignIn extends Component {
   static propTypes = {
     clearMessages: PropTypes.func,
     handleSignIn: PropTypes.func,
-    messages: PropTypes.arrayOf(
-      PropTypes.shape({
-        text: PropTypes.string,
-        type: PropTypes.string
-      })
-    ),
+    messages: PropTypes.arrayOf(messageProps),
     users: PropTypes.arrayOf(PropTypes.shape(userProps))
   };
 
   state = {
     errors: [],
-    hover: false,
     pin: '',
     username: ''
   };
@@ -41,10 +35,6 @@ class SignIn extends Component {
     };
   };
 
-  toggleHover = () => {
-    this.setState({hover: !this.state.hover});
-  };
-
   validate = () => {
     const {username, pin} = this.state;
     const errors = [];
@@ -52,7 +42,6 @@ class SignIn extends Component {
     if (_.isEmpty(username)) {
       errors.push(messageList.enterUsername);
     }
-
     if (_.isEmpty(pin)) {
       errors.push(messageList.enterPin);
     }
@@ -74,7 +63,7 @@ class SignIn extends Component {
 
   render() {
     const {messages, users} = this.props;
-    const {errors, hover, pin, username} = this.state;
+    const {errors, pin, username} = this.state;
 
     return (
       <div className="sign-in__container">
@@ -104,10 +93,7 @@ class SignIn extends Component {
               <Link className="sign-in-new" to="/registration">
                 New?
               </Link>
-              <button className="btn-forward" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover} type="submit">
-                <img alt="Sign In" src={hover ? bicycleForwardGif : bicycleForwardImg} />
-                <div className="btn-help">Sign In</div>
-              </button>
+              <BicycleForwardBtn onSubmit={this.handleSubmit} />
             </div>
             <div className="sign-in-rules">
               <div className="sign-in-rules__title">

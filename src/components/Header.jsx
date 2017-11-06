@@ -16,7 +16,9 @@ export default class Header extends Component {
         </button>
         <div className="header-city">Welcome To</div>
         <img className="header-title" src={titleImg} alt="Worcester Earn A Bike" />
-        <div className="header-subtitle">Your Part Time Bicycle Shop, With Full Time Bicycle Love</div>
+        <div className="header-subtitle">
+          Your Part Time Bicycle Shop, With Full Time Bicycle Love
+        </div>
       </div>
     );
   }

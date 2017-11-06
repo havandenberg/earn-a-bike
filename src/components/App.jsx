@@ -5,7 +5,7 @@ import {ConnectedRouter} from 'connected-react-router';
 import {history, store} from 'utils/store';
 import TitleBar from 'components/TitleBar.jsx';
 import Header from 'components/Header.jsx';
-import Profile from 'components/Profile.jsx';
+import Profile from 'components/Profile/index.jsx';
 import Registration from 'components/Registration/index.jsx';
 import AddManager from 'components/AddManager.jsx';
 import SignIn from 'components/SignIn.jsx';

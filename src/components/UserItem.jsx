@@ -143,13 +143,20 @@ export default class UserItem extends Component {
                 )}
               </div>
             ) : (
-              <div className={classNames('user-list-header', {'user-list-header__over-ten': totalHours >= 10})}>{`(${totalHours})`}</div>
+              <div className={classNames(
+                'user-list-header',
+                {'user-list-header__over-ten': totalHours >= 10}
+              )}>
+                {`(${totalHours})`}
+              </div>
             )}
           </div>
         ) : (
           <div className="user">
             {showPin ? (
-              <div className="user-name user-name__link">{`${user.firstName} ${user.lastName[0]}.${user.isManager ? ' (M)' : ''}`}</div>
+              <div className="user-name user-name__link">
+                {`${user.firstName} ${user.lastName[0]}.${user.isManager ? ' (M)' : ''}`}
+              </div>
             ) : (
               <button className="user-name user-name__link" onClick={this.showPin(false)}>
                 {`${user.firstName} ${user.lastName[0]}.${user.isManager ? ' (M)' : ''}`}
@@ -196,7 +203,9 @@ export default class UserItem extends Component {
             </form>
           </div>
         )}
-        {showSignout && <Signout onBack={this.handleSignoutBack} onSignout={this.handleSignout} user={user} />}
+        {showSignout &&
+          <Signout onBack={this.handleSignoutBack} onSignout={this.handleSignout} user={user} />
+        }
       </div>
     );
   }
