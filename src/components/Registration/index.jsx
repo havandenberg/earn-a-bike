@@ -8,8 +8,7 @@ import {history} from 'utils/store';
 import {isUsernameUnique} from 'utils/helpers';
 import {userProps} from 'proptypes/user';
 import ProgressBar from 'components/ProgressBar.jsx';
-import bicycleForwardGif from 'images/bicycle-forward.gif';
-import bicycleForwardImg from 'images/bicycle-forward.png';
+import BicycleBtn from 'components/BicycleBtn.jsx';
 import {
   PERSONAL_INFO_STEP,
   LOGIN_INFO_STEP,
@@ -36,7 +35,7 @@ class Registration extends Component {
     registerUser: PropTypes.func,
     updateUser: PropTypes.func,
     users: PropTypes.arrayOf(PropTypes.shape(userProps))
-  }
+  };
 
   state = {
     activeStep: PERSONAL_INFO_STEP,
@@ -55,8 +54,6 @@ class Registration extends Component {
     emailList: false,
     errors: {},
     firstName: '',
-    hoverBack: false,
-    hoverForward: false,
     isInterestedManager: false,
     isManager: false,
     lastName: '',
@@ -89,7 +86,7 @@ class Registration extends Component {
     } else {
       history.push('/');
     }
-  }
+  };
 
   handleForward = () => {
     const {activeStep, dobMonth, dobDay, dobYear, steps} = this.state;
@@ -104,36 +101,25 @@ class Registration extends Component {
         }
       }
       if (activeStep === WAIVER_STEP) {
-        this.props.registerUser(
-          _.omit(this.state, ['activeStep', 'confirmPin', 'errors', 'hoverBack', 'hoverForward', 'steps'])
-        );
+        this.props.registerUser(_.omit(this.state, ['activeStep', 'confirmPin', 'errors', 'steps']));
       }
       if (activeStepIndex < steps.length) {
         this.setState({activeStep: steps[activeStepIndex + 1], steps});
       }
     }
-  }
+  };
 
   handleChange = (user) => {
     this.setState({...this.state, ...user});
-  }
-
-  toggleHoverBack = () => {
-    this.setState({hoverBack: !this.state.hoverBack});
-  }
-
-  toggleHoverForward = () => {
-    this.setState({hoverForward: !this.state.hoverForward});
-  }
+  };
 
   validate = () => {
     const {users} = this.props;
     const {activeStep} = this.state;
     const newUser = _.omit(this.state, ['activeStep', 'errors', 'hoverBack', 'hoverForward', 'steps']);
     const errors = {};
-    const hasPinError = _.isEmpty(newUser.pin)
-      || _.isEmpty(newUser.confirmPin)
-      || (!_.isEmpty(newUser.pin) && newUser.pin !== newUser.confirmPin);
+    const hasPinError
+      = _.isEmpty(newUser.pin) || _.isEmpty(newUser.confirmPin) || (!_.isEmpty(newUser.pin) && newUser.pin !== newUser.confirmPin);
 
     switch (activeStep) {
     case PERSONAL_INFO_STEP:
@@ -182,15 +168,12 @@ class Registration extends Component {
 
     this.setState({errors});
     return !_.some(errors, (error) => error);
-  }
+  };
 
   setStep = (activeStep) => () => this.setState({activeStep});
 
   getStep = () => {
-    const {
-      activeStep,
-      errors
-    } = this.state;
+    const {activeStep, errors} = this.state;
     const newUser = _.omit(this.state, ['activeStep', 'errors', 'hoverBack', 'hoverForward', 'steps']);
 
     switch (activeStep) {
@@ -215,43 +198,28 @@ class Registration extends Component {
     default:
       return <div>No step found</div>;
     }
-
-  }
+  };
 
   render() {
-    const {activeStep, dateOfBirth, hoverBack, hoverForward, steps} = this.state;
+    const {activeStep, dateOfBirth, steps} = this.state;
 
     return (
       <div className="registration">
         <h1 className="registration-title">Sign Up</h1>
         <div className="registration-step__container">
-          {activeStep !== CONFIRMATION_STEP
-            ? <button
-              className="btn-forward"
-              onClick={this.handleBack}
-              onMouseEnter={this.toggleHoverBack}
-              onMouseLeave={this.toggleHoverBack}>
-              <img alt="back" className="registration-forward flip-x" src={hoverBack ? bicycleForwardGif : bicycleForwardImg} />
-              <div className="btn-help btn-help__back">Back</div>
-            </button>
-            : <div className="registration-placeholder"></div>
-          }
+          {activeStep !== CONFIRMATION_STEP ? (
+            <BicycleBtn baseClass="registration-btn" isReverse={true} text="Back" onClick={this.handleBack} />
+          ) : (
+            <div className="registration-placeholder" />
+          )}
           {this.getStep()}
-          {!_.includes([WAIVER_STEP, CONFIRMATION_STEP], activeStep)
-            ? <button
-              className="btn-forward"
-              onClick={this.handleForward}
-              onMouseEnter={this.toggleHoverForward}
-              onMouseLeave={this.toggleHoverForward}>
-              <img alt="Forward" className="registration-forward" src={hoverForward ? bicycleForwardGif : bicycleForwardImg} />
-              <div className="btn-help">Next</div>
-            </button>
-            : <div className="registration-placeholder"></div>
-          }
+          {!_.includes([WAIVER_STEP, CONFIRMATION_STEP], activeStep) ? (
+            <BicycleBtn baseClass="registration-btn" text="Next" onClick={this.handleForward} />
+          ) : (
+            <div className="registration-placeholder" />
+          )}
         </div>
-        {activeStep !== CONFIRMATION_STEP &&
-          <ProgressBar activeStep={activeStep} dateOfBirth={dateOfBirth} steps={steps} />
-        }
+        {activeStep !== CONFIRMATION_STEP && <ProgressBar activeStep={activeStep} dateOfBirth={dateOfBirth} steps={steps} />}
       </div>
     );
   }

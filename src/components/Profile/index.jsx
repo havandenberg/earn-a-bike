@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import classNames from 'classnames';
-import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {updateUser} from 'actions/app';
 import {history} from 'utils/store';
@@ -12,9 +11,8 @@ import Questions from 'components/Profile/Questions.jsx';
 import UserInfo from 'components/Profile/UserInfo.jsx';
 import Visits from 'components/Profile/Visits.jsx';
 import UserList from 'components/UserList.jsx';
+import BicycleBtn from 'components/BicycleBtn.jsx';
 import {userProps} from 'proptypes/user';
-import bicycleForwardGif from 'images/bicycle-forward.gif';
-import bicycleForwardImg from 'images/bicycle-forward.png';
 
 class Profile extends Component {
   static propTypes = {
@@ -43,6 +41,10 @@ class Profile extends Component {
     }
   }
 
+  handleBack = () => {
+    history.push('/');
+  };
+
   setSelectedUser = (user) => {
     this.setState({
       hover: false,
@@ -57,21 +59,14 @@ class Profile extends Component {
     };
   };
 
-  toggleHover = () => {
-    this.setState({hover: !this.state.hover});
-  };
-
   render() {
     const {user, users} = this.props;
-    const {hover, idsToExport, selectedUser, view} = this.state;
+    const {idsToExport, selectedUser, view} = this.state;
 
     return (
       <div className="profile">
         <div className="profile-header">
-          <Link className="btn-forward" to="/" onMouseEnter={this.toggleHover} onMouseLeave={this.toggleHover}>
-            <img alt="Sign In" className="profile-back flip-x" src={hover ? bicycleForwardGif : bicycleForwardImg} />
-            <div className="btn-help btn-help__back">Back</div>
-          </Link>
+          <BicycleBtn onClick={this.handleBack} isReverse={true} />
           <div className="profile-title">{user.isManager ? 'Volunteer Info' : 'My Info'}</div>
           <div className="btn-placeholder" />
         </div>

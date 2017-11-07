@@ -148,11 +148,9 @@ class UserList extends Component {
               <div className="user-list-header">All Users</div>
             </div>
             <button
-              className={classNames(
-                'user-list-header',
-                'user-list-header__sort-hours',
-                {'user-list-header__sort-hours-active': sortByHours}
-              )}
+              className={classNames('user-list-header', 'user-list-header__sort-hours', {
+                'user-list-header__sort-hours-active': sortByHours
+              })}
               onClick={this.toggleSortByHours}>
               (hrs)
             </button>

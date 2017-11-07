@@ -4,7 +4,7 @@ import _ from 'lodash';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {clearMessages, handleSignIn} from 'actions/app';
-import BicycleForwardBtn from 'components/BicycleForwardBtn.jsx';
+import BicycleBtn from 'components/BicycleBtn.jsx';
 import Messages from 'components/Messages.jsx';
 import UserList from 'components/UserList.jsx';
 import {messages as messageList} from 'utils/messages';
@@ -93,7 +93,7 @@ class SignIn extends Component {
               <Link className="sign-in-new" to="/registration">
                 New?
               </Link>
-              <BicycleForwardBtn onSubmit={this.handleSubmit} />
+              <BicycleBtn text="Sign In" onSubmit={this.handleSubmit} />
             </div>
             <div className="sign-in-rules">
               <div className="sign-in-rules__title">
