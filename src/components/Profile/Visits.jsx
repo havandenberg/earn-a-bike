@@ -28,10 +28,10 @@ export default class Visits extends Component {
   };
 
   handleUpdateVisit = (visit, visitIndex) => {
-    const {visits} = this.state;
+    const {visits} = this.props;
     visits[visitIndex] = visit;
     this.setState({visits});
-    this.props.updateUser(this.getUpdatedUser(true));
+    this.props.updateUser({...this.props.user, visits});
   };
 
   toggleEditing = () => {

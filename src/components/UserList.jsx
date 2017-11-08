@@ -6,10 +6,14 @@ import {connect} from 'react-redux';
 import {deleteUsers, handleSignOut} from 'actions/app';
 import UserItem from 'components/UserItem.jsx';
 import {userProps} from 'proptypes/user';
-import {exportData, importData} from 'utils/fileIO';
+import {exportCSV, exportJSON, importData} from 'utils/fileIO';
 import {getTotalHours} from 'utils/helpers';
 import searchImg from 'images/search.svg';
 import checkImg from 'images/check.svg';
+
+const OPTIONS = 'OPTIONS';
+const CHOOSE_EXPORT = 'CHOOSE_EXPORT';
+const CONFIRM_DELETE = 'CONFIRM_DELETE';
 
 class UserList extends Component {
   static propTypes = {
@@ -22,7 +26,7 @@ class UserList extends Component {
   };
 
   state = {
-    confirmDelete: false,
+    optionSet: OPTIONS,
     selectedUserIds: [],
     searchText: '',
     sortByHours: false
@@ -65,18 +69,35 @@ class UserList extends Component {
     }
   };
 
-  confirmDelete = () => {
-    this.setState({confirmDelete: true});
+  chooseExport = () => {
+    this.setState({optionSet: CHOOSE_EXPORT});
   };
 
-  resetConfirmDelete = () => {
-    this.setState({confirmDelete: false});
+  confirmDelete = () => {
+    this.setState({optionSet: CONFIRM_DELETE});
+  };
+
+  export = (type) => {
+    return (e) => {
+      e.preventDefault();
+      const {selectedUserIds} = this.state;
+      if (type === 'CSV') {
+        exportCSV(selectedUserIds);
+      } else {
+        exportJSON(selectedUserIds);
+      }
+      this.setState({optionSet: OPTIONS});
+    };
+  };
+
+  resetOptions = () => {
+    this.setState({optionSet: OPTIONS});
   };
 
   deleteUsers = () => {
     const {selectedUserIds} = this.state;
     this.props.deleteUsers(selectedUserIds);
-    this.setState({confirmDelete: false, selectedUserIds: []});
+    this.setState({optionSet: OPTIONS, selectedUserIds: []});
   };
 
   filterUsers = (user) => {
@@ -85,6 +106,55 @@ class UserList extends Component {
 
   filterProfileUsers = (user) => {
     return this.searchUsers(user);
+  };
+
+  getOptions = () => {
+    const {optionSet, selectedUserIds} = this.state;
+    switch (optionSet) {
+    case CONFIRM_DELETE:
+      return (
+        <div className="user-list__options">
+          <div className="user-list__options-text">Are you sure?</div>
+          <button className="btn-action btn-action__delete" onClick={this.deleteUsers}>
+              Yes
+          </button>
+          <button className="btn-action btn-action__delete" onClick={this.resetOptions}>
+              No
+          </button>
+        </div>
+      );
+    case CHOOSE_EXPORT:
+      return (
+        <div className="user-list__options">
+          <div className="user-list__options-text__export">Export As:</div>
+          <button className="btn-action btn-action__export" onClick={this.export('CSV')}>
+              CSV
+          </button>
+          <button className="btn-action btn-action__export" onClick={this.export('JSON')}>
+              JSON
+          </button>
+          <button className="btn-action btn-action__delete" onClick={this.resetOptions}>
+              Cancel
+          </button>
+        </div>
+      );
+    default:
+      return (
+        <div className="user-list__options">
+          <button className="btn-action" onClick={importData}>
+              Import
+          </button>
+          <button className="btn-action" onClick={this.chooseExport}>
+              Export
+          </button>
+          {selectedUserIds.length > 0 && (
+            <button className="btn-action btn-action__delete" onClick={this.confirmDelete}>
+                Delete
+            </button>
+          )}
+        </div>
+      );
+    }
   };
 
   searchUsers = (user) => {
@@ -133,7 +203,7 @@ class UserList extends Component {
   };
 
   render() {
-    const {confirmDelete, selectedUserIds, searchText, sortByHours} = this.state;
+    const {selectedUserIds, searchText, sortByHours} = this.state;
     const {isProfile, selectedUser, users} = this.props;
     const isExportAll = selectedUserIds.length === users.length;
 
@@ -185,32 +255,7 @@ class UserList extends Component {
               );
             })}
         </div>
-        {isProfile &&
-          (confirmDelete ? (
-            <div className="user-list__options">
-              <div className="user-list__options-text">Are you sure?</div>
-              <button className="btn-action btn-action__delete" onClick={this.deleteUsers}>
-                Yes
-              </button>
-              <button className="btn-action btn-action__delete" onClick={this.resetConfirmDelete}>
-                No
-              </button>
-            </div>
-          ) : (
-            <div className="user-list__options">
-              <button className="btn-action" onClick={importData}>
-                Import
-              </button>
-              <button className="btn-action" onClick={exportData}>
-                Export
-              </button>
-              {selectedUserIds.length > 0 && (
-                <button className="btn-action btn-action__delete" onClick={this.confirmDelete}>
-                  Delete
-                </button>
-              )}
-            </div>
-          ))}
+        {isProfile && this.getOptions()}
       </div>
     );
   }

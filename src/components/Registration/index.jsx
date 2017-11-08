@@ -47,6 +47,7 @@ class Registration extends Component {
     bikesEarned: [],
     confirmPin: '',
     countryOfOrigin: '',
+    dateJoined: moment().format('MM/DD/YYYY'),
     dobMonth: '',
     dobDay: '',
     dobYear: '',
