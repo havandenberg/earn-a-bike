@@ -12,10 +12,22 @@ export default class Visits extends Component {
     visits: PropTypes.arrayOf(PropTypes.shape(visitProps))
   };
 
-  state = {
-    isEditing: false,
-    openVisits: []
-  };
+  constructor(props) {
+    super(props);
+    const {user} = props;
+
+    this.state = {
+      isEditing: false,
+      openVisits: [],
+      visits: user.visits
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.user.id !== this.props.user.id) {
+      this.setState({visits: nextProps.user.visits, isEditing: false, openVisits: []});
+    }
+  }
 
   handleToggleOpenVisit = (visit) => {
     const {openVisits} = this.state;
@@ -31,17 +43,23 @@ export default class Visits extends Component {
     const {visits} = this.props;
     visits[visitIndex] = visit;
     this.setState({visits});
-    this.props.updateUser({...this.props.user, visits});
   };
 
   toggleEditing = () => {
-    const {isEditing} = this.state;
-    this.setState({isEditing: !isEditing});
+    const {isEditing, visits} = this.state;
+
+    if (isEditing) {
+      const updatedUser = {...this.props.user, visits};
+      this.props.updateUser(updatedUser);
+      this.setState({isEditing: false});
+    } else {
+      this.setState({isEditing: true});
+    }
   };
 
   render() {
-    const {isManager, user, visits} = this.props;
-    const {isEditing, openVisits} = this.state;
+    const {isManager} = this.props;
+    const {isEditing, openVisits, visits} = this.state;
 
     return (
       <div className="visit-container">
@@ -55,11 +73,11 @@ export default class Visits extends Component {
         <div className="visit-container__inner scroll">
           {visits.map((visit, index) => {
             return (
-              (user.isManager ? true : index > 0) && (
+              (isManager ? true : index > 0) && (
                 <Visit
                   key={index}
                   isEditing={isEditing}
-                  isManager={user.isManager}
+                  isManager={isManager}
                   openVisits={openVisits}
                   stopEditing={this.stopEditing}
                   toggleOpenVisit={this.handleToggleOpenVisit}

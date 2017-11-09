@@ -20,7 +20,7 @@ export default class Visit extends Component {
 
   handleHoursChange = (e) => {
     const {visit, visitIndex} = this.props;
-    visit.hours = parseFloat(e.target.value);
+    visit.hours = parseFloat(e.target.value, 10);
     this.props.updateVisit(visit, visitIndex);
   };
 

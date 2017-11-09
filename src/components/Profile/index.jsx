@@ -114,7 +114,7 @@ class Profile extends Component {
               <PersonalInfo isManager={user.isManager} user={selectedUser} users={this.props.users} updateUser={this.props.updateUser} />
             )}
             {view === 'visits' && (
-              <Visits isManager={user.isManager} updateUser={this.props.updateUser} user={user} visits={selectedUser.visits} />
+              <Visits isManager={user.isManager} updateUser={this.props.updateUser} user={selectedUser} visits={selectedUser.visits} />
             )}
             {view === 'bikes' && <Bikes selectedUser={selectedUser} user={user} updateUser={this.props.updateUser} />}
             {view === 'questions' && <Questions selectedUser={selectedUser} />}

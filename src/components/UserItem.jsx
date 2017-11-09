@@ -110,7 +110,7 @@ export default class UserItem extends Component {
     const startTime = _.isEmpty(user.visits) ? moment() : moment.unix(user.visits[0].timeIn);
     const endTime = moment();
     const isSelected = selectedUser ? selectedUser.id === user.id : false;
-    const totalHours = this.getTotalHours();
+    const totalHours = user.isManager ? 0 : this.getTotalHours();
 
     return (
       <div>
@@ -128,7 +128,7 @@ export default class UserItem extends Component {
                   'user-name__profile',
                   'user-name__profile-link',
                   {'user-name__profile-active': isSelected},
-                  {'user-name__profile-over-ten': totalHours >= 10}
+                  {'user-name__profile-over-ten': totalHours >= 10},
                 )}
                 onClick={this.handleSelectUser}>
                 {`${user.firstName} ${user.lastName}${user.isManager ? ' (M)' : ''}`}
@@ -143,20 +143,13 @@ export default class UserItem extends Component {
                 )}
               </div>
             ) : (
-              <div className={classNames(
-                'user-list-header',
-                {'user-list-header__over-ten': totalHours >= 10}
-              )}>
-                {`(${totalHours})`}
-              </div>
+              <div className={classNames('user-list-header', {'user-list-header__over-ten': totalHours >= 10})}>{`(${totalHours})`}</div>
             )}
           </div>
         ) : (
           <div className="user">
             {showPin ? (
-              <div className="user-name user-name__link">
-                {`${user.firstName} ${user.lastName[0]}.${user.isManager ? ' (M)' : ''}`}
-              </div>
+              <div className="user-name user-name__link">{`${user.firstName} ${user.lastName[0]}.${user.isManager ? ' (M)' : ''}`}</div>
             ) : (
               <button className="user-name user-name__link" onClick={this.showPin(false)}>
                 {`${user.firstName} ${user.lastName[0]}.${user.isManager ? ' (M)' : ''}`}
@@ -176,7 +169,7 @@ export default class UserItem extends Component {
                   <strong>+{getHoursDifference(startTime, endTime)} hrs</strong>
                 </div>
               )}
-              {showPin &&
+              {showPin && (
                 <input
                   autoFocus={true}
                   type="password"
@@ -185,13 +178,13 @@ export default class UserItem extends Component {
                   value={pin}
                   onBlur={this.handleHidePin}
                   onChange={this.handleChange}/>
-              }
-              {showPin &&
+              )}
+              {showPin && (
                 <button className="user-name" type="submit">
                   ->
                 </button>
-              }
-              {!showPin &&
+              )}
+              {!showPin && (
                 <button
                   className="user-name user-name__link"
                   onClick={this.showPin(true)}
@@ -199,13 +192,11 @@ export default class UserItem extends Component {
                   onMouseLeave={this.endHover}>
                   Sign Out
                 </button>
-              }
+              )}
             </form>
           </div>
         )}
-        {showSignout &&
-          <Signout onBack={this.handleSignoutBack} onSignout={this.handleSignout} user={user} />
-        }
+        {showSignout && <Signout onBack={this.handleSignoutBack} onSignout={this.handleSignout} user={user} />}
       </div>
     );
   }

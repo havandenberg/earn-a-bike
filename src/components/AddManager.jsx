@@ -14,7 +14,7 @@ class AddManager extends Component {
   static propTypes = {
     registerUser: PropTypes.func,
     users: PropTypes.arrayOf(PropTypes.shape(userProps))
-  }
+  };
 
   state = {
     errors: {},
@@ -41,26 +41,40 @@ class AddManager extends Component {
 
   handleChange = (field) => {
     return (e) => {
-      if (this.validateChange(field, e.target.value)) {
-        this.setState({newManager: {...this.state.newManager, [field]: e.target.value}});
+      const {value} = e.target;
+      if (this.validateChange(field, value)) {
+        this.setState({newManager: {...this.state.newManager, [field]: value}});
       }
+      return value;
     };
-  }
+  };
 
   handleBack = () => {
     history.goBack();
-  }
+  };
+
+  handleFocusDay = (month) => {
+    if (month.length === 2) {
+      this.refs.day.focus();
+    }
+  };
+
+  handleFocusYear = (day) => {
+    if (day.length === 2) {
+      this.refs.year.focus();
+    }
+  };
 
   handleSubmit = () => {
     if (this.validate()) {
       this.props.registerUser(this.state.newManager);
       history.goBack();
     }
-  }
+  };
 
   toggleHover = () => {
     this.setState({hover: !this.state.hover});
-  }
+  };
 
   validateChange = (field, value) => {
     if (_.includes(['pin', 'confirmPin', 'dobYear'], field)) {
@@ -76,7 +90,7 @@ class AddManager extends Component {
       this.refs.year.focus();
     }
     return true;
-  }
+  };
 
   validate = () => {
     const {users} = this.props;
@@ -119,7 +133,7 @@ class AddManager extends Component {
 
     this.setState({errors});
     return !_.some(errors, (error) => error);
-  }
+  };
 
   render() {
     const {errors, newManager} = this.state;
@@ -132,177 +146,119 @@ class AddManager extends Component {
             <Messages messages={errors.usernameNotUnique ? [messages.usernameAlreadyExists] : []} />
             <input
               autoFocus={true}
-              className={classNames(
-                'add-manager-field',
-                {'add-manager-field__error': errors.firstName}
-              )}
+              className={classNames('add-manager-field', {'add-manager-field__error': errors.firstName})}
               type="text"
               placeholder="First name"
               value={newManager.firstName}
-              onChange={this.handleChange('firstName')} />
+              onChange={this.handleChange('firstName')}/>
             <input
-              className={classNames(
-                'add-manager-field',
-                {'add-manager-field__error': errors.lastName}
-              )}
+              className={classNames('add-manager-field', {'add-manager-field__error': errors.lastName})}
               type="text"
               placeholder="Last name"
               value={newManager.lastName}
-              onChange={this.handleChange('lastName')} />
+              onChange={this.handleChange('lastName')}/>
             <div className="add-manager-dob-container">
               <input
-                className={classNames(
-                  'add-manager-field',
-                  'add-manager-dob-month',
-                  {'add-manager-field__error': errors.dobMonth}
-                )}
+                className={classNames('add-manager-field', 'add-manager-dob-month', {'add-manager-field__error': errors.dobMonth})}
                 type="text"
                 placeholder="MM"
                 value={newManager.dobMonth}
-                onChange={this.handleChange('dobMonth')} />
+                onChange={_.flow([this.handleChange('dobMonth'), this.handleFocusDay])}/>
               &nbsp;/&nbsp;
               <input
-                className={classNames(
-                  'add-manager-field',
-                  'add-manager-dob-day',
-                  {'add-manager-field__error': errors.dobDay}
-                )}
+                className={classNames('add-manager-field', 'add-manager-dob-day', {'add-manager-field__error': errors.dobDay})}
                 type="text"
                 placeholder="DD"
                 value={newManager.dobDay}
                 ref="day"
-                onChange={this.handleChange('dobDay')} />
-                &nbsp;/&nbsp;
+                onChange={_.flow([this.handleChange('dobDay'), this.handleFocusYear])}/>
+              &nbsp;/&nbsp;
               <input
-                className={classNames(
-                  'add-manager-field',
-                  'add-manager-dob-year',
-                  {'add-manager-field__error': errors.dobYear}
-                )}
+                className={classNames('add-manager-field', 'add-manager-dob-year', {'add-manager-field__error': errors.dobYear})}
                 type="text"
                 placeholder="YYYY"
                 value={newManager.dobYear}
                 ref="year"
-                onChange={this.handleChange('dobYear')} />
+                onChange={this.handleChange('dobYear')}/>
               <div className="add-manager-dob-text">Birthdate</div>
             </div>
             <input
-              className={classNames(
-                'add-manager-field',
-                {'add-manager-field__error': errors.username}
-              )}
+              className={classNames('add-manager-field', {'add-manager-field__error': errors.username})}
               type="text"
               placeholder="Username"
               value={newManager.username}
-              onChange={this.handleChange('username')} />
+              onChange={this.handleChange('username')}/>
             <input
-              className={classNames(
-                'add-manager-field',
-                {'add-manager-field__error': errors.pin}
-              )}
+              className={classNames('add-manager-field', {'add-manager-field__error': errors.pin})}
               type="password"
               placeholder="4 digit pin"
               value={newManager.pin}
-              onChange={this.handleChange('pin')} />
+              onChange={this.handleChange('pin')}/>
             <input
-              className={classNames(
-                'add-manager-field',
-                {'add-manager-field__error': errors.confirmPin}
-              )}
+              className={classNames('add-manager-field', {'add-manager-field__error': errors.confirmPin})}
               type="password"
               placeholder="Confirm pin"
               value={newManager.confirmPin}
-              onChange={this.handleChange('confirmPin')} />
+              onChange={this.handleChange('confirmPin')}/>
           </div>
           <div className="add-manager__fields scroll">
             <input
-              className={classNames(
-                'add-manager-field',
-                {'add-manager-field__error': errors.email}
-              )}
+              className={classNames('add-manager-field', {'add-manager-field__error': errors.email})}
               type="text"
               placeholder="Email"
               value={newManager.email}
-              onChange={this.handleChange('email')} />
+              onChange={this.handleChange('email')}/>
             <input
-              className={classNames(
-                'add-manager-field',
-                {'add-manager-field__error': errors.phone}
-              )}
+              className={classNames('add-manager-field', {'add-manager-field__error': errors.phone})}
               type="text"
               placeholder="Phone"
               value={newManager.phone}
-              onChange={this.handleChange('phone')} />
+              onChange={this.handleChange('phone')}/>
             <input
-              className={classNames(
-                'add-manager-field',
-                {'add-manager-field__error': errors.addressLine1}
-              )}
+              className={classNames('add-manager-field', {'add-manager-field__error': errors.addressLine1})}
               type="text"
               placeholder="Address line 1"
               value={newManager.addressLine1}
-              onChange={this.handleChange('addressLine1')} />
+              onChange={this.handleChange('addressLine1')}/>
             <input
-              className={classNames(
-                'add-manager-field',
-                {'add-manager-field__error': errors.addressLine2}
-              )}
+              className={classNames('add-manager-field', {'add-manager-field__error': errors.addressLine2})}
               type="text"
               placeholder="Address line 2"
               value={newManager.addressLine2}
-              onChange={this.handleChange('addressLine2')} />
+              onChange={this.handleChange('addressLine2')}/>
             <div className="add-manager-address-container">
               <input
-                className={classNames(
-                  'add-manager-field',
-                  'add-manager-address-city',
-                  {'add-manager-field__error': errors.addressCity}
-                )}
+                className={classNames('add-manager-field', 'add-manager-address-city', {'add-manager-field__error': errors.addressCity})}
                 type="text"
                 placeholder="City"
                 value={newManager.addressCity}
-                onChange={this.handleChange('addressCity')} />
+                onChange={this.handleChange('addressCity')}/>
               <input
-                className={classNames(
-                  'add-manager-field',
-                  'add-manager-address-state',
-                  {'add-manager-field__error': errors.addressState}
-                )}
+                className={classNames('add-manager-field', 'add-manager-address-state', {'add-manager-field__error': errors.addressState})}
                 type="text"
                 placeholder="State"
                 value={newManager.addressState}
-                onChange={this.handleChange('addressState')} />
+                onChange={this.handleChange('addressState')}/>
               <input
-                className={classNames(
-                  'add-manager-field',
-                  'add-manager-address-zip',
-                  {'add-manager-field__error': errors.addressZip}
-                )}
+                className={classNames('add-manager-field', 'add-manager-address-zip', {'add-manager-field__error': errors.addressZip})}
                 type="text"
                 placeholder="Zip code"
                 value={newManager.addressZip}
-                onChange={this.handleChange('addressZip')} />
+                onChange={this.handleChange('addressZip')}/>
             </div>
             <input
-              className={classNames(
-                'add-manager-field',
-                {'add-manager-field__error': errors.countryOfOrigin}
-              )}
+              className={classNames('add-manager-field', {'add-manager-field__error': errors.countryOfOrigin})}
               type="text"
               placeholder="Country of origin"
               value={newManager.countryOfOrigin}
-              onChange={this.handleChange('countryOfOrigin')} />
+              onChange={this.handleChange('countryOfOrigin')}/>
           </div>
         </div>
         <div className="add-manager__btn-container">
-          <button
-            className="add-manager__btn"
-            onClick={this.handleBack}>
+          <button className="add-manager__btn" onClick={this.handleBack}>
             Cancel
           </button>
-          <button
-            className="add-manager__btn"
-            onClick={this.handleSubmit}>
+          <button className="add-manager__btn" onClick={this.handleSubmit}>
             Add
           </button>
         </div>
