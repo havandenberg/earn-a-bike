@@ -11,7 +11,7 @@
     "lint": "npm run lint:js",
     "lint:js": "eslint -c ./.eslintrc.dev src --ext .jsx,.js",
     "lint:stylus": "find ./src/styles -type f -iname \"*.styl\" -print0 | xargs -0 -n1 ./node_modules/.bin/stylint",
-    "package-mac": "electron-packager ./ Earn-A-Bike --platform=darwin --arch=x64 --overwrite --out=./builds --icon=icon.ico",
+    "package-mac": "electron-packager ./ Earn-A-Bike --platform=darwin --arch=x64 --overwrite --out=./builds --icon=icon.icns",
     "package-win": "electron-packager ./ Earn-A-Bike --platform=win32 --arch=ia32 --overwrite --out=./builds --icon=icon.ico --asar=true",
     "prebuild": "rimraf ./dist",
     "prod": "electron . --noDevServer",
