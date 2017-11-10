@@ -59,6 +59,7 @@ module.exports = {
     }),
     new BabiliPlugin()
   ],
+  devtool: 'cheap-eval-source-map',
   stats: {
     colors: true,
     children: false,

@@ -30,7 +30,7 @@ yarn testDev
 Chrome dev tools are opened automatically in dev.
 
 ## Packaging and Deploying
-Super easy with electron, just run the following commands.
+Super easy with webpack and electron, just run the following commands.
 
 Build app:
 ```
