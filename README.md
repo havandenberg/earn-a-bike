@@ -32,11 +32,16 @@ Chrome dev tools are opened automatically in dev.
 ## Packaging and Deploying
 Super easy with electron, just run the following commands.
 
-Mac app:
+Build app:
+```
+yarn build
+```
+
+Package to Mac app:
 ```
 yarn package-mac
 ```
-Windows app:
+Package to Windows app:
 ```
 yarn package-win
 ```
