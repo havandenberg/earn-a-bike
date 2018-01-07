@@ -1,9 +1,8 @@
 .header
   color: $regular-red
+  display: flex
   font-family: $good-dog
   margin: 0 auto
-  text-align: center
-  width: 90%
 
   &-city
     font-size: 1.5rem
@@ -11,11 +10,13 @@
     padding: 0
 
   &-logo
-    float: left
-
     img
-      height: 100px
-      width: 100px
+      height: 90px
+      width: 90px
+
+  &-inner
+    text-align: center
+    width: 100%
 
   &-subtitle
     color: $dark-green
@@ -25,7 +26,7 @@
 
   &-title
     height: 50px
-    padding: $spacing-small 0 $spacing-micro
+    padding: $spacing-small 0 0
     text-align: center
     width: 600px
 

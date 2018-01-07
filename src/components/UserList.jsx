@@ -3,17 +3,33 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
+import {Link} from 'react-router-dom';
 import {deleteUsers, handleSignOut} from 'actions/app';
 import UserItem from 'components/UserItem.jsx';
 import {userProps} from 'proptypes/user';
 import {exportCSV, exportJSON, importData} from 'utils/fileIO';
-import {getTotalHours} from 'utils/helpers';
+import {sortByActive, sortByHours, sortByDate, sortByName} from 'utils/sortBy';
 import searchImg from 'images/search.svg';
 import checkImg from 'images/check.svg';
 
 const OPTIONS = 'OPTIONS';
 const CHOOSE_EXPORT = 'CHOOSE_EXPORT';
 const CONFIRM_DELETE = 'CONFIRM_DELETE';
+
+const SORT_BY_ACTIVE = 'SORT_BY_ACTIVE';
+const SORT_BY_NAME = 'SORT_BY_NAME';
+const SORT_BY_HOURS = 'SORT_BY_HOURS';
+const SORT_BY_DATE = 'SORT_BY_DATE';
+
+const sortOptions = {
+  [SORT_BY_HOURS]: 'hrs',
+  [SORT_BY_NAME]: 'name',
+  [SORT_BY_DATE]: 'date'
+};
+
+const FILTER_BY_ACTIVE = 'FILTER_BY_ACTIVE';
+const FILTER_BY_MANAGERS = 'FILTER_BY_MANAGERS';
+const FILTER_BY_VOLUNTEERS = 'FILTER_BY_VOLUNTEERS';
 
 class UserList extends Component {
   static propTypes = {
@@ -25,12 +41,17 @@ class UserList extends Component {
     onSignout: PropTypes.func
   };
 
-  state = {
-    optionSet: OPTIONS,
-    selectedUserIds: [],
-    searchText: '',
-    sortByHours: false
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      filterBy: props.isProfile ? FILTER_BY_MANAGERS : FILTER_BY_ACTIVE,
+      optionSet: OPTIONS,
+      selectedUserIds: [],
+      searchText: '',
+      sortBy: props.isProfile ? SORT_BY_NAME : SORT_BY_ACTIVE
+    };
+  }
 
   handleChange = (e) => {
     this.setState({searchText: e.target.value});
@@ -100,14 +121,6 @@ class UserList extends Component {
     this.setState({optionSet: OPTIONS, selectedUserIds: []});
   };
 
-  filterUsers = (user) => {
-    return user.isActive && this.searchUsers(user);
-  };
-
-  filterProfileUsers = (user) => {
-    return this.searchUsers(user);
-  };
-
   getOptions = () => {
     const {optionSet, selectedUserIds} = this.state;
     switch (optionSet) {
@@ -164,46 +177,49 @@ class UserList extends Component {
     return text.toLowerCase().includes(searchText.toLowerCase());
   };
 
-  sortUsers = (a, b) => {
-    if (!a.isManager && !b.isManager) {
-      const x = a.visits[0].timeIn;
-      const y = b.visits[0].timeIn;
-      return x < y ? -1 : x > y ? 1 : 0;
+  getFilterBy = (user) => {
+    switch (this.state.filterBy) {
+    case FILTER_BY_ACTIVE:
+      return user.isActive && this.searchUsers(user);
+    case FILTER_BY_MANAGERS:
+      return user.isManager && this.searchUsers(user);
+    case FILTER_BY_VOLUNTEERS:
+      return !user.isManager && this.searchUsers(user);
+    default:
+      return this.searchUsers(user);
     }
-    if (!a.isManager && b.isManager) {
-      return 1;
-    }
-    if (a.isManager && !b.isManager) {
-      return -1;
-    }
-    return 0;
   };
 
-  sortProfileUsers = (a, b) => {
-    const {sortByHours} = this.state;
-    if (!a.isManager && !b.isManager) {
-      const x = sortByHours ? parseInt(getTotalHours(b.visits), 10) : a.firstName;
-      const y = sortByHours ? parseInt(getTotalHours(a.visits), 10) : b.firstName;
-      return x < y ? -1 : x > y ? 1 : 0;
+  getSortBy = () => {
+    if (this.state.filterBy === FILTER_BY_MANAGERS) {
+      return sortByName;
     }
-    if (!a.isManager && b.isManager) {
-      return 1;
+    switch (this.state.sortBy) {
+    case SORT_BY_ACTIVE:
+      return sortByActive;
+    case SORT_BY_HOURS:
+      return sortByHours;
+    case SORT_BY_DATE:
+      return sortByDate;
+    default:
+      return sortByName;
     }
-    if (a.isManager && !b.isManager) {
-      return -1;
-    }
-    if (a.isManager && b.isManager) {
-      return a.id < b.id ? -1 : a.id > b.id ? 1 : 0;
-    }
-    return 0;
   };
 
-  toggleSortByHours = () => {
-    this.setState({sortByHours: !this.state.sortByHours});
+  setFilterBy = (filterBy) => {
+    return () => {
+      this.setState({filterBy});
+    };
+  };
+
+  setSortBy = (sortBy) => {
+    return () => {
+      this.setState({sortBy});
+    };
   };
 
   render() {
-    const {selectedUserIds, searchText, sortByHours} = this.state;
+    const {filterBy, selectedUserIds, searchText, sortBy} = this.state;
     const {isProfile, selectedUser, users} = this.props;
     const isExportAll = selectedUserIds.length === users.length;
 
@@ -217,13 +233,25 @@ class UserList extends Component {
               </button>
               <div className="user-list-header">All Users</div>
             </div>
-            <button
-              className={classNames('user-list-header', 'user-list-header__sort-hours', {
-                'user-list-header__sort-hours-active': sortByHours
-              })}
-              onClick={this.toggleSortByHours}>
-              (hrs)
-            </button>
+            {filterBy === FILTER_BY_VOLUNTEERS && (
+              <div className="user-list__sort-container">
+                <button
+                  className={classNames('user-list__sort', {'user-list__sort-active': sortBy === SORT_BY_NAME})}
+                  onClick={this.setSortBy(SORT_BY_NAME)}>
+                  {`(${sortOptions[SORT_BY_NAME]})`}
+                </button>
+                <button
+                  className={classNames('user-list__sort', {'user-list__sort-active': sortBy === SORT_BY_HOURS})}
+                  onClick={this.setSortBy(SORT_BY_HOURS)}>
+                  {`(${sortOptions[SORT_BY_HOURS]})`}
+                </button>
+                <button
+                  className={classNames('user-list__sort', {'user-list__sort-active': sortBy === SORT_BY_DATE})}
+                  onClick={this.setSortBy(SORT_BY_DATE)}>
+                  {`(${sortOptions[SORT_BY_DATE]})`}
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           <div className="user-list-header">Currently signed in</div>
@@ -237,10 +265,24 @@ class UserList extends Component {
             value={searchText}
             onChange={this.handleChange} />
         </div>
+        {isProfile && (
+          <div className="user-list__filter-container">
+            <button
+              className={classNames('user-list__filter', {'user-list__filter-active': filterBy === FILTER_BY_MANAGERS})}
+              onClick={this.setFilterBy(FILTER_BY_MANAGERS)}>
+              Managers
+            </button>
+            <button
+              className={classNames('user-list__filter', {'user-list__filter-active': filterBy === FILTER_BY_VOLUNTEERS})}
+              onClick={this.setFilterBy(FILTER_BY_VOLUNTEERS)}>
+              Volunteers
+            </button>
+          </div>
+        )}
         <div className={classNames('user-list__users', {'user-list__users-sign-in': !isProfile}, 'scroll')}>
           {users
-            .filter(isProfile ? this.filterProfileUsers : this.filterUsers)
-            .sort(isProfile ? this.sortProfileUsers : this.sortUsers)
+            .filter(this.getFilterBy)
+            .sort(this.getSortBy())
             .map((user, i) => {
               return (
                 <UserItem
@@ -254,6 +296,14 @@ class UserList extends Component {
                   user={user}/>
               );
             })}
+          {isProfile &&
+            filterBy === FILTER_BY_MANAGERS && (
+              <div className="user-list__add-manager-container">
+                <Link className="user-list__add-manager" to="/registration/manager">
+                  Add Manager
+                </Link>
+              </div>
+            )}
         </div>
         {isProfile && this.getOptions()}
       </div>

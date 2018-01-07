@@ -46,10 +46,12 @@ class Profile extends Component {
   };
 
   setSelectedUser = (user) => {
+    const {selectedUser, view} = this.state;
+    const resetView = user.isManager && !selectedUser.isManager && (view === 'bikes' || view === 'questions');
     this.setState({
       hover: false,
       selectedUser: user,
-      view: 'personal'
+      view: resetView ? 'personal' : view
     });
   };
 
