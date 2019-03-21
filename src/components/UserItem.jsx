@@ -10,11 +10,13 @@ import {getHoursDifference} from 'utils/helpers';
 import Signout from 'components/Signout.jsx';
 import checkImg from 'images/check.svg';
 import checkGreenImg from 'images/check-green.svg';
+import {filterVisitsByHourType} from 'utils/helpers';
 
 export default class UserItem extends Component {
   static propTypes = {
     isExportSelected: PropTypes.bool,
     isProfile: PropTypes.bool,
+    selectedHourType: PropTypes.string,
     selectedUser: PropTypes.shape(userProps),
     user: PropTypes.shape(userProps),
     onExportSelectUser: PropTypes.func,
@@ -56,7 +58,9 @@ export default class UserItem extends Component {
   };
 
   getTotalHours = () => {
-    return getTotalHours(this.props.user.visits);
+    const {selectedHourType, user} = this.props;
+    const filteredVisits = filterVisitsByHourType(user.visits, selectedHourType);
+    return getTotalHours(filteredVisits);
   };
 
   showPin = (isSignout) => {
@@ -109,7 +113,7 @@ export default class UserItem extends Component {
     const startTime = _.isEmpty(user.visits) ? moment() : moment.unix(user.visits[0].timeIn);
     const endTime = moment();
     const isSelected = selectedUser ? selectedUser.id === user.id : false;
-    const totalHours = user.isManager ? 0 : this.getTotalHours();
+    const totalHours = this.getTotalHours();
 
     return (
       <div>
@@ -141,9 +145,7 @@ export default class UserItem extends Component {
                 Sign Out
                 </button>
               )}
-              {!user.isManager && (
-                <div className={classNames('user-list-header', {'user-name__profile-over-ten': totalHours >= 10})}>{`(${totalHours})`}</div>
-              )}
+              <div className={classNames('user-list-header', {'user-name__profile-over-ten': totalHours >= 10})}>{`(${totalHours})`}</div>
             </div>
           </div>
         ) : (

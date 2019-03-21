@@ -4,7 +4,8 @@ export const visitProps = {
   timeIn: PropTypes.number,
   timeOut: PropTypes.number,
   hours: PropTypes.number,
-  notes: PropTypes.string
+  notes: PropTypes.string,
+  type: PropTypes.string
 };
 
 export const userProps = {

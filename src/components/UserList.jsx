@@ -35,6 +35,7 @@ class UserList extends Component {
   static propTypes = {
     deleteUsers: PropTypes.func,
     isProfile: PropTypes.bool,
+    selectedHourType: PropTypes.string,
     selectedUser: PropTypes.shape(userProps),
     users: PropTypes.arrayOf(PropTypes.shape(userProps)),
     onSelectUser: PropTypes.func,
@@ -198,7 +199,7 @@ class UserList extends Component {
     case SORT_BY_ACTIVE:
       return sortByActive;
     case SORT_BY_HOURS:
-      return sortByHours;
+      return (a, b) => sortByHours(a, b, this.props.selectedHourType);
     case SORT_BY_DATE:
       return sortByDate;
     default:
@@ -220,7 +221,7 @@ class UserList extends Component {
 
   render() {
     const {filterBy, selectedUserIds, searchText, sortBy} = this.state;
-    const {isProfile, selectedUser, users} = this.props;
+    const {isProfile, selectedHourType, selectedUser, users} = this.props;
     const isExportAll = selectedUserIds.length === users.length;
 
     return (
@@ -289,6 +290,7 @@ class UserList extends Component {
                   key={i}
                   isExportSelected={_.includes(selectedUserIds, user.id)}
                   isProfile={isProfile}
+                  selectedHourType={selectedHourType}
                   selectedUser={selectedUser}
                   onSelectUser={this.handleSelectUser}
                   onExportSelectUser={this.handleExportSelectUser}

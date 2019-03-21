@@ -21,3 +21,7 @@ export function getTotalHours(visits) {
 export function isUsernameUnique(users, username) {
   return !_.some(users, (user) => user.username === username);
 }
+
+export function filterVisitsByHourType(visits, hourType) {
+  return visits.filter((visit) => _.isEmpty(hourType) || _.isEqual(visit.type, hourType));
+}

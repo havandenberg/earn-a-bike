@@ -28,7 +28,7 @@ class Profile extends Component {
 
     this.state = {
       errors: {},
-      hover: false,
+      selectedHourType: '',
       selectedUser: user,
       view: 'personal'
     };
@@ -45,11 +45,16 @@ class Profile extends Component {
     history.push('/');
   };
 
+  setSelectedHourType = (hourType) => {
+    this.setState({
+      selectedHourType: hourType
+    });
+  };
+
   setSelectedUser = (user) => {
     const {selectedUser, view} = this.state;
     const resetView = user.isManager && !selectedUser.isManager && (view === 'bikes' || view === 'questions');
     this.setState({
-      hover: false,
       selectedUser: user,
       view: resetView ? 'personal' : view
     });
@@ -63,7 +68,7 @@ class Profile extends Component {
 
   render() {
     const {user, users} = this.props;
-    const {idsToExport, selectedUser, view} = this.state;
+    const {idsToExport, selectedHourType, selectedUser, view} = this.state;
 
     return (
       <div className="profile">
@@ -77,6 +82,7 @@ class Profile extends Component {
             <UserList
               users={users}
               idsToExport={idsToExport}
+              selectedHourType={selectedHourType}
               selectedUser={selectedUser}
               isProfile={true}
               onSelectUser={this.setSelectedUser}
@@ -116,7 +122,13 @@ class Profile extends Component {
               <PersonalInfo isManager={user.isManager} user={selectedUser} users={this.props.users} updateUser={this.props.updateUser} />
             )}
             {view === 'visits' && (
-              <Visits isManager={user.isManager} updateUser={this.props.updateUser} user={selectedUser} visits={selectedUser.visits} />
+              <Visits
+                isManager={user.isManager}
+                selectedHourType={selectedHourType}
+                setSelectedHourType={this.setSelectedHourType}
+                updateUser={this.props.updateUser}
+                user={selectedUser}
+                visits={selectedUser.visits} />
             )}
             {view === 'bikes' && <Bikes selectedUser={selectedUser} user={user} updateUser={this.props.updateUser} />}
             {view === 'questions' && <Questions selectedUser={selectedUser} />}

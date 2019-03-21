@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import moment from 'moment';
 import userProps from 'proptypes/user';
-import {getHoursDifference, getTotalHours} from 'utils/helpers';
+import {filterVisitsByHourType, getHoursDifference, getTotalHours} from 'utils/helpers';
 
 export default class UserInfo extends Component {
   static propTypes = {
+    selectedHourType: PropTypes.string,
     selectedUser: PropTypes.shape(userProps),
     updateUser: PropTypes.func
   };
@@ -19,8 +20,9 @@ export default class UserInfo extends Component {
   };
 
   render() {
-    const {selectedUser} = this.props;
-    const totalHours = getTotalHours(selectedUser.visits);
+    const {selectedHourType, selectedUser} = this.props;
+    const filteredVisits = filterVisitsByHourType(selectedUser.visits, selectedHourType);
+    const totalHours = getTotalHours(filteredVisits);
 
     return (
       <div className="profile-content__left">

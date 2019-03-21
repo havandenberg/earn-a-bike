@@ -106,7 +106,7 @@ export default class PersonalInfo extends Component {
   };
 
   validate = () => {
-    const {user, users} = this.props;
+    const {isManager, user, users} = this.props;
     const errors = {};
     const {
       addressCity,
@@ -129,7 +129,7 @@ export default class PersonalInfo extends Component {
       phone,
       username
     } = this.state;
-    const hasPinError = _.isEmpty(newPin) ? false : (user.isManager ? false : user.pin !== oldPin) || newPin !== confirmNewPin;
+    const hasPinError = _.isEmpty(newPin) ? false : (isManager ? false : user.pin !== oldPin) || newPin !== confirmNewPin;
 
     errors.addressLine1 = _.isEmpty(addressLine1);
     errors.addressCity = _.isEmpty(addressCity);

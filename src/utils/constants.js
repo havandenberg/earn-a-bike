@@ -10,3 +10,8 @@ export const bikeChecklistItems = [
   'The bike has a clear reflector in the front and a red one in the back. There are also reflectors on the front and back wheel spokes.',
   'Test ride the bike outdoors. Everything works well.'
 ];
+
+export const hourTypes = [
+  'open shop',
+  'volunteer'
+];

@@ -1,12 +1,16 @@
+import classNames from 'classnames';
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import {userProps, visitProps} from 'proptypes/user';
 import Visit from 'components/Visit.jsx';
+import {filterVisitsByHourType} from 'utils/helpers';
 
 export default class Visits extends Component {
   static propTypes = {
     isManager: PropTypes.bool,
+    selectedHourType: PropTypes.string,
+    setSelectedHourType: PropTypes.func,
     updateUser: PropTypes.func,
     user: PropTypes.shape(userProps),
     visits: PropTypes.arrayOf(PropTypes.shape(visitProps))
@@ -45,6 +49,12 @@ export default class Visits extends Component {
     this.setState({visits});
   };
 
+  setSelectedHourType = (hourType) => {
+    return () => {
+      this.props.setSelectedHourType(hourType);
+    };
+  }
+
   toggleEditing = () => {
     const {isEditing, visits} = this.state;
 
@@ -58,8 +68,10 @@ export default class Visits extends Component {
   };
 
   render() {
-    const {isManager} = this.props;
+    const {isManager, selectedHourType, setSelectedHourType} = this.props;
     const {isEditing, openVisits, visits} = this.state;
+
+    const filteredVisits = filterVisitsByHourType(visits, selectedHourType);
 
     return (
       <div className="visit-container">
@@ -67,18 +79,23 @@ export default class Visits extends Component {
           <div className="visit-item visit-item__container">Date</div>
           <div className="visit-item visit-item__container">Time In</div>
           <div className="visit-item visit-item__container">Time Out</div>
+          <div className={classNames(
+            'visit-action visit-item visit-item__container',
+            {'visit-action__active': !_.isEmpty(selectedHourType)}
+          )} onClick={this.setSelectedHourType('')}>Type</div>
           <div className="visit-item visit-item__container">Hours</div>
           <div className="visit-item visit-item__notes" />
         </div>
         <div className="visit-container__inner scroll">
-          {visits.map((visit, index) => {
+          {filteredVisits.map((visit, index) => {
             return (
-              (isManager ? true : index > 0) && (
+              (isManager || index > 0 || !_.isEmpty(selectedHourType)) && (
                 <Visit
                   key={index}
                   isEditing={isEditing}
                   isManager={isManager}
                   openVisits={openVisits}
+                  setSelectedHourType={setSelectedHourType}
                   stopEditing={this.stopEditing}
                   toggleOpenVisit={this.handleToggleOpenVisit}
                   visit={visit}
