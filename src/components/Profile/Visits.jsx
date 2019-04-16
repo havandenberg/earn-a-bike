@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import {userProps, visitProps} from 'proptypes/user';
 import Visit from 'components/Visit.jsx';
-import {filterVisitsByHourType} from 'utils/helpers';
 
 export default class Visits extends Component {
   static propTypes = {
@@ -28,7 +27,7 @@ export default class Visits extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.user.id !== this.props.user.id) {
+    if (!_.isEqual(nextProps.user, this.props.user)) {
       this.setState({visits: nextProps.user.visits, isEditing: false, openVisits: []});
     }
   }
@@ -71,8 +70,6 @@ export default class Visits extends Component {
     const {isManager, selectedHourType, setSelectedHourType} = this.props;
     const {isEditing, openVisits, visits} = this.state;
 
-    const filteredVisits = filterVisitsByHourType(visits, selectedHourType);
-
     return (
       <div className="visit-container">
         <div className="visit-header visit-header__labels">
@@ -87,7 +84,7 @@ export default class Visits extends Component {
           <div className="visit-item visit-item__notes" />
         </div>
         <div className="visit-container__inner scroll">
-          {filteredVisits.map((visit, index) => {
+          {visits.map((visit, index) => {
             return (
               (isManager || index > 0 || !_.isEmpty(selectedHourType)) && (
                 <Visit
@@ -95,6 +92,7 @@ export default class Visits extends Component {
                   isEditing={isEditing}
                   isManager={isManager}
                   openVisits={openVisits}
+                  selectedHourType={selectedHourType}
                   setSelectedHourType={setSelectedHourType}
                   stopEditing={this.stopEditing}
                   toggleOpenVisit={this.handleToggleOpenVisit}

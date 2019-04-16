@@ -10,7 +10,7 @@ import {getHoursDifference} from 'utils/helpers';
 import Signout from 'components/Signout.jsx';
 import checkImg from 'images/check.svg';
 import checkGreenImg from 'images/check-green.svg';
-import {filterVisitsByHourType} from 'utils/helpers';
+import {filterVisitsByHourType, getMaxHours} from 'utils/helpers';
 
 export default class UserItem extends Component {
   static propTypes = {
@@ -114,6 +114,7 @@ export default class UserItem extends Component {
     const endTime = moment();
     const isSelected = selectedUser ? selectedUser.id === user.id : false;
     const totalHours = this.getTotalHours();
+    const maxHours = selectedUser ? getMaxHours(selectedUser) : 0;
 
     return (
       <div>
@@ -121,9 +122,9 @@ export default class UserItem extends Component {
           <div className="user">
             <div className="user-left">
               <button
-                className={classNames('checkbox', {'checkbox-over-ten': totalHours >= 10})}
+                className={classNames('checkbox', {'checkbox-over-ten': totalHours >= maxHours})}
                 onClick={this.handleExportSelectUser(user.id)}>
-                {isExportSelected && <img alt="Check" src={totalHours >= 10 ? checkGreenImg : checkImg} />}
+                {isExportSelected && <img alt="Check" src={totalHours >= maxHours ? checkGreenImg : checkImg} />}
               </button>
               <button
                 className={classNames(
@@ -131,7 +132,7 @@ export default class UserItem extends Component {
                   'user-name__profile',
                   'user-name__profile-link',
                   {'user-name__profile-active': isSelected},
-                  {'user-name__profile-over-ten': totalHours >= 10},
+                  {'user-name__profile-over-ten': totalHours >= maxHours},
                 )}
                 onClick={this.handleSelectUser}>
                 {`${user.firstName} ${user.lastName}${user.isManager ? ' (M)' : ''}`}
@@ -140,12 +141,14 @@ export default class UserItem extends Component {
             <div className="user-left">
               {user.isActive && (
                 <button
-                  className={classNames('user-signout', {'user-signout__over-ten': totalHours >= 10})}
+                  className={classNames('user-signout', {'user-signout__over-ten': totalHours >= maxHours})}
                   onClick={this.handleSignout}>
                 Sign Out
                 </button>
               )}
-              <div className={classNames('user-list-header', {'user-name__profile-over-ten': totalHours >= 10})}>{`(${totalHours})`}</div>
+              <div className={classNames('user-list-header', {'user-name__profile-over-ten': totalHours >= maxHours})}>
+                {`(${totalHours})`}
+              </div>
             </div>
           </div>
         ) : (

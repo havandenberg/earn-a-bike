@@ -126,6 +126,22 @@ export function deleteUsers(idsToDelete) {
   };
 }
 
+export function resetUsers(idsToDelete) {
+  return (dispatch, getState) => {
+    const users = getState().app.get('users').toJS();
+
+    const updatedUsers = users.map((user) => {
+      if (_.includes(idsToDelete, user.id)) {
+        return {...user, visits: user.isActive ? [user.visits[0]] : []};
+      }
+      return user;
+    });
+
+    dispatch(updateUsers(updatedUsers));
+    return true;
+  };
+}
+
 export function signoutAllUsers() {
   return (dispatch, getState) => {
     const users = getState().app.get('users').toJS();

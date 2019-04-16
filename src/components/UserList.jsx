@@ -4,7 +4,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
-import {deleteUsers, handleSignOut} from 'actions/app';
+import {deleteUsers, handleSignOut, resetUsers} from 'actions/app';
 import UserItem from 'components/UserItem.jsx';
 import {userProps} from 'proptypes/user';
 import {exportCSV, exportJSON, importData} from 'utils/fileIO';
@@ -15,6 +15,7 @@ import checkImg from 'images/check.svg';
 const OPTIONS = 'OPTIONS';
 const CHOOSE_EXPORT = 'CHOOSE_EXPORT';
 const CONFIRM_DELETE = 'CONFIRM_DELETE';
+const CONFIRM_RESET = 'CONFIRM_RESET';
 
 const SORT_BY_ACTIVE = 'SORT_BY_ACTIVE';
 const SORT_BY_NAME = 'SORT_BY_NAME';
@@ -35,6 +36,7 @@ class UserList extends Component {
   static propTypes = {
     deleteUsers: PropTypes.func,
     isProfile: PropTypes.bool,
+    resetUsers: PropTypes.func,
     selectedHourType: PropTypes.string,
     selectedUser: PropTypes.shape(userProps),
     users: PropTypes.arrayOf(PropTypes.shape(userProps)),
@@ -99,12 +101,16 @@ class UserList extends Component {
     this.setState({optionSet: CONFIRM_DELETE});
   };
 
+  confirmReset = () => {
+    this.setState({optionSet: CONFIRM_RESET});
+  };
+
   export = (type) => {
     return (e) => {
       e.preventDefault();
       const {selectedUserIds} = this.state;
       if (type === 'CSV') {
-        exportCSV(selectedUserIds);
+        exportCSV(selectedUserIds, true);
       } else {
         exportJSON(selectedUserIds);
       }
@@ -122,6 +128,16 @@ class UserList extends Component {
     this.setState({optionSet: OPTIONS, selectedUserIds: []});
   };
 
+  resetUserVisits = () => {
+    const {selectedUser} = this.props;
+    const {selectedUserIds} = this.state;
+    this.props.resetUsers(selectedUserIds);
+    if (_.includes(selectedUserIds, selectedUser.id)) {
+      this.props.onSelectUser({...selectedUser, visits: selectedUser.isActive ? [selectedUser.visits[0]] : []});
+    }
+    this.setState({optionSet: OPTIONS, selectedUserIds: []});
+  };
+
   getOptions = () => {
     const {optionSet, selectedUserIds} = this.state;
     switch (optionSet) {
@@ -130,6 +146,18 @@ class UserList extends Component {
         <div className="user-list__options">
           <div className="user-list__options-text">Are you sure?</div>
           <button className="btn-action btn-action__delete" onClick={this.deleteUsers}>
+              Yes
+          </button>
+          <button className="btn-action btn-action__delete" onClick={this.resetOptions}>
+              No
+          </button>
+        </div>
+      );
+    case CONFIRM_RESET:
+      return (
+        <div className="user-list__options">
+          <div className="user-list__options-text user-list__options-clear-visits">Clear all visits for selected users?</div>
+          <button className="btn-action btn-action__delete" onClick={this.resetUserVisits}>
               Yes
           </button>
           <button className="btn-action btn-action__delete" onClick={this.resetOptions}>
@@ -161,6 +189,10 @@ class UserList extends Component {
           <button className="btn-action" onClick={this.chooseExport}>
               Export
           </button>
+          {selectedUserIds.length > 0 && (
+            <button className="btn-action btn-action__reset" onClick={this.confirmReset}>
+              Reset
+            </button>)}
           {selectedUserIds.length > 0 && (
             <button className="btn-action btn-action__delete" onClick={this.confirmDelete}>
                 Delete
@@ -315,6 +347,7 @@ class UserList extends Component {
 
 const mapDispatchToProps = {
   deleteUsers,
+  resetUsers,
   onSignout: handleSignOut
 };
 

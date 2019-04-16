@@ -13,6 +13,7 @@ export default class Visit extends Component {
     isEditing: PropTypes.bool,
     isManager: PropTypes.bool,
     openVisits: PropTypes.arrayOf(PropTypes.shape(visitProps)),
+    selectedHourType: PropTypes.string,
     setSelectedHourType: PropTypes.func,
     stopEditing: PropTypes.func,
     toggleOpenVisit: PropTypes.func,
@@ -67,11 +68,16 @@ export default class Visit extends Component {
   };
 
   render() {
-    const {isEditing, isManager, openVisits, visit} = this.props;
+    const {isEditing, isManager, openVisits, selectedHourType, visit} = this.props;
     const isOpen = _.includes(openVisits, visit);
 
     return (
-      <div className="visit">
+      <div className={classNames(
+        'visit',
+        {'visit-hidden': _.isEmpty(selectedHourType)
+          ? false
+          : (!_.isEqual(selectedHourType, visit.type) || _.isEqual('-', visit.type) || _.isEmpty(visit.type))}
+      )}>
         <div className="visit-header">
           <div className="visit-item">{moment.unix(visit.timeIn).format('MM/DD/YYYY')}</div>
           <div className="visit-item">{moment.unix(visit.timeIn).format('h:mm a')}</div>

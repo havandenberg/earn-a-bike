@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-import moment from 'moment';
 import classNames from 'classnames';
 import {userProps} from 'proptypes/user';
 import {messages} from 'utils/messages';
 import {isUsernameUnique} from 'utils/helpers';
 import Messages from 'components/Messages.jsx';
+import {isUnderEighteen} from '../../utils/helpers';
 
 export default class PersonalInfo extends Component {
   static propTypes = {
@@ -142,8 +142,8 @@ export default class PersonalInfo extends Component {
     errors.dobDay = _.isEmpty(dobDay);
     errors.dobYear = _.isEmpty(dobYear);
     errors.email = _.isEmpty(email);
-    errors.parentName = _.isEmpty(user.parentName) ? false : _.isEmpty(parentName);
-    errors.parentPhone = _.isEmpty(user.parentName) ? false : _.isEmpty(parentPhone);
+    errors.parentName = isUnderEighteen({dobDay, dobMonth, dobYear}) ? _.isEmpty(parentName) : false;
+    errors.parentPhone = isUnderEighteen({dobDay, dobMonth, dobYear}) ? _.isEmpty(parentPhone) : false;
     errors.phone = _.isEmpty(phone);
     errors.username = _.isEmpty(username);
     errors.usernameNotUnique = username !== oldUsername && !isUsernameUnique(users, username);
@@ -180,7 +180,7 @@ export default class PersonalInfo extends Component {
       isEditing,
       isManager
     } = this.state;
-    const isUnder18 = moment().diff(`${dobMonth}-${dobDay}-${dobYear}`, 'years') < 18;
+    const isUnder18 = isUnderEighteen({dobDay, dobMonth, dobYear});
 
     return (
       <form className="personal-info__outer" onSubmit={this.handleSubmit}>

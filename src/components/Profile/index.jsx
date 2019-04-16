@@ -88,9 +88,10 @@ class Profile extends Component {
               onSelectUser={this.setSelectedUser}
               onMultiSelectUser={this.setMultiSelectUser}/>
           ) : (
-            <UserInfo selectedUser={selectedUser} updateUser={this.props.updateUser} />
+            <UserInfo selectedUser={selectedUser} selectedHourType={selectedHourType} updateUser={this.props.updateUser} />
           )}
           <div className={classNames('profile-content__right', {'profile-content__right-manager': user.isManager})}>
+            <div className="user-name__profile-active">{selectedUser.firstName}{' '}{selectedUser.lastName}</div>
             <div className="profile-options">
               <button
                 className={classNames('profile-option', {'profile-option__active': view === 'personal'})}

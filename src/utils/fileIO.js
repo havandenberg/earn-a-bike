@@ -6,7 +6,7 @@ import moment from 'moment';
 import {config} from 'reducers/app';
 import {updateNextId, updateUsers} from 'actions/app';
 import {store} from 'utils/store';
-import {getTotalHours} from 'utils/helpers';
+import {filterVisitsByHourType, getTotalHours} from 'utils/helpers';
 
 const userFieldsWithCommas = ['firstName', 'lastName', 'dobMonth', 'dobDay', 'dobYear', 'username', 'email', 'phone', 'addressLine1', 'addressLine2', 'addressCity', 'addressState', 'addressZip', 'countryOfOrigin', 'questionOne', 'questionTwo', 'schoolName']; // eslint-disable-line max-len
 
@@ -70,7 +70,7 @@ export const exportJSON = (selectedUserIds) => {
   );
 };
 
-export const exportCSV = (selectedUserIds) => {
+export const exportCSV = (selectedUserIds, includeVisits) => {
   remote.dialog.showSaveDialog(
     {
       buttonLabel: 'Export',
@@ -83,12 +83,13 @@ export const exportCSV = (selectedUserIds) => {
         return;
       }
 
-      let data = ',First Name,Last Name,Date Of Birth,Username,Email,Phone,Address Line 1,Address Line 2,City,State,Zip Code,Country Of Origin,Total Hours,Date Joined,Bikes Earned,How did you find out about Earn-A-Bike?,What brings you to Earn-A-Bike?,Email List,Interested In Manager,Student,School Name\n'; // eslint-disable-line max-len
+      let data = ',First Name,Last Name,Date Of Birth,Username,Email,Phone,Address Line 1,Address Line 2,City,State,Zip Code,Country Of Origin,Total Open Shop Hours,Total Volunteer Hours,Date Joined,Bikes Earned,How did you find out about Earn-A-Bike?,What brings you to Earn-A-Bike?,Email List,Interested In Manager,Student,School Name\n'; // eslint-disable-line max-len
 
       _.each(config.get('users'), (user) => {
         if (_.isEmpty(selectedUserIds) || _.includes(selectedUserIds, user.id)) {
           let userString = '';
-          const totalHours = getTotalHours(user.visits);
+          const totalOpenShopHours = getTotalHours(filterVisitsByHourType(user.visits, 'open shop'));
+          const totalVolunteerHours = getTotalHours(filterVisitsByHourType(user.visits, 'volunteer'));
 
           _.each(Object.keys(user), (key) => {
             if (_.includes(userFieldsWithCommas, key)) {
@@ -96,7 +97,7 @@ export const exportCSV = (selectedUserIds) => {
             }
           });
 
-          userString += `${user.id + 1},${user.firstName},${user.lastName},${user.dobMonth}/${user.dobDay}/${user.dobYear},${user.username},${user.email},${user.phone},${user.addressLine1},${user.addressLine2},${user.addressCity},${user.addressState},${user.addressZip},${user.countryOfOrigin},${totalHours},${user.dateJoined || ''},`; // eslint-disable-line max-len
+          userString += `${user.id + 1},${user.firstName},${user.lastName},${user.dobMonth}/${user.dobDay}/${user.dobYear},${user.username},${user.email},${user.phone},${user.addressLine1},${user.addressLine2},${user.addressCity},${user.addressState},${user.addressZip},${user.countryOfOrigin},${totalOpenShopHours},${totalVolunteerHours},${user.dateJoined || ''},`; // eslint-disable-line max-len
 
           if (!user.isManager) {
             let bikesString = '';
@@ -110,6 +111,13 @@ export const exportCSV = (selectedUserIds) => {
 
           userString = userString.replace(/\n/g, '');
           data += `${userString}\n`;
+
+          if (includeVisits) {
+            _.each(user.visits, (visit) => {
+              const visitString = `,,,,,${visit.timeIn},${visit.timeOut},${visit.hours},${visit.type},${visit.notes}`;
+              data += `${visitString}\n`;
+            });
+          }
         }
       });
 

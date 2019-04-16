@@ -18,6 +18,15 @@ export function getTotalHours(visits) {
   ).toFixed(1);
 }
 
+
+export function isUnderEighteen(user) {
+  return moment().diff(moment(`${user.dobYear}${user.dobMonth}${user.dobDay}`, 'YYYYMMDD'), 'years') < 18;
+}
+
+export function getMaxHours(user) {
+  return isUnderEighteen(user) ? 4 : 10;
+}
+
 export function isUsernameUnique(users, username) {
   return !_.some(users, (user) => user.username === username);
 }

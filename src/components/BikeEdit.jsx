@@ -91,7 +91,7 @@ export default class BikeEdit extends Component {
               type="text"
               className={classNames('bike-edit__description', {'bike-edit__error': hasError})}
               onChange={this.handleDescriptionChange}
-              placeholder="description - e.g. 1970s red Trek"
+              placeholder="description (required)"
               ref="description"
               value={bike.description}/>
           </div>

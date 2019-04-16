@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import moment from 'moment';
 import {connect} from 'react-redux';
 import {updateUser} from 'actions/app';
-import {getHoursDifference, getTotalHours} from 'utils/helpers';
+import {getHoursDifference, getTotalHours, getMaxHours} from 'utils/helpers';
 import {history} from 'utils/store';
 import {userProps} from 'proptypes/user';
 
@@ -18,7 +18,8 @@ class Signout extends Component {
   };
 
   state = {
-    hasNotesError: false
+    hasNotesError: false,
+    hasTypeError: false
   };
 
   componentWillMount() {
@@ -36,12 +37,23 @@ class Signout extends Component {
     this.setState({hasNotesError: false});
   };
 
+  handleTypeChange = (e) => {
+    const {user} = this.props;
+    const visit = user.visits[0];
+    visit.type = e.target.value;
+    this.props.updateUser(user);
+    this.setState({hasTypeError: false});
+  };
+
   handleSignout = () => {
     const {onSignout, user} = this.props;
-    if (user.isManager || !_.isEmpty(user.visits[0].notes)) {
+    const visit = user.visits[0];
+    const hasNotesError = _.isEmpty(visit.notes);
+    const hasTypeError = !visit.type || _.isEqual(visit.type, '-');
+    if ((user.isManager || !hasNotesError) && !hasTypeError) {
       onSignout(user.id);
     } else {
-      this.setState({hasNotesError: true});
+      this.setState({hasNotesError, hasTypeError});
     }
   };
 
@@ -51,8 +63,9 @@ class Signout extends Component {
 
   render() {
     const {onBack, user} = this.props;
-    const {hasNotesError} = this.state;
+    const {hasNotesError, hasTypeError} = this.state;
     const totalHours = this.getTotalHours();
+    const maxHours = getMaxHours(user);
 
     return (
       <div className="signout__background">
@@ -60,11 +73,13 @@ class Signout extends Component {
           <div className="profile-title">Bye, {user.firstName}!</div>
           {!user.isManager && (
             <div className="signout-time">
-              <div className={classNames({'user-name__profile-over-ten': totalHours >= 10})}>Current hours:&nbsp;&nbsp;&nbsp;&nbsp;</div>
+              <div className={classNames({'user-name__profile-over-ten': totalHours >= maxHours})}>
+                Current hours:&nbsp;&nbsp;&nbsp;&nbsp;
+              </div>
               <div>
-                <span className={classNames('profile-total-hours', {'user-name__profile-over-ten': totalHours >= 10})}>
+                <span className={classNames('profile-total-hours', {'user-name__profile-over-ten': totalHours >= maxHours})}>
                   {totalHours}
-                </span>&nbsp;/ 10
+                </span>&nbsp;/ {maxHours}
               </div>
             </div>
           )}
@@ -80,6 +95,17 @@ class Signout extends Component {
           <div className="signout-time">
             <div>Hours added:</div>
             <div>+{getHoursDifference(moment.unix(user.visits[0].timeIn), moment())}</div>
+          </div>
+          <div className="signout-time signout-type">
+            <div>Choose visit type:</div>
+            <select
+              className={classNames({'signout-error': hasTypeError})}
+              onChange={this.handleTypeChange}
+              value={user.visits[0].type || '-'}>
+              <option value="-">-</option>
+              <option value="open shop">open shop</option>
+              <option value="volunteer">volunteer</option>
+            </select>
           </div>
           {!user.isManager && <div className="signout-today-header">Add your notes for the day before you go...</div>}
           <div className="signout-notes">

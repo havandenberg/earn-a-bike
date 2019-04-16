@@ -22,7 +22,7 @@ ul
 img
   max-width: 100%
 
-button, input[type='submit']
+button, input[type='submit'], select
   border: 0
   color: $regular-red
   cursor: pointer
@@ -38,7 +38,7 @@ strong
 small
   font-size: 75%
 
-input, button, textarea
+input, select, button, textarea
   background: transparent
   border: 0
   font-family: $chalkboard
@@ -50,7 +50,7 @@ input, button, textarea
   &:focus
     outline: none
 
-input, textarea
+input, select, textarea
   +placeholder()
     color: $placeholder-red
     transition: all 0.3s ease
