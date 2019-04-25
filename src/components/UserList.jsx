@@ -16,6 +16,7 @@ const OPTIONS = 'OPTIONS';
 const CHOOSE_EXPORT = 'CHOOSE_EXPORT';
 const CONFIRM_DELETE = 'CONFIRM_DELETE';
 const CONFIRM_RESET = 'CONFIRM_RESET';
+const INCLUDE_VISITS = 'INCLUDE_VISITS';
 
 const SORT_BY_ACTIVE = 'SORT_BY_ACTIVE';
 const SORT_BY_NAME = 'SORT_BY_NAME';
@@ -105,12 +106,16 @@ class UserList extends Component {
     this.setState({optionSet: CONFIRM_RESET});
   };
 
-  export = (type) => {
+  includeVisits = () => {
+    this.setState({optionSet: INCLUDE_VISITS});
+  };
+
+  export = (type, includeVisits) => {
     return (e) => {
       e.preventDefault();
       const {selectedUserIds} = this.state;
       if (type === 'CSV') {
-        exportCSV(selectedUserIds, true);
+        exportCSV(selectedUserIds, includeVisits);
       } else {
         exportJSON(selectedUserIds);
       }
@@ -169,11 +174,26 @@ class UserList extends Component {
       return (
         <div className="user-list__options">
           <div className="user-list__options-text__export">Export As:</div>
-          <button className="btn-action btn-action__export" onClick={this.export('CSV')}>
+          <button className="btn-action btn-action__export" onClick={this.includeVisits}>
               CSV
           </button>
           <button className="btn-action btn-action__export" onClick={this.export('JSON')}>
               JSON
+          </button>
+          <button className="btn-action btn-action__delete" onClick={this.resetOptions}>
+              Cancel
+          </button>
+        </div>
+      );
+    case INCLUDE_VISITS:
+      return (
+        <div className="user-list__options">
+          <div className="user-list__options-text__export user-list__options-include-visits">Include visits?</div>
+          <button className="btn-action btn-action__export" onClick={this.export('CSV', true)}>
+              Yes
+          </button>
+          <button className="btn-action btn-action__export" onClick={this.export('CSV')}>
+              No
           </button>
           <button className="btn-action btn-action__delete" onClick={this.resetOptions}>
               Cancel

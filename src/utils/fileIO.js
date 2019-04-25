@@ -83,13 +83,14 @@ export const exportCSV = (selectedUserIds, includeVisits) => {
         return;
       }
 
-      let data = ',First Name,Last Name,Date Of Birth,Username,Email,Phone,Address Line 1,Address Line 2,City,State,Zip Code,Country Of Origin,Total Open Shop Hours,Total Volunteer Hours,Date Joined,Bikes Earned,How did you find out about Earn-A-Bike?,What brings you to Earn-A-Bike?,Email List,Interested In Manager,Student,School Name\n'; // eslint-disable-line max-len
+      let data = 'ID,First Name,Last Name,Date Of Birth,Username,Email,Phone,Address Line 1,Address Line 2,City,State,Zip Code,Country Of Origin,Total Open Shop Hours,Total Volunteer Hours,Total Hours,Date Joined,Bikes Earned,How did you find out about Earn-A-Bike?,What brings you to Earn-A-Bike?,Email List,Interested In Manager,Student,School Name\n'; // eslint-disable-line max-len
 
       _.each(config.get('users'), (user) => {
         if (_.isEmpty(selectedUserIds) || _.includes(selectedUserIds, user.id)) {
           let userString = '';
           const totalOpenShopHours = getTotalHours(filterVisitsByHourType(user.visits, 'open shop'));
           const totalVolunteerHours = getTotalHours(filterVisitsByHourType(user.visits, 'volunteer'));
+          const totalHours = getTotalHours(user.visits);
 
           _.each(Object.keys(user), (key) => {
             if (_.includes(userFieldsWithCommas, key)) {
@@ -97,7 +98,7 @@ export const exportCSV = (selectedUserIds, includeVisits) => {
             }
           });
 
-          userString += `${user.id + 1},${user.firstName},${user.lastName},${user.dobMonth}/${user.dobDay}/${user.dobYear},${user.username},${user.email},${user.phone},${user.addressLine1},${user.addressLine2},${user.addressCity},${user.addressState},${user.addressZip},${user.countryOfOrigin},${totalOpenShopHours},${totalVolunteerHours},${user.dateJoined || ''},`; // eslint-disable-line max-len
+          userString += `${user.id + 1},${user.firstName},${user.lastName},${user.dobMonth}/${user.dobDay}/${user.dobYear},${user.username},${user.email},${user.phone},${user.addressLine1},${user.addressLine2},${user.addressCity},${user.addressState},${user.addressZip},${user.countryOfOrigin},${totalOpenShopHours},${totalVolunteerHours},${totalHours},${user.dateJoined || ''},`; // eslint-disable-line max-len
 
           if (!user.isManager) {
             let bikesString = '';
@@ -113,8 +114,14 @@ export const exportCSV = (selectedUserIds, includeVisits) => {
           data += `${userString}\n`;
 
           if (includeVisits) {
-            _.each(user.visits, (visit) => {
-              const visitString = `,,,,,${visit.timeIn},${visit.timeOut},${visit.hours},${visit.type},${visit.notes}`;
+            _.each(user.visits, (visit, idx) => {
+              const visitString = `,,${idx === 0 ? 'Visits:,' : ','}${
+                moment.unix(visit.timeIn).format('MM-DD-YYYY')
+              },${
+                moment.unix(visit.timeIn).format('hh:mm a')
+              },${
+                moment.unix(visit.timeOut).format('hh:mm a')
+              },${visit.hours},${visit.type ? visit.type : '-'},${visit.notes}`;
               data += `${visitString}\n`;
             });
           }
