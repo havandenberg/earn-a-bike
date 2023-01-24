@@ -32,5 +32,5 @@ export function isUsernameUnique(users, username) {
 }
 
 export function filterVisitsByHourType(visits, hourType) {
-  return visits.filter((visit) => _.isEmpty(hourType) || _.isEqual(visit.type, hourType));
+  return (visits || []).filter((visit) => _.isEmpty(hourType) || _.isEqual(visit.type, hourType));
 }
