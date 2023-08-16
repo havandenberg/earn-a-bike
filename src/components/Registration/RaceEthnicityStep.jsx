@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import {userProps} from 'proptypes/user';
 import checkImg from 'images/check.svg';
-import {questionOneOptions} from 'utils/constants';
-import {getQuestionOneIsChecked, getQuestionOneOtherValue} from 'utils/helpers';
+import {raceEthnicityOptions} from 'utils/constants';
+import {getRaceEthnicityIsChecked, getRaceEthnicityOtherValue} from 'utils/helpers';
 
-export default class QuestionOneStep extends Component {
+export default class RaceEthnicityStep extends Component {
   static propTypes = {
     errors: PropTypes.shape({}),
     newUser: PropTypes.shape(userProps),
@@ -17,12 +17,12 @@ export default class QuestionOneStep extends Component {
     return () => {
       const {newUser, onChange} = this.props;
 
-      const option = optionArg === 'Other' ? getQuestionOneOtherValue(newUser.questionOne) || '' : optionArg;
+      const option = optionArg === 'Other' ? getRaceEthnicityOtherValue(newUser.raceEthnicity) || '' : optionArg;
 
-      if (newUser.questionOne.find(((val) => val === option)) !== undefined) {
-        newUser.questionOne = newUser.questionOne.filter(((val) => val !== option));
+      if (newUser.raceEthnicity.find(((val) => val === option)) !== undefined) {
+        newUser.raceEthnicity = newUser.raceEthnicity.filter(((val) => val !== option));
       } else {
-        newUser.questionOne = newUser.questionOne.concat([option]);
+        newUser.raceEthnicity = newUser.raceEthnicity.concat([option]);
       }
 
       onChange(newUser);
@@ -31,37 +31,27 @@ export default class QuestionOneStep extends Component {
 
   handleOtherChange = (e) => {
     const {newUser, onChange} = this.props;
-    newUser.questionOne = newUser.questionOne
-      .filter((val) => val !== getQuestionOneOtherValue(newUser.questionOne))
+    newUser.raceEthnicity = newUser.raceEthnicity
+      .filter((val) => val !== getRaceEthnicityOtherValue(newUser.raceEthnicity))
       .concat([e.target.value]);
     onChange(newUser);
   }
 
   render() {
-    const {newUser: {questionOne}} = this.props;
-    const other = getQuestionOneOtherValue(questionOne);
+    const {newUser: {raceEthnicity}} = this.props;
+    const other = getRaceEthnicityOtherValue(raceEthnicity);
 
     return (
       <div className="registration-step">
         <div className="registration-question">
-          How did you find out about Earn a Bike?
+          If you are willing to identify your race, please answer below:
         </div>
-        {/* <textarea
-          autoFocus={true}
-          className={classNames(
-            'registration-field',
-            'registration-field__question',
-            {'registration-field__error': errors.questionOne}
-          )}
-          type="text"
-          value={newUser.questionOne}
-          onChange={this.handleChange} /> */}
-        {questionOneOptions.map((option) => (
+        {raceEthnicityOptions.map((option) => (
           <div className="registration-checkbox-small" key={option}>
             <button
               className="checkbox"
               onClick={this.handleChange(option)}>
-              {getQuestionOneIsChecked(questionOne, option) && <img alt="Check" src={checkImg} />}
+              {getRaceEthnicityIsChecked(raceEthnicity, option) && <img alt="Check" src={checkImg} />}
             </button>
             <button
               className="registration-checkbox__text"

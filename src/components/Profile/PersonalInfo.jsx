@@ -6,7 +6,9 @@ import {userProps} from 'proptypes/user';
 import {messages} from 'utils/messages';
 import {isUsernameUnique} from 'utils/helpers';
 import Messages from 'components/Messages.jsx';
-import {isUnderEighteen} from '../../utils/helpers';
+import checkImg from 'images/check.svg';
+import {raceEthnicityOptions} from 'utils/constants';
+import {isUnderEighteen, getRaceEthnicityIsChecked, getRaceEthnicityOtherValue} from 'utils/helpers';
 
 export default class PersonalInfo extends Component {
   static propTypes = {
@@ -45,6 +47,7 @@ export default class PersonalInfo extends Component {
       parentPhone: user.parentPhone,
       phone: user.phone,
       pin: user.pin,
+      raceEthnicity: user.raceEthnicity,
       username: user.username
     };
   }
@@ -69,6 +72,28 @@ export default class PersonalInfo extends Component {
       return value;
     };
   };
+
+  handleRaceEthnicityChange = (optionArg) => (e) => {
+    e.preventDefault();
+
+    const {raceEthnicity = []} = this.state;
+    let newRaceEthnicity = raceEthnicity;
+
+    const option = optionArg === 'Other' ? getRaceEthnicityOtherValue(raceEthnicity) || '' : optionArg;
+
+    if (raceEthnicity.find(((val) => val === option)) !== undefined) {
+      newRaceEthnicity = raceEthnicity.filter(((val) => val !== option));
+    } else {
+      newRaceEthnicity = raceEthnicity.concat([option]);
+    }
+    this.setState({raceEthnicity: newRaceEthnicity});
+  }
+
+  handleRaceEthnicityOtherChange = (e) => {
+    const {raceEthnicity = []} = this.state;
+    const newRaceEthnicity = raceEthnicity.filter((val) => val !== getRaceEthnicityOtherValue(raceEthnicity)).concat([e.target.value]);
+    this.setState({raceEthnicity: newRaceEthnicity});
+  }
 
   handleSubmit = (e) => {
     e.preventDefault();
@@ -114,11 +139,9 @@ export default class PersonalInfo extends Component {
       addressState,
       addressZip,
       confirmNewPin,
-      countryOfOrigin,
       dobDay,
       dobMonth,
       dobYear,
-      email,
       firstName,
       lastName,
       newPin,
@@ -126,7 +149,6 @@ export default class PersonalInfo extends Component {
       oldUsername,
       parentName,
       parentPhone,
-      phone,
       username
     } = this.state;
     const hasPinError = _.isEmpty(newPin) ? false : (isManager ? false : user.pin !== oldPin) || newPin !== confirmNewPin;
@@ -135,16 +157,13 @@ export default class PersonalInfo extends Component {
     errors.addressCity = _.isEmpty(addressCity);
     errors.addressState = _.isEmpty(addressState);
     errors.addressZip = _.isEmpty(addressZip);
-    errors.countryOfOrigin = _.isEmpty(countryOfOrigin);
     errors.firstName = _.isEmpty(firstName);
     errors.lastName = _.isEmpty(lastName);
     errors.dobMonth = _.isEmpty(dobMonth);
     errors.dobDay = _.isEmpty(dobDay);
     errors.dobYear = _.isEmpty(dobYear);
-    errors.email = _.isEmpty(email);
     errors.parentName = isUnderEighteen({dobDay, dobMonth, dobYear}) ? _.isEmpty(parentName) : false;
     errors.parentPhone = isUnderEighteen({dobDay, dobMonth, dobYear}) ? _.isEmpty(parentPhone) : false;
-    errors.phone = _.isEmpty(phone);
     errors.username = _.isEmpty(username);
     errors.usernameNotUnique = username !== oldUsername && !isUsernameUnique(users, username);
     errors.oldPin = hasPinError;
@@ -159,11 +178,9 @@ export default class PersonalInfo extends Component {
     const {
       addressCity,
       addressLine1,
-      addressLine2,
       addressState,
       addressZip,
       confirmNewPin,
-      countryOfOrigin,
       dobDay,
       dobMonth,
       dobYear,
@@ -175,12 +192,14 @@ export default class PersonalInfo extends Component {
       parentName,
       parentPhone,
       phone,
+      raceEthnicity,
       username,
       errors,
       isEditing,
       isManager
     } = this.state;
     const isUnder18 = isUnderEighteen({dobDay, dobMonth, dobYear});
+    const other = getRaceEthnicityOtherValue(raceEthnicity);
 
     return (
       <form className="personal-info__outer" onSubmit={this.handleSubmit}>
@@ -195,6 +214,12 @@ export default class PersonalInfo extends Component {
               <div className="personal-info__label">Username:</div>
               <div className="personal-info__label">Email:</div>
               <div className="personal-info__label">Phone:</div>
+              <div className={classNames(
+                'personal-info__label',
+                {'personal-info__label-race-editing': isEditing},
+                {'personal-info__label-race': !isEditing})}>
+                  Race/Ethnicity:
+              </div>
               {isUnder18 && (
                 <div className="personal-info__spacing">
                   <div className="personal-info__label">Parent's Name:</div>
@@ -295,6 +320,35 @@ export default class PersonalInfo extends Component {
               ) : (
                 <div className="personal-info__value">{phone}</div>
               )}
+              {isEditing ? (
+                <div>
+                  {raceEthnicityOptions.map((option) => (
+                    <div className="registration-checkbox-small" key={option}>
+                      <button
+                        className="checkbox"
+                        onClick={this.handleRaceEthnicityChange(option)}>
+                        {getRaceEthnicityIsChecked(raceEthnicity, option) && <img alt="Check" src={checkImg} />}
+                      </button>
+                      <button
+                        className="registration-checkbox__text"
+                        onClick={this.handleRaceEthnicityChange(option)}>
+                        {option}
+                      </button>
+                    </div>
+                  )
+                  )}
+                  <input
+                    className={classNames(
+                      'registration-field',
+                      'registration-field__other-small',
+                    )}
+                    type="text"
+                    value={other}
+                    onChange={this.handleRaceEthnicityOtherChange} />
+                </div>
+              ) : (
+                <div className={classNames('personal-info__value', 'personal-info__value-race')}>{(raceEthnicity || []).join(', ')}</div>
+              )}
               {isUnder18 && (
                 <div className="personal-info__spacing">
                   {isEditing ? (
@@ -327,15 +381,6 @@ export default class PersonalInfo extends Component {
                 ) : (
                   <div className="personal-info__value">{addressLine1}</div>
                 )}
-                {isEditing ? (
-                  <input
-                    type="text"
-                    className={classNames('personal-info__input', {'personal-info__input-error': errors.addressLine2})}
-                    onChange={this.handleChange('addressLine2')}
-                    value={addressLine2}/>
-                ) : (
-                  <div>{!_.isEmpty(addressLine2) && <div className="personal-info__value">{addressLine2}</div>}</div>
-                )}
                 <div className="personal-info__value">
                   {isEditing ? (
                     <div className="personal-info__input-container">
@@ -367,15 +412,6 @@ export default class PersonalInfo extends Component {
                     <div>{`${addressCity}, ${addressState} ${addressZip}`}</div>
                   )}
                 </div>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    className={classNames('personal-info__input', {'personal-info__input-error': errors.countryOfOrigin})}
-                    onChange={this.handleChange('countryOfOrigin')}
-                    value={countryOfOrigin}/>
-                ) : (
-                  <div>{!_.isEmpty(countryOfOrigin) && <div className="personal-info__value">{countryOfOrigin}</div>}</div>
-                )}
                 <div className="personal-info__spacing">
                   {isEditing &&
                     !isManager && (

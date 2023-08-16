@@ -36,6 +36,9 @@ export const userProps = {
   parentPhone: PropTypes.string,
   phone: PropTypes.string,
   pin: PropTypes.string,
+  raceEthnicity: PropTypes.arrayOf(
+    PropTypes.string,
+  ),
   username: PropTypes.string,
   visits: PropTypes.arrayOf(PropTypes.shape(visitProps)),
   waiver: PropTypes.bool

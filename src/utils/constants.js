@@ -15,3 +15,23 @@ export const hourTypes = [
   'open shop',
   'volunteer'
 ];
+
+export const raceEthnicityOptions = [
+  'American Indian/Alaska Native',
+  'Asian',
+  'Black/African American',
+  'Hispanic/Latinx',
+  'Native Hawaiian/Pacific Islander',
+  'Two or more races',
+  'White',
+  'Other'
+];
+
+export const questionOneOptions = [
+  'Social Media',
+  'Word of Mouth',
+  'Website',
+  'Rideout/Community Event',
+  'Flyer',
+  'Other'
+];

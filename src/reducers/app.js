@@ -35,7 +35,8 @@ const initialState = Immutable.fromJS({
       id: 0,
       firstName: 'Manager',
       email: 'manager',
-      username: 'manager'
+      username: 'manager',
+      raceEthnicity: []
     }
   ]
 });

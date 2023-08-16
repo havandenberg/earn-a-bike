@@ -33,15 +33,6 @@ export default class AddressInfoStep extends Component {
           placeholder="Address line 1"
           value={newUser.addressLine1}
           onChange={this.handleChange('addressLine1')} />
-        <input
-          className={classNames(
-            'registration-field',
-            {'registration-field__error': errors.addressLine2}
-          )}
-          type="text"
-          placeholder="Address line 2"
-          value={newUser.addressLine2}
-          onChange={this.handleChange('addressLine2')} />
         <div className="registration-address-container">
           <input
             className={classNames(
@@ -74,15 +65,6 @@ export default class AddressInfoStep extends Component {
             value={newUser.addressZip}
             onChange={this.handleChange('addressZip')} />
         </div>
-        <input
-          className={classNames(
-            'registration-field',
-            {'registration-field__error': errors.countryOfOrigin}
-          )}
-          type="text"
-          placeholder="Country of origin"
-          value={newUser.countryOfOrigin}
-          onChange={this.handleChange('countryOfOrigin')} />
       </div>
     );
   }

@@ -5,8 +5,10 @@ import classNames from 'classnames';
 import {connect} from 'react-redux';
 import {registerUser} from 'actions/app';
 import {userProps} from 'proptypes/user';
+import checkImg from 'images/check.svg';
+import {raceEthnicityOptions} from 'utils/constants';
 import {history} from 'utils/store';
-import {isUsernameUnique} from 'utils/helpers';
+import {isUsernameUnique, getRaceEthnicityIsChecked, getRaceEthnicityOtherValue} from 'utils/helpers';
 import {messages} from 'utils/messages';
 import Messages from 'components/Messages.jsx';
 
@@ -21,7 +23,6 @@ class AddManager extends Component {
     newManager: {
       addressCity: '',
       addressLine1: '',
-      addressLine2: '',
       addressState: '',
       addressZip: '',
       confirmPin: '',
@@ -34,6 +35,7 @@ class AddManager extends Component {
       lastName: '',
       phone: '',
       pin: '',
+      raceEthnicity: [],
       username: '',
       visits: []
     }
@@ -48,6 +50,29 @@ class AddManager extends Component {
       return value;
     };
   };
+
+  handleRaceEthnicityChange = (optionArg) => (e) => {
+    e.preventDefault();
+
+    const {raceEthnicity = []} = this.state.newManager;
+    let newRaceEthnicity = raceEthnicity;
+
+    const option = optionArg === 'Other' ? getRaceEthnicityOtherValue(raceEthnicity) || '' : optionArg;
+
+    if (raceEthnicity.find(((val) => val === option)) !== undefined) {
+      newRaceEthnicity = raceEthnicity.filter(((val) => val !== option));
+    } else {
+      newRaceEthnicity = raceEthnicity.concat([option]);
+    }
+
+    this.setState({newManager: {...this.state.newManager, raceEthnicity: newRaceEthnicity}});
+  }
+
+  handleRaceEthnicityOtherChange = (e) => {
+    const {raceEthnicity = []} = this.state.newManager;
+    const newRaceEthnicity = raceEthnicity.filter((val) => val !== getRaceEthnicityOtherValue(raceEthnicity)).concat([e.target.value]);
+    this.setState({newManager: {...this.state.newManager, raceEthnicity: newRaceEthnicity}});
+  }
 
   handleBack = () => {
     history.goBack();
@@ -100,7 +125,6 @@ class AddManager extends Component {
       addressState,
       addressZip,
       confirmPin,
-      countryOfOrigin,
       dobDay,
       dobMonth,
       dobYear,
@@ -118,7 +142,6 @@ class AddManager extends Component {
     errors.addressCity = _.isEmpty(addressCity);
     errors.addressState = _.isEmpty(addressState);
     errors.addressZip = _.isEmpty(addressZip);
-    errors.countryOfOrigin = _.isEmpty(countryOfOrigin);
     errors.firstName = _.isEmpty(firstName);
     errors.lastName = _.isEmpty(lastName);
     errors.dobMonth = _.isEmpty(dobMonth);
@@ -137,6 +160,8 @@ class AddManager extends Component {
 
   render() {
     const {errors, newManager} = this.state;
+    const {raceEthnicity} = newManager;
+    const other = getRaceEthnicityOtherValue(raceEthnicity);
 
     return (
       <div className="add-manager">
@@ -182,6 +207,53 @@ class AddManager extends Component {
                 onChange={this.handleChange('dobYear')}/>
               <div className="add-manager-dob-text">Birthdate</div>
             </div>
+            <div className="add-manager__race-ethnicity-text">Race / Ethnicity:</div>
+            <div className="add-manager__race-ethnicity">
+              <div>
+                {raceEthnicityOptions.slice(0, raceEthnicityOptions.length / 2).map((option) => (
+                  <div className="registration-checkbox-small" key={option}>
+                    <button
+                      className="checkbox"
+                      onClick={this.handleRaceEthnicityChange(option)}>
+                      {getRaceEthnicityIsChecked(raceEthnicity, option) && <img alt="Check" src={checkImg} />}
+                    </button>
+                    <button
+                      className="registration-checkbox__text"
+                      onClick={this.handleRaceEthnicityChange(option)}>
+                      {option}
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <div>
+                {raceEthnicityOptions.slice(raceEthnicityOptions.length / 2, raceEthnicityOptions.length).map((option) => (
+                  <div className="registration-checkbox-small" key={option}>
+                    <button
+                      className="checkbox"
+                      onClick={this.handleRaceEthnicityChange(option)}>
+                      {getRaceEthnicityIsChecked(raceEthnicity, option) && <img alt="Check" src={checkImg} />}
+                    </button>
+                    <button
+                      className="registration-checkbox__text"
+                      onClick={this.handleRaceEthnicityChange(option)}>
+                      {option}
+                    </button>
+                  </div>
+                ))}
+                {other !== undefined
+                  ? <input
+                    className={classNames(
+                      'registration-field',
+                      'registration-field__other-small',
+                    )}
+                    type="text"
+                    value={other}
+                    onChange={this.handleRaceEthnicityOtherChange} />
+                  : <div className="registration-field__other-placeholder" />}
+              </div>
+            </div>
+          </div>
+          <div className="add-manager__fields scroll">
             <input
               className={classNames('add-manager-field', {'add-manager-field__error': errors.username})}
               type="text"
@@ -200,8 +272,6 @@ class AddManager extends Component {
               placeholder="Confirm pin"
               value={newManager.confirmPin}
               onChange={this.handleChange('confirmPin')}/>
-          </div>
-          <div className="add-manager__fields scroll">
             <input
               className={classNames('add-manager-field', {'add-manager-field__error': errors.email})}
               type="text"
@@ -220,12 +290,6 @@ class AddManager extends Component {
               placeholder="Address line 1"
               value={newManager.addressLine1}
               onChange={this.handleChange('addressLine1')}/>
-            <input
-              className={classNames('add-manager-field', {'add-manager-field__error': errors.addressLine2})}
-              type="text"
-              placeholder="Address line 2"
-              value={newManager.addressLine2}
-              onChange={this.handleChange('addressLine2')}/>
             <div className="add-manager-address-container">
               <input
                 className={classNames('add-manager-field', 'add-manager-address-city', {'add-manager-field__error': errors.addressCity})}
@@ -246,12 +310,6 @@ class AddManager extends Component {
                 value={newManager.addressZip}
                 onChange={this.handleChange('addressZip')}/>
             </div>
-            <input
-              className={classNames('add-manager-field', {'add-manager-field__error': errors.countryOfOrigin})}
-              type="text"
-              placeholder="Country of origin"
-              value={newManager.countryOfOrigin}
-              onChange={this.handleChange('countryOfOrigin')}/>
           </div>
         </div>
         <div className="add-manager__btn-container">
