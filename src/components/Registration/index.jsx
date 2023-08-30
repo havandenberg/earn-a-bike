@@ -38,7 +38,7 @@ class Registration extends Component {
   };
 
   state = {
-    activeStep: QUESTION_ONE_STEP,
+    activeStep: PERSONAL_INFO_STEP,
     addressCity: '',
     addressState: '',
     addressLine1: '',
