@@ -6,6 +6,9 @@
   "author": "Halsey Vandenberg",
   "license": "MIT",
   "main": "main.js",
+  "engines": {
+    "node": ">=7.0.0 <9.0.0"
+  },
   "scripts": {
     "build": "webpack --progress --config webpack.build.config.js",
     "dev": "webpack-dev-server --progress --hot --host 0.0.0.0 --config=./webpack.dev.config.js",
@@ -14,7 +17,7 @@
     "lint:stylus": "find ./src/styles -type f -iname \"*.styl\" -print0 | xargs -0 -n1 ./node_modules/.bin/stylint",
     "package-mac": "electron-packager ./ Earn-A-Bike --platform=darwin --arch=x64 --overwrite --out=./builds --icon=src/assets/images/icon.icns",
     "package-win": "electron-packager ./ Earn-A-Bike --platform=win32 --arch=x64 --overwrite --out=./builds --icon=src/assets/images/icon.ico --asar=true",
-    "prebuild": "rimraf ./dist",
+    "prebuild": "rm -rf ./dist",
     "prod": "electron . --noDevServer",
     "testDev": "electron ."
   },
